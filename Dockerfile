@@ -119,31 +119,88 @@ CMD ["/usr/bin/bash"]
 FROM ${MOVEIT_STUDIO_BASE_IMAGE} AS base-gpu
 
 # Create a non-root user
-ARG USERNAME
-ARG USER_UID
-ARG USER_GID
+#ARG USERNAME
+#ARG USER_UID
+#ARG USER_GID
 
 # hadolint ignore=DL3008
+#RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+#    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+#    apt-get update && apt-get install wget -y -q --no-install-recommends && \
+#    wget --progress=dot:giga https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+#    dpkg -i cuda-keyring_1.1-1_all.deb && \
+#    apt-get update && \
+#    apt-get install -q -y --no-install-recommends \
+#      libcudnn9-cuda-12 \
+#      libcudnn9-dev-cuda-12 \
+#      libcublas-12-6 \
+#      cuda-cudart-12-6 \
+#      libcurand-12-6 \
+#      libcufft-12-6 \
+#      libnvinfer10 \
+#      libnvinfer-plugin10 \
+#      libnvonnxparsers10 \
+#      libtree \
+# CUDA repo keyring (official)
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && apt-get install wget -y -q --no-install-recommends && \
-    wget --progress=dot:giga https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
-    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    apt-get update && apt-get install -y --no-install-recommends wget ca-certificates gnupg && \
+    wget -qO /tmp/cuda-keyring.deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+    dpkg -i /tmp/cuda-keyring.deb && rm -f /tmp/cuda-keyring.deb && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends \
+    # CUDA 12.8 user-space libs (no driver!)
+    apt-get install -y --no-install-recommends \
+      cuda-cudart-12-8 \
+      libcublas-12-8 \
+      libcurand-12-8 \
+      libcufft-12-8 \
+      # cuDNN 9 for CUDA 12
       libcudnn9-cuda-12 \
       libcudnn9-dev-cuda-12 \
-      libcublas-12-6 \
-      cuda-cudart-12-6 \
-      libcurand-12-6 \
-      libcufft-12-6 \
+      # TensorRT 10.9 runtime (and parsers/plugins)
       libnvinfer10 \
       libnvinfer-plugin10 \
       libnvonnxparsers10 \
-      libtree
+      # ZED SDK runtime deps
+      libusb-1.0-0 \
+      udev \
+      libx11-6 \
+      libxrandr2 \
+      libxinerama1 \
+      libxcursor1 \
+      libxxf86vm1 \
+      libgl1 \
+      libopengl0 \
+      libv4l-0 \
+      v4l-utils \
+      zstd \
+      libgomp1 \
+      # quality-of-life
+      software-properties-common && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Misleading name: onnxruntime_gpu is actually specifically the CUDA package. This is only shipped for x86-64
 RUN if [ "$(uname -m)" = "x86_64" ]; then pip3 install --no-cache-dir onnxruntime_gpu==1.19.0; fi
+
+# Copy and install ZED SDK 5.0.5 (CUDA 12.8 + TensorRT 10.9)
+# Expect the file to be present in the build context at ./installers/
+COPY installers/ZED_SDK_Ubuntu22_cuda12.8_tensorrt10.9_v5.0.5.zstd.run /tmp/zed_sdk.run
+RUN chmod +x /tmp/zed_sdk.run && \
+    # Run non-interactively; install to default (/usr/local/zed)
+    # The installer supports silent mode; if your local copy differs, run with "--help" to see flags.
+    /bin/bash /tmp/zed_sdk.run -- silent skip_tools && \
+    rm -f /tmp/zed_sdk.run
+
+# ZED env (helps CMake find libs/headers)
+ENV ZED_SDK_ROOT=/usr/local/zed
+ENV PATH=$ZED_SDK_ROOT/bin:$PATH
+ENV LD_LIBRARY_PATH=$ZED_SDK_ROOT/lib:$LD_LIBRARY_PATH
+
+
+# Create non-root user
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
 
 # Copy source code from the workspace's ROS 2 packages to a workspace inside the container
 ARG USER_WS=/home/${USERNAME}/user_ws
