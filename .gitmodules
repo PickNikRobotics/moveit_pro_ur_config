@@ -1,3 +1,6 @@
 [submodule "src/external_dependencies/Universal_Robots_ROS2_Description"]
 	path = src/external_dependencies/Universal_Robots_ROS2_Description
 	url = https://github.com/PickNikRobotics/Universal_Robots_ROS2_Description.git
+[submodule "src/external_dependencies/ros2_robotiq_gripper"]
+	path = src/external_dependencies/ros2_robotiq_gripper
+	url = https://github.com/PickNikRobotics/ros2_robotiq_gripper.git
