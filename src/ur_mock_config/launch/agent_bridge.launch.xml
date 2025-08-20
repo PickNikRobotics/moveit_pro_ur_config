@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <launch>
-  <include
-    file="$(find-pkg-share moveit_studio_agent)/launch/studio_agent_bridge.launch.xml"
-  />
+  <include file="$(find-pkg-share moveit_studio_agent)/launch/studio_agent_bridge.launch.xml"/>
+  <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py">
+    <arg name="camera_model" value="zed2i" />
+  </include>
 </launch>
