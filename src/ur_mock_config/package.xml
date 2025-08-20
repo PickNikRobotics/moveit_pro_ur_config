@@ -1,11 +1,10 @@
 <?xml version="1.0" ?>
 <package format="3">
   <name>ur_mock_config</name>
-  <version>6.5.0</version>
+  <version>8.6.0</version>
 
   <description>
-    Site configuration package for a UR arm that can be simulated with mock
-    hardware
+    MoveIt Pro configuration package for a mock hardware UR arm.
   </description>
 
   <maintainer email="support@picknik.ai">MoveIt Pro Maintainer</maintainer>
@@ -17,7 +16,10 @@
   <build_depend>moveit_studio_common</build_depend>
 
   <depend>moveit_studio_behavior_interface</depend>
-  <depend>picknik_ur_base_config</depend>
+  <depend>picknik_accessories</depend>
+  <depend>robotiq_description</depend>
+  <depend>ur_description</depend>
+  <depend>ur_robot_driver</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
