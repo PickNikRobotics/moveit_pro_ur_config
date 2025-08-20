@@ -10,3 +10,6 @@
 [submodule "src/external_dependencies/serial"]
 	path = src/external_dependencies/serial
 	url = https://github.com/tylerjw/serial.git
+[submodule "src/external_dependencies/zed-ros2-wrapper"]
+	path = src/external_dependencies/zed-ros2-wrapper
+	url = https://github.com/stereolabs/zed-ros2-wrapper.git
