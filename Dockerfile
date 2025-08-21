@@ -30,8 +30,6 @@ ENV USER_WS=${USER_WS}
 # Set real time limits
 # Ensure the directory exists
 RUN mkdir -p /etc/security
-# Copy the custom limits configuration into the container
-COPY src/moveit_pro_franka_configs/franka_hw_config/config/rt_limits.conf /etc/security/limits.conf
 
 # Also mkdir with user permission directories which will be mounted later to avoid docker creating them as root
 WORKDIR $USER_WS
@@ -118,29 +116,6 @@ CMD ["/usr/bin/bash"]
 # hadolint ignore=DL3006
 FROM ${MOVEIT_STUDIO_BASE_IMAGE} AS base-gpu
 
-# Create a non-root user
-#ARG USERNAME
-#ARG USER_UID
-#ARG USER_GID
-
-# hadolint ignore=DL3008
-#RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-#    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-#    apt-get update && apt-get install wget -y -q --no-install-recommends && \
-#    wget --progress=dot:giga https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
-#    dpkg -i cuda-keyring_1.1-1_all.deb && \
-#    apt-get update && \
-#    apt-get install -q -y --no-install-recommends \
-#      libcudnn9-cuda-12 \
-#      libcudnn9-dev-cuda-12 \
-#      libcublas-12-6 \
-#      cuda-cudart-12-6 \
-#      libcurand-12-6 \
-#      libcufft-12-6 \
-#      libnvinfer10 \
-#      libnvinfer-plugin10 \
-#      libnvonnxparsers10 \
-#      libtree \
 # CUDA repo keyring (official)
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -154,6 +129,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libcublas-12-8 \
       libcurand-12-8 \
       libcufft-12-8 \
+      # Add minimal CUDA CLI so nvcc/version is detectable by installers
+      cuda-nvcc-12-8 \
+      cuda-command-line-tools-12-8 \
       # cuDNN 9 for CUDA 12
       libcudnn9-cuda-12 \
       libcudnn9-dev-cuda-12 \
@@ -175,27 +153,31 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       v4l-utils \
       zstd \
       libgomp1 \
-      # quality-of-life
+      pciutils \
       software-properties-common && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Misleading name: onnxruntime_gpu is actually specifically the CUDA package. This is only shipped for x86-64
+# Ensure canonical CUDA symlink exists for installers that look at /usr/local/cuda
+RUN if [ ! -e /usr/local/cuda ] && [ -d /usr/local/cuda-12.8 ]; then ln -s /usr/local/cuda-12.8 /usr/local/cuda; fi
+
+# Optional: ONNX Runtime GPU (x86-64 only)
 RUN if [ "$(uname -m)" = "x86_64" ]; then pip3 install --no-cache-dir onnxruntime_gpu==1.19.0; fi
 
 # Copy and install ZED SDK 5.0.5 (CUDA 12.8 + TensorRT 10.9)
-# Expect the file to be present in the build context at ./installers/
 COPY installers/ZED_SDK_Ubuntu22_cuda12.8_tensorrt10.9_v5.0.5.zstd.run /tmp/zed_sdk.run
 RUN chmod +x /tmp/zed_sdk.run && \
-    # Run non-interactively; install to default (/usr/local/zed)
-    # The installer supports silent mode; if your local copy differs, run with "--help" to see flags.
     /bin/bash /tmp/zed_sdk.run -- silent skip_tools && \
     rm -f /tmp/zed_sdk.run
 
-# ZED env (helps CMake find libs/headers)
+# ZED + CUDA env
 ENV ZED_SDK_ROOT=/usr/local/zed
-ENV PATH=$ZED_SDK_ROOT/bin:$PATH
-ENV LD_LIBRARY_PATH=$ZED_SDK_ROOT/lib:$LD_LIBRARY_PATH
-
+ENV ZED_DIR=$ZED_SDK_ROOT
+ENV CMAKE_PREFIX_PATH=$ZED_SDK_ROOT:$ZED_SDK_ROOT/share:$CMAKE_PREFIX_PATH
+# DEBUG
+RUN printf '%s\n' "/usr/local/cuda-12.8/targets/x86_64-linux/lib" "$ZED_SDK_ROOT/lib" > /etc/ld.so.conf.d/zed.conf && ldconfig
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=$ZED_SDK_ROOT/bin:$CUDA_HOME/bin:$PATH
+ENV LD_LIBRARY_PATH=$ZED_SDK_ROOT/lib:/usr/local/cuda-12.8/targets/x86_64-linux/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 
 # Create non-root user
 ARG USERNAME
@@ -209,22 +191,41 @@ ENV USER_WS=${USER_WS}
 # Also mkdir with user permission directories which will be mounted later to avoid docker creating them as root
 WORKDIR $USER_WS
 # hadolint ignore=DL3008
+# Idempotent user/group creation that reuses existing GID/UID if they already exist
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    groupadd --gid $USER_GID ${USERNAME} && \
-    useradd --uid $USER_UID --gid $USER_GID --shell /bin/bash --create-home ${USERNAME} && \
-    apt-get update && \
-    apt-get install -q -y --no-install-recommends sudo && \
-    echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} && \
-    chmod 0440 /etc/sudoers.d/${USERNAME} && \
-    cp -r /etc/skel/. /home/${USERNAME} && \
-    mkdir -p \
-      /home/${USERNAME}/.ccache \
-      /home/${USERNAME}/.config \
-      /home/${USERNAME}/.ignition \
-      /home/${USERNAME}/.colcon \
-      /home/${USERNAME}/.ros && \
-    chown -R $USER_UID:$USER_GID /home/${USERNAME} /opt/overlay_ws/
+    set -euo pipefail; \
+    apt-get update; \
+    apt-get install -q -y --no-install-recommends sudo; \
+    # Resolve (or create) group with desired GID
+    if getent group "$USER_GID" >/dev/null; then \
+      GROUP_NAME="$(getent group "$USER_GID" | cut -d: -f1)"; \
+    else \
+      # If the *name* exists but with a different GID, don't fail; just create by GID
+      if getent group "$USERNAME" >/dev/null; then \
+        GROUP_NAME="$USERNAME"; \
+      else \
+        groupadd --gid "$USER_GID" "$USERNAME"; \
+        GROUP_NAME="$USERNAME"; \
+      fi; \
+    fi; \
+    # Resolve (or create) user with desired UID
+    if getent passwd "$USER_UID" >/dev/null; then \
+      EXISTING_USER="$(getent passwd "$USER_UID" | cut -d: -f1)"; \
+      # If the username differs, rename it to $USERNAME (best-effort)
+      if [ "$EXISTING_USER" != "$USERNAME" ]; then usermod -l "$USERNAME" "$EXISTING_USER" || true; fi; \
+      usermod -g "$USER_GID" -s /bin/bash "$USERNAME" || true; \
+      HOME_DIR="$(getent passwd "$USERNAME" | cut -d: -f6)"; \
+      [ -d "$HOME_DIR" ] || mkdir -p "$HOME_DIR"; \
+    else \
+      useradd --uid "$USER_UID" --gid "$USER_GID" --shell /bin/bash --create-home "$USERNAME"; \
+      HOME_DIR="/home/$USERNAME"; \
+    fi; \
+    echo "$USERNAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USERNAME"; \
+    chmod 0440 "/etc/sudoers.d/$USERNAME"; \
+    mkdir -p "$HOME_DIR/.ccache" "$HOME_DIR/.config" "$HOME_DIR/.ignition" "$HOME_DIR/.colcon" "$HOME_DIR/.ros"; \
+    chown -R "$USER_UID:$USER_GID" "$HOME_DIR" "/opt/overlay_ws/"
+
 
 # Install additional dependencies
 # You can also add any necessary apt-get install, pip install, etc. commands at this point.
