@@ -17,6 +17,7 @@
 
   <depend>moveit_studio_behavior_interface</depend>
   <depend>ur_mock_config</depend>
+  <depend>moveit_studio_ur_pstop_manager</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

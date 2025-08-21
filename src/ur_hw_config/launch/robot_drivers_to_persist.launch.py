@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2023 PickNik Inc.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,74 +27,28 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
-from launch_ros.actions import Node
-from launch.substitutions import (
-    ThisLaunchFileDir,
-    EnvironmentVariable,
-    LaunchConfiguration,
-)
-from launch.launch_description_sources import AnyLaunchDescriptionSource
 
-from moveit_studio_utils_py.launch_common import empty_gen
-from moveit_studio_utils_py.system_config import (
-    SystemConfigParser,
-)
+from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.substitutions import FindPackageShare
+from launch.substitutions import PathJoinSubstitution
 
 
 def generate_launch_description():
-    system_config_parser = SystemConfigParser()
-    controller_config = system_config_parser.get_ros2_control_config()
-
-    declare_robot_ip = DeclareLaunchArgument(
-        "robot_ip",
-        default_value=EnvironmentVariable("ROBOT_IP", default_value="192.10.0.11"),
-        description="IP address of the robot",
-    )
-    robot_ip = LaunchConfiguration("robot_ip")
-
-    dashboard_client_node = Node(
-        package="ur_robot_driver",
-        executable="dashboard_client",
-        name="dashboard_client",
-        output="both",
-        emulate_tty=True,
-        parameters=[{"robot_ip": robot_ip}],
+    # Find the path to the base config's robot drivers to persist launch file
+    base_robot_drivers_to_persist_launch_path = PathJoinSubstitution(
+        [
+            FindPackageShare("ur_hw_config"),
+            "launch",
+            "base_robot_drivers_to_persist.launch.py",
+        ]
     )
 
-    protective_stop_manager_node = Node(
-        package="moveit_studio_ur_pstop_manager",
-        executable="protective_stop_manager_node",
-        name="protective_stop_manager_node",
-        output="both",
-        parameters=[
-            {
-                "controllers_default_active": controller_config.get(
-                    "controllers_active_at_startup", empty_gen()
-                ),
-                "controllers_default_not_active": controller_config.get(
-                    "controllers_inactive_at_startup", empty_gen()
-                ),
-            }
-        ],
+    # Include the base launch file and pass the robot_ip parameter
+    base_robot_drivers_to_persist_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(base_robot_drivers_to_persist_launch_path),
+        launch_arguments={"robot_ip": "192.10.0.11"}.items(),
     )
 
-    tool_comms_launch = IncludeLaunchDescription(
-        AnyLaunchDescriptionSource([ThisLaunchFileDir(), "/ur_tool_comms.launch.xml"]),
-        launch_arguments={
-            "robot_ip": robot_ip,
-            "tool_tcp_port": "54321",
-            "tool_device_name": "/tmp/ttyUR",
-        }.items(),
-    )
-
-    nodes_to_launch = [
-        declare_robot_ip,
-        dashboard_client_node,
-        protective_stop_manager_node,
-        tool_comms_launch,
-    ]
-
-    return LaunchDescription(nodes_to_launch)
+    return LaunchDescription([base_robot_drivers_to_persist_launch])
