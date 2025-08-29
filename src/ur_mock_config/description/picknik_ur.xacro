@@ -31,6 +31,8 @@
   <xacro:arg name="script_sender_port" default="50002"/>
   <xacro:arg name="trajectory_port" default="50003"/>
   <!--   tool communication related parameters-->
+  <!-- Support either Robotiq Hand-E (robotiq_hande) or Robotiq 2F-85 (robotiq_2f_85) -->
+  <xacro:arg name="tool_name" default="robotiq_hande" />
   <xacro:arg name="use_tool_communication" default="true" />
   <xacro:arg name="tool_voltage" default="24" />
   <xacro:arg name="tool_parity" default="0" />
@@ -93,24 +95,18 @@
           script_sender_port="$(arg script_sender_port)"
           trajectory_port="$(arg trajectory_port)"
   >
-    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+    <origin xyz="0 0 0" rpy="0 0 0" />
   </xacro:ur_robot>
 
-  <!-- Gripper, UR adapter, and realsense camera -->
-  <xacro:include
+  <!-- Realsense wrist camera NOTE: will need to change parent of grippers if the bracket is included -->
+  <!-- <xacro:include
     filename="$(find picknik_accessories)/descriptions/brackets/ur_realsense_camera_adapter/picknik_ur_camera_adapter.urdf.xacro"
   />
   <xacro:include
     filename="$(find picknik_accessories)/descriptions/sensors/realsense_d415.urdf.xacro"
-  />
-  <xacro:include
-    filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro"
-  />
-  <xacro:include
-    filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"
-  />
+  /> -->
   <!-- wrist camera adapter and camera-->
-  <xacro:ur_realsense_camera_adapter
+  <!-- <xacro:ur_realsense_camera_adapter
     prefix="$(arg tf_prefix)"
     parent="tool0"
     child_tool="realsense_camera_adapter_tool0"
@@ -123,28 +119,46 @@
     use_mesh="true"
   >
     <origin xyz="0 0 0" rpy="0 0 0" />
-  </xacro:realsense_d415>
-  <!-- gripper and UR adapter-->
-  <xacro:ur_to_robotiq
-    prefix="$(arg tf_prefix)"
-    parent="realsense_camera_adapter_tool0"
-    child="gripper_mount_link"
-    rotation="0"
-  />
-  <xacro:robotiq_gripper
-    name="RobotiqGripperHardwareInterface"
-    prefix="$(arg tf_prefix)"
-    parent="gripper_mount_link"
-    use_fake_hardware="$(arg use_fake_hardware)"
-    sim_ignition="false"
-    com_port="$(arg tool_device_name)"
-  >
-    <origin xyz="0 0 0" rpy="0 0 0" />
-  </xacro:robotiq_gripper>
+  </xacro:realsense_d415> -->
+  <!-- Robotiq Hand-E gripper-->
+  <xacro:property name="tool_name" value="$(arg tool_name)"/>
+  <xacro:if value="${tool_name == 'robotiq_hande'}">
+    <xacro:include filename="$(find robotiq_description)/urdf/robotiq_hand_e_macro.urdf.xacro"/>
+    <xacro:include filename="$(find robotiq_description)/urdf/hand_e.ros2_control.xacro"/>
+    <xacro:robotiq_hande prefix="$(arg tf_prefix)" parent="tool0" >
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:robotiq_hande>
+    <xacro:robotiq_hande_ros2_control
+      name="robotiq_hande"
+      prefix="$(arg tf_prefix)"
+      use_mock_hardware="$(arg use_fake_hardware)"
+      com_port="$(arg tool_device_name)"/>
+  </xacro:if>
+  <!-- Robotiq 2f-85 gripper-->
+  <xacro:if value="${tool_name == 'robotiq_2f_85'}">
+    <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro" />
+    <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro" />
+    <xacro:ur_to_robotiq
+      prefix="$(arg tf_prefix)"
+      parent="tool0"
+      child="gripper_mount_link"
+      rotation="0"
+    />
+    <xacro:robotiq_gripper
+            name="RobotiqGripperHardwareInterface"
+            prefix="$(arg tf_prefix)"
+            parent="gripper_mount_link"
+            use_fake_hardware="$(arg use_fake_hardware)"
+            sim_ignition="false"
+            com_port="$(arg tool_device_name)"
+    >
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:robotiq_gripper>
+  </xacro:if>
   <!-- This link aligns the axes of the grasp frame to our required convention for motion planning tasks. -->
   <link name="grasp_link" />
-  <joint name="$grasp_link_joint" type="fixed">
-    <parent link="robotiq_85_base_link" />
+  <joint name="grasp_link_joint" type="fixed">
+    <parent link="tool0" />
     <child link="grasp_link" />
     <origin xyz="0.0 0.0 0.134" rpy="0.0 0.0 ${pi}" />
   </joint>

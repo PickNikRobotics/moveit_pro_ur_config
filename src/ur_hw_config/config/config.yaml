@@ -23,7 +23,7 @@ hardware:
       # possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30
       - ur_type: "ur10e"
       - use_fake_hardware: "false"
-      - robot_ip: "0.0.0.0"
+      - robot_ip: "192.168.1.102"
       - headless_mode: "true"
       - use_tool_communication: "true"
       - tool_voltage: "24"

@@ -119,7 +119,7 @@ servo_controller:
 robotiq_gripper_controller:
   ros__parameters:
     default: true
-    joint: robotiq_85_left_knuckle_joint
+    joint: hande_finger_distance
     allow_stalling: true
     # These need to be tuned for HW:
     # stall_timeout: 0.05
