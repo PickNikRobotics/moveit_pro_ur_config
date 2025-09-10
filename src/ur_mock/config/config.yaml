@@ -19,10 +19,10 @@ hardware:
   # [Required]
   robot_description:
     urdf:
-      package: "ur_mock_config"
+      package: "ur_mock"
       path: "description/picknik_ur.xacro"
     srdf:
-      package: "ur_mock_config"
+      package: "ur_mock"
       path: "config/moveit/picknik_ur.srdf"
     # Specify any additional parameters required for the URDF.
     # Many of these are specific to the UR descriptions packages, and can be customized as needed.
@@ -38,7 +38,7 @@ hardware:
       - use_tool_communication: "true"
       - tool_voltage: "24"
       - joint_limit_parameters_file:
-          package: "ur_mock_config"
+          package: "ur_mock"
           path: "config/moveit/joint_limits.yaml"
 
 # Configuration files for MoveIt.
@@ -49,25 +49,25 @@ moveit_params:
   joint_group_name: "manipulator"
 
   ompl_planning:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/ompl_planning.yaml"
   kinematics:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/pose_ik_distance.yaml"
   servo:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/ur_servo.yaml"
   sensors_3d:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/sensors_3d.yaml"
   joint_limits:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/joint_limits.yaml"
   servo_joint_limits:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/hard_joint_limits.yaml"
   pose_jog:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/moveit/pose_jog.yaml"
 
   publish:
@@ -108,19 +108,19 @@ objectives:
       package_name: "moveit_pro_objectives"
       relative_path: "objectives/perception"
     ur_mock_objectives:
-      package_name: "ur_mock_config"
+      package_name: "ur_mock"
       relative_path: "objectives"
   # Specify the location of the saved waypoints file.
   # [Required]
   waypoints_file:
-    package_name: "ur_mock_config"
+    package_name: "ur_mock"
     relative_path: "waypoints/ur_waypoints.yaml"
 
 # Configuration for launching ros2_control processes.
 # [Required, if using ros2_control]
 ros2_control:
   config:
-    package: "ur_mock_config"
+    package: "ur_mock"
     path: "config/control/picknik_ur.ros2_control.yaml"
   # MoveIt Pro will load and activate these controllers at start up to ensure they are available.
   # If not specified, it is up to the user to ensure the appropriate controllers are active and available

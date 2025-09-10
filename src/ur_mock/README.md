@@ -1,4 +1,4 @@
-# ur_mock_config
+# ur_mock
 
 A MoveIt Pro hardware configuration for a UR10e arm.
 
