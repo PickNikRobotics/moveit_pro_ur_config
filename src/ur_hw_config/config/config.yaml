@@ -17,20 +17,58 @@ hardware:
   # A URDF and SRDF are both required.
   # [Required]
   robot_description:
+    srdf:
+      package: "ur_hw_config"
+      path: "config/moveit/picknik_009_ur5e.srdf"
+    urdf:
+      package: "ur_hw_config"
+      path: "description/picknik_009_ur5e.urdf.xacro"
     urdf_params:
-      - name: "ur10e"
+      - name: "ur5e_bin_picker" # somewhere the "name" ur5e is being reused
       # NOTE: If using a different UR model, update type here and joint limits in the config/moveit/joint_limits.yaml file.
       # possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30
-      - ur_type: "ur10e"
+      - ur_type: "ur5e"
       - use_fake_hardware: "false"
-      - robot_ip: "0.0.0.0"
+      - robot_ip: "192.10.0.11"
       - headless_mode: "true"
       - use_tool_communication: "true"
       - tool_voltage: "24"
-      - joint_limit_parameters_file:
+      - joint_limits_parameters_file:
           package: "ur_hw_config"
           path: "config/moveit/joint_limits.yaml"
+      - visual_parameters_file:
+      # Load visual_parameters.yaml from ur_description/config/<ur_type>
+          package: "ur_description"
+          path: "config/ur5e/visual_parameters.yaml"
+      - kinematics_parameters_file:
+      # Load default_kinematics.yaml from ur_description/config/<ur_type>
+          package: "ur_description"
+          path: "config/ur5e/default_kinematics.yaml"
+      - physical_parameters_file:
+      # Load physical_parameters.yaml from ur_description/config/<ur_type>
+          package: "ur_description"
+          path: "config/ur5e/physical_parameters.yaml"
 
+ros2_control:
+  config:
+    package: "ur_hw_config"
+    path: "config/control/picknik_ur.ros2_control.yaml"
+  # MoveIt Pro will load and activate these controllers at start up to ensure they are available.
+  # If not specified, it is up to the user to ensure the appropriate controllers are active and available
+  # for running the application.
+  # [Optional, default=[]]
+  controllers_active_at_startup:
+    - "force_torque_sensor_broadcaster"
+    - "epick_controller"
+    - "joint_state_broadcaster"
+    - "servo_controller"
+    - "io_and_status_controller"
+  # Load but do not start these controllers so they can be activated later if needed.
+  # [Optional, default=[]]
+  controllers_inactive_at_startup:
+    - "joint_trajectory_controller"
+    - "joint_trajectory_admittance_controller"
+    - "velocity_force_controller"
 # Configuration files for MoveIt.
 # For more information, refer to https://moveit.picknik.ai/main/doc/how_to_guides/moveit_configuration/moveit_configuration_tutorial.html
 # [Required]

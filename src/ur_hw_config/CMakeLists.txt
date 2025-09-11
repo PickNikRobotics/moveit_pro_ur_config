@@ -12,6 +12,7 @@ install(
   DIRECTORY
     config
     launch
+    description
   DESTINATION
     share/${PROJECT_NAME}
 )
