@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(ur_mock_config)
+project(ur_hw)
 
 find_package(ament_cmake REQUIRED)
 find_package(moveit_studio_common REQUIRED)
@@ -11,10 +11,7 @@ add_subdirectory(behaviors)
 install(
   DIRECTORY
     config
-    description
     launch
-    objectives
-    waypoints
   DESTINATION
     share/${PROJECT_NAME}
 )
