@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur5e">
+  <!-- UR Overrides -->
+  <xacro:arg name="name" default="" />
+  <xacro:arg name="ur_type" default="ur5e" />
+
+  <!-- EPick Overrides -->
+  <xacro:arg name="epick_extension_radius" default="0.005" />
+  <xacro:arg name="epick_extension_length" default="0.05" />
+  <xacro:arg name="epick_suction_cup_radius" default="0.012" />
+  <xacro:arg name="epick_suction_cup_height" default="0.015" />
+  <xacro:arg name="epick_tcp_stroke_compensation" default="0.005" />
+
+  <xacro:arg
+    name="initial_positions_file"
+    default="$(find picknik_ur_base_config)/config/initial_positions.yaml"
+  />
+  <xacro:arg
+    name="environment_xacro"
+    default="$(find picknik_009_ur5e_config)/description/environment.xacro"
+  />
+
+  <!-- Import UR and environment macros -->
+  <xacro:include
+    filename="$(find picknik_ur_base_config)/description/picknik_ur_macro.xacro"
+  />
+  <xacro:include
+    filename="$(find picknik_ur_base_config)/description/picknik_ur_attachments_macro.xacro"
+  />
+  <xacro:include filename="$(arg environment_xacro)" />
+
+  <xacro:include filename="$(find picknik_accessories)/descriptions/sensors/realsense_d415.urdf.xacro"/>
+  <link name="world" />
+  
+  <!-- Robot: contains robot description from the world frame to the tool frame 
+  <xacro:picknik_ur
+    parent="world"
+    child="tool0"
+    initial_positions_file="$(arg initial_positions_file)"
+    generate_ros2_control_tag="true"
+  >
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:picknik_ur> -->
+
+  <!-- Gripper and UR adapter and realsense camera
+  <xacro:picknik_ur_attachments
+    parent="tool0"
+    child="grasp_link"
+    has_tool_changer="$(arg has_tool_changer)"
+	  /> -->
+
+<!-- Scene Camera -->
+  <link name="scene_camera_mount_link" />
+  <joint name="scene_camera_mount_joint" type="fixed">
+    <parent link="world" />
+    <child link="scene_camera_mount_link" />
+    <origin xyz="0.372 0.644 0.726" rpy="0 1.3 -3.14" />
+  </joint>
+
+  <xacro:realsense_d415 parent="scene_camera_mount_link" name="scene_camera">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:realsense_d415>
+  <!-- Environment: contains scene geometry and external sensors, e.g. cameras -->
+  <xacro:environment parent="world" />
+</robot>
+
+

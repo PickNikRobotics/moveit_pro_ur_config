@@ -1,0 +1,57 @@
+#
+#  This contains information for a unique instance of a robot.
+#
+
+# Name of the package to specialize
+based_on_package: "picknik_ur_site_config"
+
+hardware:
+  simulated: false
+
+  robot_driver_persist_launch_file:
+    package: "picknik_009_ur5e_config"
+    path: "launch/robot_drivers_to_persist.launch.py"
+
+  robot_description:
+    urdf:
+      package: "picknik_009_ur5e_config"
+      path: "description/picknik_009_ur5e.urdf.xacro"
+    srdf:
+      package: "picknik_009_ur5e_config"
+      path: "config/moveit/picknik_009_ur5e.srdf"
+    urdf_params:
+      - use_fake_hardware: "false"
+      - robot_ip: "192.10.0.11"
+      - has_tool_changer: "false"
+
+
+# Configuration for launching ros2_control processes.
+# [Required, if using ros2_control]
+ros2_control:
+  config:
+    package: "picknik_009_ur5e_config"
+    path: "config/control/picknik_ur.ros2_control.yaml"
+  # MoveIt Pro will load and activate these controllers at start up to ensure they are available.
+  # If not specified, it is up to the user to ensure the appropriate controllers are active and available
+  # for running the application.
+  # [Optional, default=[]]
+  controllers_active_at_startup:
+    - "force_torque_sensor_broadcaster"
+    - "epick_controller"
+    - "joint_state_broadcaster"
+    - "servo_controller"
+    - "io_and_status_controller"
+  # Load but do not start these controllers so they can be activated later if needed.
+  # [Optional, default=[]]
+  controllers_inactive_at_startup:
+    - "joint_trajectory_controller"
+    - "joint_trajectory_admittance_controller"
+    - "velocity_force_controller"
+
+objectives:
+  # Specify source folder for objectives
+  # [Required]
+  objective_library_paths:
+    sim_objectives:
+      package_name: "picknik_009_ur5e_config"
+      relative_path: "objectives"

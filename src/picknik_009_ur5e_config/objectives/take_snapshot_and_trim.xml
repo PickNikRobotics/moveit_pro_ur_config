@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Take Snapshot and Trim">
+  <!--//////////-->
+  <BehaviorTree
+    ID="Take Snapshot and Trim"
+    _description="Take a point cloud snapshot, trim out bins and add to collision scene"
+    _favorite="true"
+  >
+    <Control ID="Sequence">
+      <Action ID="ClearSnapshot" />
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="world"
+        stamped_pose="{origin}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="origin"
+        marker_size=".5"
+        pose="{origin}"
+        marker_text="origin"
+      />
+      <Action
+        ID="SwitchUIPrimaryView"
+        primary_view_name="Visualization"
+        _skipIf="true"
+      />
+      <Action
+        ID="GetPointCloud"
+        topic_name="/camera/scene_camera/depth/color/points"
+        message_out="{bin_camera_cloud}"
+        timeout_sec="15.000000"
+        publisher_timeout_sec="5.000000"
+      />
+      <Control
+        ID="Sequence"
+        name="Crop out points belonging to the bin by making a box that approximates the bin internal volume"
+      >
+        <Action
+          ID="CreateStampedPose"
+          reference_frame="world"
+          stamped_pose="{centroid_pose}"
+          position_xyz="0.245;0.585;0.378"
+          orientation_xyzw="-0.026; -0.009; 0.000; 1.000"
+        />
+        <Action
+          ID="CropPointsInBox"
+          crop_box_centroid_pose="{centroid_pose}"
+          point_cloud="{bin_camera_cloud}"
+          point_cloud_cropped="{cropped_bin_point_cloud}"
+          crop_box_size="0.32;0.55;0.28"
+        />
+      </Control>
+      <Action
+        ID="UpdatePlanningSceneService"
+        point_cloud="{point_cloud}"
+        point_cloud_service="/point_cloud_service"
+        _skipIf="true"
+      />
+      <Action
+        ID="SendPointCloudToUI"
+        point_cloud="{cropped_bin_point_cloud}"
+        pcd_topic="/pcd_pointcloud_captures"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Take Snapshot and Trim">
+      <MetadataFields>
+        <Metadata subcategory="Perception - 3D Point Cloud" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

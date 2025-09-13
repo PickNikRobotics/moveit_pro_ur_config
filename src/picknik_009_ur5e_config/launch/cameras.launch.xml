@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<launch>
+  <include
+    file="$(find-pkg-share picknik_ur_base_config)/launch/rs_cameras.launch.xml"
+  >
+    <arg name="scene_camera_serial_no" value="'135322061686'" />
+    <arg name="wrist_mounted_camera_serial_no" value="'217222066860'" />
+  </include>
+</launch>

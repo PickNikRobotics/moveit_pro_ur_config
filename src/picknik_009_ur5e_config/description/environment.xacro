@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="environment" params="parent">
+    <!-- Import environment macros -->
+    <xacro:include
+      filename="$(find picknik_accessories)/descriptions/geometry/collision_and_visual/cube_collision_and_visual.urdf.xacro"
+    />
+    <xacro:include
+      filename="$(find picknik_accessories)/descriptions/geometry/visual/cube_visual.urdf.xacro"
+    />
+    <!-- <xacro:include -->
+    <!--   filename="$(find picknik_accessories)/descriptions/sensors/realsense_d435.urdf.xacro" -->
+    <!-- /> -->
+
+    <!-- Environment -->
+    <xacro:property name="assets" value="$(find picknik_accessories)/macros" />
+    <xacro:include filename="${assets}/workcell_macro.xacro" />
+    <xacro:include filename="${assets}/robot_macro.xacro" />
+
+    <!-- Robot -->
+    <xacro:robot
+      manipulator_xacro="${assets}/manipulators/universal_robots.xacro"
+      tool_xacro="${assets}/tools/robotiq_epick.xacro"
+      adapter_xacro="${assets}/tool_adapters/ur_robotiq.xacro"
+	    />
+
+    <!-- Workcell -->
+    <xacro:workcell
+      robot_mount_xacro="${assets}/workcells/table.xacro"
+      parent_link="${parent}"
+      robot_base_link="robot_base"
+    />
+  </xacro:macro>
+</robot>
