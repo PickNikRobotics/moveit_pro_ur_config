@@ -18,6 +18,7 @@
   <depend>moveit_studio_behavior_interface</depend>
   <depend>moveit_studio_ur_pstop_manager</depend>
   <depend>ur_mock</depend>
+  <depend>realsense2_camera</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
