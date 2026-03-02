@@ -83,9 +83,9 @@
         ID="RegisterPointClouds"
         target_point_cloud="{cropped_bin_point_cloud}"
         base_point_cloud="{blue_bracket_part_cloud}"
-        max_iterations="100"
+        max_iterations="1000"
         target_pose_in_base_frame="{registered_to_guess_pose}"
-        max_correspondence_distance="0.5"
+        max_correspondence_distance="0.25"
         name="Produce updated pose, relative to the initial guess pose"
       />
       <Action

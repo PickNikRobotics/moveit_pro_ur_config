@@ -11,6 +11,8 @@
         task_id="inspect_surface"
         controller_names="joint_trajectory_controller"
         task="{move_to_pose_task}"
+        timeout="-1.000000"
+        trajectory_monitoring="false"
       />
       <Action ID="SetupMTCCurrentState" task="{move_to_pose_task}" />
       <Action
@@ -24,6 +26,8 @@
         ID="GetPointCloud"
         topic_name="/wrist_mounted_camera/depth/color/points"
         message_out="{point_cloud}"
+        publisher_timeout_sec="5.000000"
+        timeout_sec="5.000000"
       />
       <Action
         ID="GetPoseFromPixelCoords"
@@ -33,7 +37,12 @@
         neighbor_radius="0.1"
         output_poses="{output_poses}"
       />
-      <Decorator ID="ForEach" vector_in="{output_poses}" out="{pose}">
+      <Decorator
+        ID="ForEach"
+        vector_in="{output_poses}"
+        out="{pose}"
+        index="{index}"
+      >
         <Control ID="Sequence">
           <Action
             ID="TransformPose"
@@ -48,6 +57,15 @@
             planning_group_name="manipulator"
             target_pose="{target_pose}"
             task="{move_to_pose_task}"
+            acceleration_scale_factor="1.000000"
+            keep_orientation="false"
+            keep_orientation_link_names="grasp_link"
+            keep_orientation_tolerance="0.100000"
+            link_padding="0.000000"
+            max_iterations="5000"
+            monitored_stage="current state"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="1.000000"
           />
         </Control>
       </Decorator>
@@ -59,8 +77,13 @@
       <SubTree
         ID="Wait for Trajectory Approval if User Available"
         solution="{move_to_pose_solution}"
+        cartesian_path_links="grasp_link"
       />
-      <Action ID="ExecuteMTCTask" solution="{move_to_pose_solution}" />
+      <Action
+        ID="ExecuteMTCTask"
+        solution="{move_to_pose_solution}"
+        goal_duration_tolerance="-1.000000"
+      />
     </Control>
   </BehaviorTree>
   <TreeNodesModel>

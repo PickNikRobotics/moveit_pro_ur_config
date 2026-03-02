@@ -12,6 +12,13 @@
         waypoint_name="Hinge View"
         joint_group_name="manipulator"
         controller_names="joint_trajectory_controller"
+        acceleration_scale_factor="1.0"
+        controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
+        keep_orientation="false"
+        keep_orientation_tolerance="0.05"
+        link_padding="0.01"
+        seed="0"
+        velocity_scale_factor="1.0"
       />
       <SubTree ID="Clear Snapshot" _collapsed="true" />
       <SubTree ID="Reset Planning Scene" _collapsed="true" />
@@ -19,16 +26,22 @@
         ID="GetCameraInfo"
         topic_name="/wrist_mounted_camera/color/camera_info"
         message_out="{camera_info}"
+        publisher_timeout_sec="5.000000"
+        timeout_sec="5.000000"
       />
       <Action
         ID="GetImage"
         topic_name="/wrist_mounted_camera/color/image_raw"
         message_out="{image}"
+        publisher_timeout_sec="5.000000"
+        timeout_sec="5.000000"
       />
       <Action
         ID="GetPointCloud"
         topic_name="/wrist_mounted_camera/depth/color/points"
         message_out="{point_cloud}"
+        publisher_timeout_sec="5.000000"
+        timeout_sec="5.000000"
       />
       <Action
         ID="UpdatePlanningSceneService"
@@ -54,7 +67,12 @@
         camera_info="{camera_info}"
         masks3d="{masks3d}"
       />
-      <Decorator ID="ForEach" vector_in="{masks3d}" out="{mask3d}">
+      <Decorator
+        ID="ForEach"
+        vector_in="{masks3d}"
+        out="{mask3d}"
+        index="{index}"
+      >
         <Control ID="Sequence">
           <Action
             ID="GetPointCloudFromMask3D"
@@ -80,7 +98,12 @@
         graspable_objects="{graspable_objects}"
       />
       <Decorator ID="ForceSuccess">
-        <Decorator ID="ForEach" vector_in="{graspable_objects}" out="{button}">
+        <Decorator
+          ID="ForEach"
+          vector_in="{graspable_objects}"
+          out="{button}"
+          index="{index}"
+        >
           <Action ID="AlwaysFailure" />
         </Decorator>
       </Decorator>
@@ -97,6 +120,8 @@
           task_id="push_button_ml"
           controller_names="joint_trajectory_controller"
           task="{push_along_axis_task}"
+          timeout="-1.000000"
+          trajectory_monitoring="false"
         />
         <Action ID="SetupMTCCurrentState" task="{push_along_axis_task}" />
         <Action
@@ -105,6 +130,15 @@
           planning_group_name="manipulator"
           target_pose="{button_pose}"
           task="{push_along_axis_task}"
+          acceleration_scale_factor="1.000000"
+          keep_orientation="false"
+          keep_orientation_link_names="grasp_link"
+          keep_orientation_tolerance="0.100000"
+          link_padding="0.000000"
+          max_iterations="5000"
+          monitored_stage="current state"
+          trajectory_sampling_rate="100"
+          velocity_scale_factor="1.000000"
         />
         <Action
           ID="SetupMTCUpdateGroupCollisionRule"
@@ -127,6 +161,7 @@
           planning_group_name="manipulator"
           velocity_scale="0.05"
           acceleration_scale="0.05"
+          ignore_environment_collisions="false"
         />
         <Action
           ID="SetupMTCUpdateGroupCollisionRule"
@@ -151,15 +186,24 @@
         <Action
           ID="WaitForUserTrajectoryApproval"
           solution="{full_push_along_axis_solution}"
+          cartesian_path_links="grasp_link"
         />
-        <Action ID="ExecuteMTCTask" solution="{move_to_approach_solution}" />
+        <Action
+          ID="ExecuteMTCTask"
+          solution="{move_to_approach_solution}"
+          goal_duration_tolerance="-1.000000"
+        />
         <Action
           ID="SaveCurrentState"
           saved_robot_state="{pre_approach_robot_state}"
         />
         <Control ID="Parallel" success_count="1" failure_count="1">
           <SubTree ID="Force Exceeds Threshold" />
-          <Action ID="ExecuteMTCTask" solution="{push_solution}" />
+          <Action
+            ID="ExecuteMTCTask"
+            solution="{push_solution}"
+            goal_duration_tolerance="-1.000000"
+          />
         </Control>
       </Control>
       <SubTree
