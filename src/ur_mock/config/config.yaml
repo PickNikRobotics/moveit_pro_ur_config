@@ -54,9 +54,6 @@ moveit_params:
   kinematics:
     package: "ur_mock"
     path: "config/moveit/pose_ik_distance.yaml"
-  servo:
-    package: "ur_mock"
-    path: "config/moveit/ur_servo.yaml"
   sensors_3d:
     package: "ur_mock"
     path: "config/moveit/sensors_3d.yaml"
@@ -89,11 +86,10 @@ objectives:
     # This plugin will load the core MoveIt Pro Behaviors.
     # Add additional plugin loaders as needed.
     core:
-      - "moveit_studio::behaviors::CoreBehaviorsLoader"
-      - "moveit_studio::behaviors::MTCCoreBehaviorsLoader"
-      - "moveit_studio::behaviors::ServoBehaviorsLoader"
-      - "moveit_studio::behaviors::VisionBehaviorsLoader"
-      - "moveit_studio::behaviors::ConverterBehaviorsLoader"
+      - "moveit_pro::behaviors::CoreBehaviorsLoader"
+      - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
+      - "moveit_pro::behaviors::VisionBehaviorsLoader"
+      - "moveit_pro::behaviors::ConverterBehaviorsLoader"
     trigger_pstop_reset_service:
       - "trigger_pstop_reset_service::TriggerPStopResetServiceBehaviorsLoader"
   objective_library_paths:
@@ -130,7 +126,6 @@ ros2_control:
     - "force_torque_sensor_broadcaster"
     - "robotiq_gripper_controller"
     - "joint_state_broadcaster"
-    - "servo_controller"
     - "io_and_status_controller"
     - "robotiq_activation_controller"
   # Load but do not start these controllers so they can be activated later if needed.
