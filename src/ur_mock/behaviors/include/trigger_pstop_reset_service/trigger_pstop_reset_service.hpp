@@ -1,6 +1,6 @@
 #pragma once
 
-#include <moveit_studio_behavior_interface/service_client_behavior_base.hpp>
+#include <moveit_pro_behavior_interface/service_client_behavior_base.hpp>
 #include <std_srvs/srv/trigger.hpp>
 
 namespace trigger_pstop_reset_service
@@ -9,7 +9,7 @@ namespace trigger_pstop_reset_service
  * @brief Resets the UR P-stop status by calling the reset service named /recover_from_protective_stop.
  */
 using PStopService = std_srvs::srv::Trigger;
-class TriggerPStopResetService : public moveit_studio::behaviors::ServiceClientBehaviorBase<PStopService>
+class TriggerPStopResetService : public moveit_pro::behaviors::ServiceClientBehaviorBase<PStopService>
 {
 public:
   /**
@@ -23,7 +23,7 @@ public:
    * the initialize() function is called, so these classes should not be used within the constructor.
    */
   TriggerPStopResetService(const std::string& name, const BT::NodeConfiguration& config,
-                           const std::shared_ptr<moveit_studio::behaviors::BehaviorContext>& shared_resources);
+                           const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
 
   /**
    * @brief Implementation of the required providedPorts() function for the trigger_pstop_reset_service Behavior.
