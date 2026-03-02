@@ -38,6 +38,3 @@ moveit_params:
   joint_limits:
     package: "ur_hw"
     path: "config/moveit/joint_limits.yaml"
-  servo_joint_limits:
-    package: "ur_hw"
-    path: "config/moveit/hard_joint_limits.yaml"
