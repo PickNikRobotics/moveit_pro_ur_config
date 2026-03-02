@@ -28,10 +28,10 @@ hardware:
     # Many of these are specific to the UR descriptions packages, and can be customized as needed.
     # [Optional]
     urdf_params:
-      - name: "ur10e"
+      - name: "ur5e"
       # NOTE: If using a different UR model, update type here and joint limits in the config/moveit/joint_limits.yaml file.
       # possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30
-      - ur_type: "ur10e"
+      - ur_type: "ur5e"
       - use_fake_hardware: "true"
       - robot_ip: "0.0.0.0"
       - headless_mode: "true"
