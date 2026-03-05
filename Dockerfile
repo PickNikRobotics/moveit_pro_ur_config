@@ -6,7 +6,7 @@
 #
 
 # Specify the MoveIt Pro release to build on top of.
-ARG MOVEIT_STUDIO_BASE_IMAGE=picknikciuser/moveit-studio:${STUDIO_DOCKER_TAG:-main}
+ARG MOVEIT_PRO_BASE_IMAGE=picknikciuser/moveit-pro:${MOVEIT_DOCKER_TAG:-main}-${MOVEIT_ROS_DISTRO:-humble}
 ARG USERNAME=studio-user
 ARG USER_UID=1000
 ARG USER_GID=1000
@@ -16,7 +16,7 @@ ARG USER_GID=1000
 ##################################################
 # The image tag is specified in the argument itself.
 # hadolint ignore=DL3006
-FROM ${MOVEIT_STUDIO_BASE_IMAGE} AS base
+FROM ${MOVEIT_PRO_BASE_IMAGE} AS base
 
 # Create a non-root user
 ARG USERNAME
@@ -114,7 +114,7 @@ CMD ["/usr/bin/bash"]
 ##################################################
 # The image tag is specified in the argument itself.
 # hadolint ignore=DL3006
-FROM ${MOVEIT_STUDIO_BASE_IMAGE} AS base-gpu
+FROM ${MOVEIT_PRO_BASE_IMAGE} AS base-gpu
 
 # Create a non-root user
 ARG USERNAME
