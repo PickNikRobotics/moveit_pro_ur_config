@@ -66,7 +66,10 @@ moveit_params:
   pose_jog:
     package: "ur_mock"
     path: "config/moveit/pose_jog.yaml"
-
+  joint_jog: 
+    package: "ur_mock" 
+    path: "config/moveit/joint_jog.yaml" 
+    
   publish:
     planning_scene: True
     geometry_updates: True

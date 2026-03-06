@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="environment" params="parent">
+    <!-- Import macros -->
+    <xacro:include
+      filename="$(find picknik_accessories)/descriptions/sensors/realsense_d435.urdf.xacro"
+    />
+    <xacro:include
+      filename="$(find picknik_009_ur5e_config)/description/generic_tote.xacro"
+    />
+
+    <!-- Workcell (80/20 aluminum extrusion frame) -->
+    <!-- robot_mount in the Locus config is at xyz="0.28 -0.026 -0.2" rpy="0 0 pi/2" from workcell.
+         Since our robot is at world origin, we place the workcell at the inverse transform. -->
+    <link name="workcell">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://picknik_009_ur5e_config/meshes/workcell_no_totes.stl" />
+        </geometry>
+        <material name="workcell_material">
+          <color rgba="0.792 0.820 0.933 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://picknik_009_ur5e_config/meshes/workcell_no_totes.stl" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${parent}_to_workcell" type="fixed">
+      <parent link="${parent}" />
+      <child link="workcell" />
+      <origin xyz="0.026 0.28 0.2" rpy="0 0 ${-pi/2}" />
+    </joint>
+
+    <!-- Tote dimensions (matching Locus config) -->
+    <xacro:property name="tote_x" value="${24 * 0.0254}" />
+    <xacro:property name="tote_y" value="${15 * 0.0254}" />
+    <xacro:property name="tote_z" value="${7.5 * 0.0254}" />
+    <xacro:property name="tote_wall" value="0.025" />
+    <xacro:property name="tote_bottom" value="0.005" />
+
+    <!-- Left tote (positions relative to workcell frame, same as Locus config) -->
+    <link name="left_tote_origin"/>
+    <joint name="left_tote_origin_joint" type="fixed">
+      <parent link="workcell"/>
+      <child link="left_tote_origin"/>
+      <origin xyz="0.008 -0.055 -0.21" rpy="0 0 ${pi}"/>
+    </joint>
+
+    <xacro:generic_tote
+      parent="left_tote_origin"
+      prefix="left_"
+      x_length="${tote_x}"
+      y_length="${tote_y}"
+      z_length="${tote_z}"
+      side_wall_thickness="${tote_wall}"
+      bottom_thickness="${tote_bottom}"/>
+
+    <!-- Right tote -->
+    <link name="right_tote_origin"/>
+    <joint name="right_tote_origin_joint" type="fixed">
+      <parent link="workcell"/>
+      <child link="right_tote_origin"/>
+      <origin xyz="0.008 0.4 -0.21" rpy="0 0 ${pi}"/>
+    </joint>
+
+    <xacro:generic_tote
+      parent="right_tote_origin"
+      prefix="right_"
+      x_length="${tote_x}"
+      y_length="${tote_y}"
+      z_length="${tote_z}"
+      side_wall_thickness="${tote_wall}"
+      bottom_thickness="${tote_bottom}"/>
+
+    <!-- Scene camera (RealSense D435) -->
+    <link name="external_camera_link" />
+    <joint name="external_camera_joint" type="fixed">
+      <parent link="${parent}" />
+      <child link="external_camera_link" />
+      <origin xyz="0.372 0.644 0.726" rpy="${-pi/2} 0 ${-pi/2}" />
+    </joint>
+
+    <xacro:realsense_d435
+      parent="external_camera_link"
+      name="scene_camera"
+      visible="true"
+    >
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:realsense_d435>
+
+  </xacro:macro>
+</robot>
