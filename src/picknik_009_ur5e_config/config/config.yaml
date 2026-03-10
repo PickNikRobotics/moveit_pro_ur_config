@@ -16,13 +16,13 @@ hardware:
   robot_description:
     urdf:
       package: "picknik_009_ur5e_config"
-      path: "description/picknik_009_ur5e_mujoco.urdf.xacro"
+      path: "description/picknik_009_ur5e.urdf.xacro"
     srdf:
       package: "picknik_009_ur5e_config"
       path: "config/moveit/picknik_009_ur5e.srdf"
     urdf_params:
-      - mujoco_model: "description/mujoco/scene.xml"
-      - mujoco_viewer: false
+      - use_fake_hardware: "true"
+      - robot_ip: "0.0.0.0"
 
 objectives:
   behavior_loader_plugins:
@@ -31,7 +31,6 @@ objectives:
       - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
-      - "moveit_pro::behaviors::MujocoBehaviorsLoader"
 
 # Use our own ros2_control config with EPick controller instead of Robotiq 2F-85
 ros2_control:
@@ -41,9 +40,10 @@ ros2_control:
   controllers_active_at_startup:
     - "force_torque_sensor_broadcaster"
     - "joint_state_broadcaster"
-    - "joint_trajectory_controller"
   controllers_inactive_at_startup:
+    - "joint_trajectory_controller"
     - "joint_trajectory_admittance_controller"
     - "velocity_force_controller"
+    - "joint_velocity_controller"
   controllers_not_managed: []
   controller_shared_topics: []

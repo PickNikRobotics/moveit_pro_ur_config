@@ -13,12 +13,12 @@ controller_manager:
       type: position_controllers/GripperActionController
     robotiq_activation_controller:
       type: robotiq_controllers/RobotiqActivationController
-    servo_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
     joint_trajectory_admittance_controller:
       type: joint_trajectory_admittance_controller/JointTrajectoryAdmittanceController
     velocity_force_controller:
       type: velocity_force_controller/VelocityForceController
+    joint_velocity_controller:
+      type: joint_velocity_controller/JointVelocityController
 
 io_and_status_controller:
   ros__parameters:
@@ -76,46 +76,6 @@ joint_trajectory_controller:
       wrist_3_joint:
         goal: 0.05
 
-servo_controller:
-  ros__parameters:
-    joints:
-      - shoulder_pan_joint
-      - shoulder_lift_joint
-      - elbow_joint
-      - wrist_1_joint
-      - wrist_2_joint
-      - wrist_3_joint
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
-      - velocity
-    command_joints:
-      - shoulder_pan_joint
-      - shoulder_lift_joint
-      - elbow_joint
-      - wrist_1_joint
-      - wrist_2_joint
-      - wrist_3_joint
-    state_publish_rate: 100.0
-    action_monitor_rate: 20.0
-    allow_partial_joints_goal: false
-    constraints:
-      stopped_velocity_tolerance: 0.0
-      goal_time: 0.0
-      shoulder_pan_joint:
-        goal: 0.05
-      shoulder_lift_joint:
-        goal: 0.05
-      elbow_joint:
-        goal: 0.05
-      wrist_1_joint:
-        goal: 0.05
-      wrist_2_joint:
-        goal: 0.05
-      wrist_3_joint:
-        goal: 0.05
-
 robotiq_gripper_controller:
   ros__parameters:
     default: true
@@ -131,14 +91,7 @@ robotiq_activation_controller:
 
 joint_trajectory_admittance_controller:
   ros__parameters:
-    joints:
-      - shoulder_pan_joint
-      - shoulder_lift_joint
-      - elbow_joint
-      - wrist_1_joint
-      - wrist_2_joint
-      - wrist_3_joint
-    base_frame: base_link
+    planning_group_name: manipulator
     sensor_frame: tool0
     ee_frame: grasp_link
     ft_sensor_name: tcp_fts_sensor
@@ -187,3 +140,25 @@ velocity_force_controller:
       - 40.0
       - 40.0
       - 40.0
+
+joint_velocity_controller:
+  ros__parameters:
+    planning_group_name: manipulator
+    max_joint_velocity:
+      - 0.524
+      - 0.524
+      - 0.524
+      - 1.047
+      - 1.047
+      - 1.047
+    max_joint_acceleration:
+      - 52.4
+      - 52.4
+      - 52.4
+      - 52.4
+      - 52.4
+      - 52.4
+    command_interfaces: ["position"]
+    joint_limit_position_tolerance: 0.02
+    command_timeout: 0.2
+    state_publish_rate: 20

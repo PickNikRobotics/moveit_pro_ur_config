@@ -1,0 +1,548 @@
+ Container moveit_pro-drivers-1 Creating 
+ Container moveit_pro-web_ui-1 Creating 
+ Container moveit_pro-agent_bridge-1 Creating 
+ Container moveit_pro-agent_bridge-1 Created 
+ Container moveit_pro-web_ui-1 Created 
+ Container moveit_pro-drivers-1 Created 
+Attaching to agent_bridge-1, drivers-1, web_ui-1
+ Container moveit_pro-agent_bridge-1 Starting 
+ Container moveit_pro-drivers-1 Starting 
+ Container moveit_pro-web_ui-1 Starting 
+web_ui-1  | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+web_ui-1  | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+web_ui-1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+ Container moveit_pro-web_ui-1 Started 
+web_ui-1  | 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+web_ui-1  | 10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf differs from the packaged version
+web_ui-1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+web_ui-1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+web_ui-1  | /docker-entrypoint.sh: Configuration complete; ready for start up
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: using the "epoll" event method
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: nginx/1.23.1
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: OS: Linux 6.8.0-101-generic
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1024:524288
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker processes
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 30
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 31
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 32
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 33
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 34
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 35
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 36
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 37
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 38
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 39
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 40
+web_ui-1  | 2026/03/09 16:40:03 [notice] 1#1: start worker process 41
+web_ui-1  | 2026/03/09 16:40:03 [error] 30#30: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /api/file-monitor/events HTTP/1.1", upstream: "http://127.0.0.1:3200/file-monitor/events", host: "localhost", referrer: "http://localhost/objectives?sidebar=true"
+web_ui-1  | 127.0.0.1 - - [09/Mar/2026:16:40:03 +0000] "GET /api/file-monitor/events HTTP/1.1" 502 497 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+ Container moveit_pro-agent_bridge-1 Started 
+ Container moveit_pro-drivers-1 Started 
+drivers-1  | Sourcing Overlay workspace.
+agent_bridge-1  | Sourcing Overlay workspace.
+agent_bridge-1  | Sourcing User workspace.
+drivers-1       | Sourcing User workspace.
+agent_bridge-1  | not found: "/home/ur5e-009-agent/user_ws/install/epick_moveit_plugin/share/epick_moveit_plugin/local_setup.bash"
+drivers-1       | not found: "/home/ur5e-009-agent/user_ws/install/epick_moveit_plugin/share/epick_moveit_plugin/local_setup.bash"
+agent_bridge-1  | $USE_HOST_DDS is false. Using a default CycloneDDS configuration.
+drivers-1       | $USE_HOST_DDS is false. Using a default CycloneDDS configuration.
+agent_bridge-1  | Created a new CycloneDDS configuration file at /home/ur5e-009-agent/.ros/cyclonedds.xml.
+drivers-1       | Created a new CycloneDDS configuration file at /home/ur5e-009-agent/.ros/cyclonedds.xml.
+agent_bridge-1  | Generating locales (this might take a while)...
+drivers-1       | Generating locales (this might take a while)...
+drivers-1       |   en_US.UTF-8... done
+drivers-1       | Generation complete.
+agent_bridge-1  |   en_US.UTF-8... done
+agent_bridge-1  | Generation complete.
+drivers-1       | [INFO] [launch]: All log files can be found below /home/ur5e-009-agent/.ros/log/2026-03-09-16-40-05-928064-ur5e-009-agent-131
+drivers-1       | [INFO] [launch]: Default logging verbosity is set to INFO
+agent_bridge-1  | [INFO] [launch]: All log files can be found below /home/ur5e-009-agent/.ros/log/2026-03-09-16-40-05-931437-ur5e-009-agent-50
+agent_bridge-1  | [INFO] [launch]: Default logging verbosity is set to INFO
+drivers-1       | [INFO] [ros2_control_node-1]: process started with pid [132]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 force_torque_sensor_broadcaster-2]: process started with pid [134]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_state_broadcaster-3]: process started with pid [136]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_trajectory_controller-4]: process started with pid [138]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 --inactive joint_trajectory_admittance_controller-5]: process started with pid [140]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 --inactive velocity_force_controller-6]: process started with pid [142]
+drivers-1       | [ros2_control_node-1] [33m[WARN] [1773074406.862880556] [controller_manager]: [Deprecated] Passing the robot description parameter directly to the control_manager node is deprecated. Use '~/robot_description' topic from 'robot_state_publisher' instead.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.863330183] [resource_manager]: Loading hardware 'epick_driver_ros2_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864382354] [resource_manager]: Initialize hardware 'epick_driver_ros2_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864423370] [DefaultDriverFactory]: Reading slave_address...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864438962] [DefaultDriverFactory]: slave_address: 9[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864447692] [DefaultDriverFactory]: Reading mode...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864467452] [DefaultDriverFactory]: mode: AdvancedMode[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864476036] [DefaultDriverFactory]: Reading grip max vacuum pressure...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864486285] [DefaultDriverFactory]: grip_max_vacuum_pressure: -60.000000kPa[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864501137] [DefaultDriverFactory]: Reading grip min vacuum pressure...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864509307] [DefaultDriverFactory]: grip_min_vacuum_pressure: -10.000000kPa[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864517383] [DefaultDriverFactory]: Reading grip timeout...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864524552] [DefaultDriverFactory]: grip_timeout: 25.000000s[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864532509] [DefaultDriverFactory]: Reading release timeout...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864539544] [DefaultDriverFactory]: release_timeout: 2.000000s[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864549758] [DefaultDriverFactory]: You are connected to a dummy driver, not a real hardware.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864557809] [FakeDriver]: slave_address set to: 9[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864571236] [FakeDriver]: mode set to: AdvancedMode[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864578753] [FakeDriver]: grip max vacuum pressure set to: -60.000000kPa[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864586895] [FakeDriver]: grip min vacuum pressure set to: -10.000000kPa[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864594518] [FakeDriver]: grip timeout set to: 25000ms[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864601605] [FakeDriver]: release timeout set to: 2000ms[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864613205] [resource_manager]: Successful initialization of hardware 'epick_driver_ros2_control'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.864650029] [resource_manager]: Loading hardware 'ur_mujoco_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074406.874526191] [resource_manager]: Initialize hardware 'ur_mujoco_control' [0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:06 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /assets/index-B5kfeJ_c.css HTTP/1.1" 304 0 "http://172.27.135.190/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /assets/index-D8Y3jDlr.js HTTP/1.1" 304 0 "http://172.27.135.190/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+drivers-1       | [ros2_control_node-1] [33m[WARN] [1773074407.055347021] [MujocoSystem]: No keyframe specified, applying first keyframe to set initial state.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.055873479] [resource_manager]: Successful initialization of hardware 'ur_mujoco_control'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056168087] [resource_manager]: 'configure' hardware 'ur_mujoco_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056185798] [resource_manager]: Successful 'configure' of hardware 'ur_mujoco_control'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056202158] [resource_manager]: 'activate' hardware 'ur_mujoco_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056212292] [resource_manager]: Successful 'activate' of hardware 'ur_mujoco_control'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056220852] [resource_manager]: 'configure' hardware 'epick_driver_ros2_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056230879] [FakeDriver]: Gripper connected.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056241254] [resource_manager]: Successful 'configure' of hardware 'epick_driver_ros2_control'[0m
+drivers-1       | [ros2_control_node-1] [33m[WARN] [1773074407.056252390] [resource_manager]: (hardware 'epick_driver_ros2_control'): 'gripper/position' state interface already in available list. This can happen due to multiple calls to 'configure'[0m
+drivers-1       | [ros2_control_node-1] [33m[WARN] [1773074407.056261283] [resource_manager]: (hardware 'epick_driver_ros2_control'): 'gripper/velocity' state interface already in available list. This can happen due to multiple calls to 'configure'[0m
+drivers-1       | [ros2_control_node-1] [33m[WARN] [1773074407.056268881] [resource_manager]: (hardware 'epick_driver_ros2_control'): 'gripper/position' state interface already in available list. This can happen due to multiple calls to 'configure'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056276397] [resource_manager]: 'activate' hardware 'epick_driver_ros2_control' [0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056287166] [FakeDriver]: Gripper activated.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056333595] [EpickGripperHardwareInterface]: Robotiq EPick Gripper successfully activated![0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.056348958] [resource_manager]: Successful 'activate' of hardware 'epick_driver_ros2_control'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.059701967] [controller_manager]: update rate is 600 Hz[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.059738131] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.059823882] [controller_manager]: Successful set up FIFO RT scheduling policy with priority 50.[0m
+web_ui-1        | 2026/03/09 16:40:07 [error] 32#32: *4 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /api/objectives HTTP/1.1", upstream: "http://127.0.0.1:3200/objectives", host: "172.27.135.190", referrer: "http://172.27.135.190/?sidebar=true"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /api/objectives HTTP/1.1" 502 497 "http://172.27.135.190/?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /assets/rux-indeterminate-progress.entry-Ccr6RxCA.js HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-D8Y3jDlr.js" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | 
+agent_bridge-1  | ********************************************************************
+agent_bridge-1  | *
+agent_bridge-1  | *     Starting Robot:  picknik_009_ur5e_config
+agent_bridge-1  | *          Simulated:  True
+agent_bridge-1  | *
+agent_bridge-1  | ********************************************************************
+agent_bridge-1  | 
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.487514020] [controller_manager]: Loading controller 'joint_trajectory_admittance_controller'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.568063336] [controller_manager]: Loading controller 'force_torque_sensor_broadcaster'[0m
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 --inactive joint_trajectory_admittance_controller-5] [INFO] [1773074407.592348175] [spawner_joint_trajectory_admittance_controller]: [94mLoaded [1mjoint_trajectory_admittance_controller[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074407.596762474] [controller_manager]: Configuring controller 'joint_trajectory_admittance_controller'[0m
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:07.597] [[33m[1mwarning[m] The 'sensor_frame' parameter is deprecated, the 'sensor_frames' parameter should be set instead in the JointTrajectoryAdmittanceController config.
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:07.597] [[33m[1mwarning[m] The 'ee_frame' parameter is deprecated, the 'ee_frames' parameter should be set instead in the JointTrajectoryAdmittanceController config.
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 force_torque_sensor_broadcaster-2] [INFO] [1773074407.618400294] [spawner_force_torque_sensor_broadcaster]: [94mLoaded [1mforce_torque_sensor_broadcaster[0m
+agent_bridge-1  | [INFO] [launch.user]: Starting MoveIt Pro LLM server...
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /assets/favicon.ico HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /assets/roboto-latin-400-normal-CNwBRw8h.woff2 HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-B5kfeJ_c.css" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 2026/03/09 16:40:07 [error] 33#33: *6 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /ros HTTP/1.1", upstream: "http://127.0.0.1:3201/", host: "172.27.135.190"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /ros HTTP/1.1" 502 497 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:07 +0000] "GET /ros HTTP/1.1" 502 497 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 2026/03/09 16:40:07 [error] 34#34: *8 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /ros HTTP/1.1", upstream: "http://127.0.0.1:3201/", host: "172.27.135.190"
+agent_bridge-1  | [INFO] [move_group-1]: process started with pid [139]
+agent_bridge-1  | [INFO] [parameter_manager_node-2]: process started with pid [141]
+agent_bridge-1  | [INFO] [waypoint_manager_node-3]: process started with pid [143]
+agent_bridge-1  | [INFO] [move_joint_resampler_node-4]: process started with pid [145]
+agent_bridge-1  | [INFO] [move_end_effector_resampler_node-5]: process started with pid [147]
+agent_bridge-1  | [INFO] [objective_server_node_main-6]: process started with pid [149]
+agent_bridge-1  | [INFO] [component_container_mt-7]: process started with pid [151]
+agent_bridge-1  | [INFO] [rosapi_node-9]: process started with pid [155]
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /ros HTTP/1.1" 502 497 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 2026/03/09 16:40:08 [error] 35#35: *10 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /ros HTTP/1.1", upstream: "http://127.0.0.1:3201/", host: "172.27.135.190"
+agent_bridge-1  | [INFO] [rosbridge_websocket-10]: process started with pid [157]
+agent_bridge-1  | [INFO] [tf2_web_republisher_node-11]: process started with pid [159]
+agent_bridge-1  | [INFO] [web_video_server-12]: process started with pid [161]
+agent_bridge-1  | [INFO] [web_server_node-13]: process started with pid [163]
+agent_bridge-1  | [INFO] [moveit_pro_llm_server-14]: process started with pid [168]
+agent_bridge-1  | [INFO] [web_server_node-15]: process started with pid [170]
+agent_bridge-1  | [INFO] [execute_objective_bridge-8]: process started with pid [153]
+web_ui-1        | 2026/03/09 16:40:08 [error] 36#36: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /ros HTTP/1.1", upstream: "http://127.0.0.1:3201/", host: "172.27.135.190"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /ros HTTP/1.1" 502 497 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /assets/rux-button_16.entry-BhHZ8v8V.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /assets/utils-3f3d360c-CoZF6uNi.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /assets/roboto-latin-600-normal-aFTKHmff.woff2 HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-B5kfeJ_c.css" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /assets/roboto-mono-latin-400-normal-GekRknry.woff2 HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-B5kfeJ_c.css" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:08 +0000] "GET /assets/rux-icon-error-outline.entry-DtxskifR.js HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-D8Y3jDlr.js" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [parameter_manager_node-2] [2026-03-09 16:40:08.060] [[32minfo[m] Started parameter manager node.
+agent_bridge-1  | [INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/robot_state_publisher' in container '/moveit_studio_container'
+agent_bridge-1  | [web_video_server-12] [0m[INFO] [1773074408.349700245] [web_video_server]: Waiting For connections on 0.0.0.0:3202[0m
+agent_bridge-1  | [INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/srdf_publisher' in container '/moveit_studio_container'
+agent_bridge-1  | [INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/mtc_task_manager_node' in container '/moveit_studio_container'
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:08.470] [[32minfo[m] 
+agent_bridge-1  | [objective_server_node_main-6] *************************************************
+agent_bridge-1  | [objective_server_node_main-6] *             MoveIt Pro License
+agent_bridge-1  | [objective_server_node_main-6] * License is Valid!
+agent_bridge-1  | [objective_server_node_main-6] * The license key you provided is active (this license does not have an expiration date)
+agent_bridge-1  | [objective_server_node_main-6] *
+agent_bridge-1  | [objective_server_node_main-6] *************************************************
+agent_bridge-1  | [objective_server_node_main-6] 
+agent_bridge-1  | [component_container_mt-7] [33m[WARN] [1773074408.519188264] [rcl.logging_rosout]: Publisher already registered for provided node name. If this is due to multiple nodes with the same name then all logs for that logger name will go out over the existing publisher. As soon as any node with that name is destructed it will unregister the publisher, preventing any further logs for that name from being published on the rosout topic.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.615570581] [moveit_435236303.moveit_pro.base.robot_model]: Loading robot model 'ur5e'...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.615623602] [moveit_435236303.moveit_pro.base.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint[0m
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:08.665] [[32minfo[m] First order lag filter time constant set to: 0.2 seconds
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:08.665] [[32minfo[m] Controller state will be published at 50 Hz.
+agent_bridge-1  | [rosbridge_websocket-10] registered capabilities (classes):
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.advertise.Advertise'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.publish.Publish'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.subscribe.Subscribe'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.defragmentation.Defragment'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.advertise_service.AdvertiseService'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.call_service.CallService'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.service_response.ServiceResponse'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.unadvertise_service.UnadvertiseService'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.advertise_action.AdvertiseAction'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.action_feedback.ActionFeedback'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.action_result.ActionResult'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.send_action_goal.SendActionGoal'>
+agent_bridge-1  | [rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.unadvertise_action.UnadvertiseAction'>
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:08.678] [[32minfo[m] Registered `FollowJointTrajectory` action server.
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.680417421] [controller_manager]: Configuring controller 'force_torque_sensor_broadcaster'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.688016599] [controller_manager]: Loading controller 'joint_trajectory_controller'[0m
+drivers-1       | [ros2_control_node-1] [33m[WARN] [1773074408.749528341] [joint_trajectory_controller]: [Deprecated]: "allow_nonzero_velocity_at_trajectory_end" is set to true. The default behavior will change to false.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.753799953] [controller_manager]: Loading controller 'joint_state_broadcaster'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.782501053] [controller_manager]: Loading controller 'velocity_force_controller'[0m
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_trajectory_controller-4] [INFO] [1773074408.820697673] [spawner_joint_trajectory_controller]: [94mLoaded [1mjoint_trajectory_controller[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.823943532] [controller_manager]: Configuring controller 'joint_trajectory_controller'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.824166467] [joint_trajectory_controller]: Command interfaces are [position] and state interfaces are [position velocity].[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.824205160] [joint_trajectory_controller]: Using 'splines' interpolation method.[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.824736136] [joint_trajectory_controller]: Controller state will be published at 100.00 Hz.[0m
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 force_torque_sensor_broadcaster-2] [INFO] [1773074408.826639209] [spawner_force_torque_sensor_broadcaster]: [92mConfigured and activated [1mforce_torque_sensor_broadcaster[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.831644270] [joint_trajectory_controller]: Action status changes will be monitored at 20.00 Hz.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.837407611] [rosbridge_websocket]: Rosbridge WebSocket server started on port 3201[0m
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_state_broadcaster-3] [INFO] [1773074408.841163588] [spawner_joint_state_broadcaster]: [94mLoaded [1mjoint_state_broadcaster[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.843596807] [controller_manager]: Configuring controller 'joint_state_broadcaster'[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.843688136] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published[0m
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_state_broadcaster-3] [INFO] [1773074408.861503805] [spawner_joint_state_broadcaster]: [92mConfigured and activated [1mjoint_state_broadcaster[0m
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_trajectory_controller-4] [INFO] [1773074408.866433751] [spawner_joint_trajectory_controller]: [92mConfigured and activated [1mjoint_trajectory_controller[0m
+agent_bridge-1  | [moveit_pro_llm_server-14] ROSLib uses utf8 encoding by default. It would be more efficient to use ascii (if possible).
+drivers-1       | [ros2 run controller_manager spawner --controller-manager-timeout 180 --inactive velocity_force_controller-6] [INFO] [1773074408.871512610] [spawner_velocity_force_controller]: [94mLoaded [1mvelocity_force_controller[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.874617936] [controller_manager]: Configuring controller 'velocity_force_controller'[0m
+agent_bridge-1  | [moveit_pro_llm_server-14] Attempting to connect to ROS at ws://localhost:3201
+agent_bridge-1  | [moveit_pro_llm_server-14] ROSLib uses utf8 encoding by default. It would be more efficient to use ascii (if possible).
+agent_bridge-1  | [waypoint_manager_node-3] [2026-03-09 16:40:08.890] [[32minfo[m] Started waypoint manager node.
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.905015697] [moveit_435236303.moveit_pro.base.robot_model]: Loading robot model 'ur5e'...[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074408.905049283] [moveit_435236303.moveit_pro.base.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint[0m
+agent_bridge-1  | [moveit_pro_llm_server-14] 
+agent_bridge-1  | [moveit_pro_llm_server-14] Initiating ROS connection...
+agent_bridge-1  | [moveit_pro_llm_server-14] LLM Server running on port 3203
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.928358890] [rosbridge_websocket]: Calling services in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.930503606] [rosbridge_websocket]: Sending action goals in new thread[0m
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 --inactive joint_trajectory_admittance_controller-5]: process has finished cleanly [pid 140]
+agent_bridge-1  | [moveit_pro_llm_server-14] ROS connected: ws://localhost:3201
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.935451312] [rosbridge_websocket]: Client connected. 1 clients total.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.941549120] [rosbridge_websocket]: Calling services in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.942522407] [rosbridge_websocket]: Sending action goals in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074408.943844433] [rosbridge_websocket]: Client connected. 2 clients total.[0m
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:08.953] [[32minfo[m] Controller state will be published at 50 Hz.
+drivers-1       | [ros2_control_node-1] [2026-03-09 16:40:08.954] [[32minfo[m] VelocityForceController 'on_configure' succeeded.
+agent_bridge-1  | [objective_server_node_main-6] Warning: class_loader.ClassLoader: SEVERE WARNING!!! Attempting to unload library while objects created by this loader exist in the heap! You should delete your objects before attempting to unload the library or destroying the ClassLoader. The library will NOT be unloaded.
+agent_bridge-1  | [objective_server_node_main-6]          at line 127 in ./src/class_loader.cpp
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:08.982] [[32minfo[m] Loading 5 behavior loader plugin(s):
+agent_bridge-1  | [objective_server_node_main-6]   moveit_pro::behaviors::CoreBehaviorsLoader
+agent_bridge-1  | [objective_server_node_main-6]   moveit_pro::behaviors::MujocoBehaviorsLoader
+agent_bridge-1  | [objective_server_node_main-6]   moveit_pro::behaviors::MTCCoreBehaviorsLoader
+agent_bridge-1  | [objective_server_node_main-6]   trigger_pstop_reset_service::TriggerPStopResetServiceBehaviorsLoader
+agent_bridge-1  | [objective_server_node_main-6]   moveit_pro::behaviors::VisionBehaviorsLoader
+agent_bridge-1  | [moveit_pro_llm_server-14] ✓ LLM Server to ROS connection established successfully
+agent_bridge-1  | [INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planning_scene_listener_node' in container '/moveit_studio_container'
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_trajectory_controller-4]: process has finished cleanly [pid 138]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 force_torque_sensor_broadcaster-2]: process has finished cleanly [pid 134]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 joint_state_broadcaster-3]: process has finished cleanly [pid 136]
+drivers-1       | [INFO] [ros2 run controller_manager spawner --controller-manager-timeout 180 --inactive velocity_force_controller-6]: process has finished cleanly [pid 142]
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:09.490] [[32minfo[m] Writing tree nodes model to: /home/ur5e-009-agent/.config/moveit_pro/picknik_009_ur5e_config/auto_created/generated_tree_nodes_model.xml
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /objectives?sidebar=true HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /assets/index-D8Y3jDlr.js HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /assets/index-B5kfeJ_c.css HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 2026/03/09 16:40:09 [error] 32#32: *4 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /api/objectives HTTP/1.1", upstream: "http://127.0.0.1:3200/objectives", host: "172.27.135.190", referrer: "http://172.27.135.190/objectives?sidebar=true"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /api/objectives HTTP/1.1" 502 497 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /assets/favicon.ico HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /assets/rux-indeterminate-progress.entry-Ccr6RxCA.js HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-D8Y3jDlr.js" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074409.920676254] [rosbridge_websocket]: Calling services in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074409.921317235] [rosbridge_websocket]: Sending action goals in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074409.922284415] [rosbridge_websocket]: Client connected. 3 clients total.[0m
+web_ui-1        | 2026/03/09 16:40:09 [error] 31#31: *3 connect() failed (111: Connection refused) while connecting to upstream, client: 172.27.74.65, server: localhost, request: "GET /api/pose_jog/config HTTP/1.1", upstream: "http://127.0.0.1:3200/pose_jog/config", host: "172.27.135.190", referrer: "http://172.27.135.190/objectives?sidebar=true"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:09 +0000] "GET /api/pose_jog/config HTTP/1.1" 502 497 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     Started server process [[36m163[0m]
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     Waiting for application startup.
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     Started monitoring folder: /home/ur5e-009-agent/.config/moveit_pro/picknik_009_ur5e_config/objectives
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     Application startup complete.
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:3200[0m (Press CTRL+C to quit)
+agent_bridge-1  | [move_group-1] [33m[WARN] [1773074410.105475377] [move_group.moveit.plugins.ros_control_interface]: Failed to read controllers from /controller_manager/list_controllers within 1 seconds[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/ApplyPlanningSceneService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/ClearOctomapService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/ExecuteTaskSolutionCapability'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/GetUrdfService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/LoadGeometryFromFileService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/MoveGroupGetPlanningSceneService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/MoveGroupKinematicsService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'move_group/SaveGeometryToFileService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'moveit_studio_plugins/move_group/GetPlanningGroups'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'moveit_studio_plugins/move_group/SetActiveControllerService'...[0m
+agent_bridge-1  | [move_group-1] [96mLoading 'moveit_studio_plugins/move_group/URDFPlanningSceneCapability'...[0m
+agent_bridge-1  | [move_group-1] 
+agent_bridge-1  | [move_group-1] [92mYou can start planning now![0m
+agent_bridge-1  | [move_group-1] 
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Started server process [[36m170[0m]
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Waiting for application startup.
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Started monitoring folder: /home/ur5e-009-agent/.config/moveit_pro/picknik_009_ur5e_config/objectives
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Application startup complete.
+agent_bridge-1  | [web_server_node-15] [31mERROR[0m:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 3200): address already in use
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Waiting for application shutdown.
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Stopping folder monitoring...
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:10 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:10 +0000] "GET /assets/index-D8Y3jDlr.js HTTP/1.1" 304 0 "http://localhost/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:10 +0000] "GET /assets/index-B5kfeJ_c.css HTTP/1.1" 304 0 "http://localhost/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:10 +0000] "GET /assets/manifest.webmanifest HTTP/1.1" 304 0 "http://localhost/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:10 +0000] "GET /api/objectives HTTP/1.1" 200 1785 "http://localhost/?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074410.945752674] [rosbridge_websocket]: Calling services in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074410.946395013] [rosbridge_websocket]: Sending action goals in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074410.948066439] [rosbridge_websocket]: Client connected. 4 clients total.[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:10 +0000] "GET /assets/rux-indeterminate-progress.entry-Ccr6RxCA.js HTTP/1.1" 304 0 "http://localhost/assets/index-D8Y3jDlr.js" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Folder monitoring stopped successfully
+agent_bridge-1  | [web_server_node-15] [32mINFO[0m:     Application shutdown complete.
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:11 +0000] "GET /api/pose_jog/config HTTP/1.1" 200 79 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:11 +0000] "GET /api/pose_jog/config HTTP/1.1" 200 79 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:11 +0000] "GET /assets/roboto-latin-400-normal-CNwBRw8h.woff2 HTTP/1.1" 304 0 "http://localhost/assets/index-B5kfeJ_c.css" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [ERROR] [web_server_node-15]: process has died [pid 170, exit code 1, cmd '/opt/overlay_ws/install/moveit_studio_rest_api/lib/moveit_studio_rest_api/web_server_node --ros-args -r __node:=web_server_node'].
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:11 +0000] "GET /api/joint_jog/config HTTP/1.1" 200 371 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [move_group-1] [2026-03-09 16:40:11.725] [[33m[1mwarning[m] No kinematics plugin defined for group 'gripper'. Determining base and tip frames with the joint model group!
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074411.811705480] [rosbridge_websocket]: [Client c790db86-b6ab-432f-b287-1e64d611ae97] Subscribed to /objective_server_heartbeat[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:11 +0000] "GET /api/joint_jog/config HTTP/1.1" 200 371 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:11 +0000] "GET /assets/moveit-icon-DaOJFYg2.png HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [move_group-1] [2026-03-09 16:40:11.999] [[33m[1mwarning[m] No kinematics plugin defined for group 'gripper'. Determining base and tip frames with the joint model group!
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074412.004717454] [rosbridge_websocket]: [Client c790db86-b6ab-432f-b287-1e64d611ae97] Unsubscribed from /objective_server_heartbeat[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:12 +0000] "GET /assets/rux-button_16.entry-BhHZ8v8V.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:12 +0000] "GET /assets/utils-3f3d360c-CoZF6uNi.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:12 +0000] "GET /assets/rux-icon-error-outline.entry-DtxskifR.js HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-D8Y3jDlr.js" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074412.030811528] [rosbridge_websocket]: [Client c790db86-b6ab-432f-b287-1e64d611ae97] Advertised action /do_teleoperate[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074412.064793533] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /objective_server_heartbeat[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:12 +0000] "GET /api/latest-stable-version HTTP/1.1" 200 19 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /assets/moveit-icon-DaOJFYg2.png HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074412.498315906] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /objective_server_heartbeat[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074412.511232796] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /robot_description[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/base.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074412.530675291] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /robot_description[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/shoulder.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/upperarm.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/forearm.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/wrist1.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/wrist3.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/wrist2.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/picknik_accessories/descriptions/brackets/ur_realsense_camera_adapter/picknik_ur5_realsense_camera_adapter_rev2.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/realsense2_description/meshes/d415.stl HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/robotiq_description/meshes/visual/2f_85/ur_to_robotiq_adapter.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/epick_description/meshes/visual/epick_body.stl HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/picknik_009_ur5e_config/meshes/workcell_no_totes.stl HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:12 +0000] "GET /api/packages/realsense2_description/meshes/d435.dae HTTP/1.1" 304 0 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:13 +0000] "GET /assets/rux-button_16.entry-BhHZ8v8V.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:13 +0000] "GET /assets/utils-3f3d360c-CoZF6uNi.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.578177522] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /failure_reason_collector[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.582796341] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /protective_stop_manager_node/robot_fault_status[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:13 +0000] "GET /assets/roboto-latin-600-normal-aFTKHmff.woff2 HTTP/1.1" 304 0 "http://localhost/assets/index-B5kfeJ_c.css" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:13 +0000] "GET /api/latest-stable-version HTTP/1.1" 200 19 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.682830701] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:13 +0000] "GET /objectives?sidebar=true HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:13 +0000] "GET /ros HTTP/1.1" 101 1574 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:13 +0000] "GET /assets/index-B5kfeJ_c.css HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:13 +0000] "GET /assets/index-D8Y3jDlr.js HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.693929580] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.694998369] [rosbridge_websocket]: Client disconnected. 3 clients total.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.700902322] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.712697972] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /moveit_pro_ui/motion_ended[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.718293673] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.720027415] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /multi_dof_joint_states[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:13 +0000] "GET /assets/favicon.ico HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.781854464] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /visual_markers[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.784605400] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.798669333] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /pcd_pointcloud_captures[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.800944148] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.813362076] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /preview_solution[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.815771915] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /objective_server_heartbeat[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.818314264] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /breakpoint_encountered[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.821233716] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /breakpoint_resumed[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.823652889] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /moveit_pro_ui/switch_primary_view[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074413.825062683] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Duplicate action advertised. Overwriting /do_teleoperate.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.830904701] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised action /do_teleoperate[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.862659955] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised service /wait_for_user_path_approval[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.864829396] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised service /adjust_pose[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.867518249] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised service /get_pose_from_user[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.869470218] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised service /request_clicked_points[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.872650519] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised service /switch_primary_view[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074413.875233649] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Advertised service /request_text_from_prompts[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:13 +0000] "GET /api/pose_jog/config HTTP/1.1" 200 79 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.022726931] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.025552780] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /agent_event[0m
+web_ui-1        | 127.0.0.1 - - [09/Mar/2026:16:40:14 +0000] "GET /api/joint_jog/config HTTP/1.1" 200 371 "http://localhost/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:14 +0000] "GET /api/objectives HTTP/1.1" 200 1785 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     New SSE client subscribed. Total clients: 1
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:14 +0000] "GET /assets/rux-indeterminate-progress.entry-Ccr6RxCA.js HTTP/1.1" 304 0 "http://172.27.135.190/assets/index-D8Y3jDlr.js" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.262833887] [rosbridge_websocket]: Calling services in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.263458128] [rosbridge_websocket]: Sending action goals in new thread[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.264496353] [rosbridge_websocket]: Client connected. 4 clients total.[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:14 +0000] "GET /api/pose_jog/config HTTP/1.1" 200 79 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:14 +0000] "GET /api/joint_jog/config HTTP/1.1" 200 371 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [move_group-1] [2026-03-09 16:40:14.793] [[33m[1mwarning[m] No kinematics plugin defined for group 'gripper'. Determining base and tip frames with the joint model group!
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.826251810] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /objective_server_heartbeat[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.992601094] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /objective_server_heartbeat[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:14 +0000] "GET /assets/moveit-icon-DaOJFYg2.png HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074414.999190667] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /robot_description[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.012453675] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /robot_description[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/base.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/shoulder.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/upperarm.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/forearm.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/wrist1.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/wrist3.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/ur_description/meshes/ur5e/visual/wrist2.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/picknik_accessories/descriptions/brackets/ur_realsense_camera_adapter/picknik_ur5_realsense_camera_adapter_rev2.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/realsense2_description/meshes/d415.stl HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/robotiq_description/meshes/visual/2f_85/ur_to_robotiq_adapter.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/epick_description/meshes/visual/epick_body.stl HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/picknik_009_ur5e_config/meshes/workcell_no_totes.stl HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/packages/realsense2_description/meshes/d435.dae HTTP/1.1" 304 0 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /assets/rux-button_16.entry-BhHZ8v8V.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /assets/utils-3f3d360c-CoZF6uNi.js HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.403495709] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /failure_reason_collector[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.406137018] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /protective_stop_manager_node/robot_fault_status[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.409959710] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.410942841] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.411594885] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.415253063] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /blackboard_contents[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.419001642] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /moveit_pro_ui/motion_ended[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.424892008] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.427084646] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /multi_dof_joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.430603511] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /visual_markers[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.433630340] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.435739992] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /pcd_pointcloud_captures[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.437678435] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.441742614] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /preview_solution[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.443801653] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /objective_server_heartbeat[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.449459010] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /breakpoint_encountered[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.450697837] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /breakpoint_resumed[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.452838230] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /moveit_pro_ui/switch_primary_view[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.453611113] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate action advertised. Overwriting /do_teleoperate.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.456990767] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised action /do_teleoperate[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.458811115] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate service advertised. Overwriting /wait_for_user_path_approval.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.464800420] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised service /wait_for_user_path_approval[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.466631750] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate service advertised. Overwriting /adjust_pose.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.472008845] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised service /adjust_pose[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.472809540] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate service advertised. Overwriting /get_pose_from_user.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.479821408] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised service /get_pose_from_user[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.481830741] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate service advertised. Overwriting /request_clicked_points.[0m
+agent_bridge-1  | [web_server_node-13] [32mINFO[0m:     New SSE client subscribed. Total clients: 2
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:15 +0000] "GET /api/latest-stable-version HTTP/1.1" 200 19 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.486087970] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised service /request_clicked_points[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.486630847] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate service advertised. Overwriting /switch_primary_view.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.493659571] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised service /switch_primary_view[0m
+agent_bridge-1  | [rosbridge_websocket-10] [33m[WARN] [1773074415.495045498] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Duplicate service advertised. Overwriting /request_text_from_prompts.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.498523801] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Advertised service /request_text_from_prompts[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.504800321] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.508327331] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.511641872] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.514627902] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.516327448] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /multi_dof_joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.519963974] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.593040169] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074415.594405928] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074417.605010766] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074417.608182044] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074417.611520967] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074417.612870068] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074417.613616894] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /multi_dof_joint_states[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074417.619362875] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074420.472504414] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074420.474387621] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074420.475022532] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074421.473137164] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074421.473814911] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074421.475239803] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /local_costmap/costmap[0m
+drivers-1       | [ros2_control_node-1] [0m[INFO] [1773074421.738692582] [MujocoSystem]: Mujoco model timestep not running in realtime. Increase the model timestep.[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074422.603671499] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074422.604087020] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074422.606061882] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074423.604825231] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074423.605467562] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074423.607471029] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /local_costmap/costmap[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:24 +0000] "GET /assets/favicon.ico HTTP/1.1" 304 0 "http://172.27.135.190/objectives/Teleoperate?editor=false&assistant=false&sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:24 +0000] "GET /api/objectives/Teleoperate HTTP/1.1" 200 351 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:24 +0000] "GET /api/objectives/Teleoperate/data HTTP/1.1" 200 372 "http://172.27.135.190/objectives?sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074424.730974939] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074424.731420733] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:24 +0000] "GET /api/waypoints HTTP/1.1" 200 1429 "http://172.27.135.190/objectives/Teleoperate?editor=false&assistant=false&sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:24 +0000] "GET /api/behaviors/data HTTP/1.1" 200 49308 "http://172.27.135.190/objectives/Teleoperate?editor=false&assistant=false&sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+web_ui-1        | 172.27.74.65 - - [09/Mar/2026:16:40:25 +0000] "GET /api/objectives/Request%20Teleoperation HTTP/1.1" 200 298 "http://172.27.135.190/objectives/Teleoperate?editor=false&assistant=false&sidebar=true" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" "-"
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074426.473402129] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074426.473920493] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074426.475779285] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.028482033] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.030137089] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.033173440] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.035571631] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.035996141] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.036433683] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:27.055] [objective_server_node] [[31m[1merror[m] Objective Server Error: Failed to create behavior tree for Objective `Teleoperate`. Reason: BehaviorTree error while creating tree: Missing manifest for element_ID: UnpackJointStateMessage. It shouldn't happen. Please report this issue.
+agent_bridge-1  | [objective_server_node_main-6] 
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.079013640] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.084949253] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.087252407] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.089221849] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.089618834] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074427.091186497] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074428.474664579] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074428.476539462] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074428.477210288] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074428.605333225] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074428.605842562] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074428.606693290] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074430.605008474] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074430.605540981] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074430.606331377] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.200082064] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.200541222] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.204907238] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.205589406] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.206767463] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.207357506] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:32.215] [objective_server_node] [[31m[1merror[m] Objective Server Error: Failed to create behavior tree for Objective `Teleoperate`. Reason: BehaviorTree error while creating tree: Missing manifest for element_ID: UnpackJointStateMessage. It shouldn't happen. Please report this issue.
+agent_bridge-1  | [objective_server_node_main-6] 
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.236152416] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.239610249] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.240608438] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.243398270] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.246225263] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.248862430] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.384680337] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.386123886] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.389392601] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.391842630] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.392455956] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.394472200] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:32.402] [objective_server_node] [[31m[1merror[m] Objective Server Error: Failed to create behavior tree for Objective `Teleoperate`. Reason: BehaviorTree error while creating tree: Missing manifest for element_ID: UnpackJointStateMessage. It shouldn't happen. Please report this issue.
+agent_bridge-1  | [objective_server_node_main-6] 
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.420723115] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.423323673] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.425461840] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.425807117] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.429239015] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.429837857] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.580208069] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.581833614] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.586792371] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.587562375] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.588196955] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.588877207] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [objective_server_node_main-6] [2026-03-09 16:40:32.610] [objective_server_node] [[31m[1merror[m] Objective Server Error: Failed to create behavior tree for Objective `Teleoperate`. Reason: BehaviorTree error while creating tree: Missing manifest for element_ID: UnpackJointStateMessage. It shouldn't happen. Please report this issue.
+agent_bridge-1  | [objective_server_node_main-6] 
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.631099945] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.635991258] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.636626791] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.639475346] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.640632902] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074432.642198949] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /agent_event[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074433.474092392] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074433.474725302] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074433.476681519] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Unsubscribed from /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074435.619477658] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074435.621740160] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074435.624819249] [rosbridge_websocket]: [Client fc2341c1-1c38-419a-9c61-8269a7e84d1b] Unsubscribed from /local_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074437.478237859] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /map[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074437.481256352] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /global_costmap/costmap[0m
+agent_bridge-1  | [rosbridge_websocket-10] [0m[INFO] [1773074437.487171957] [rosbridge_websocket]: [Client 13a70555-1d8c-420d-8387-01fd3221de3a] Subscribed to /local_costmap/costmap[0m
