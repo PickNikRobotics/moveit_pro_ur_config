@@ -2,268 +2,269 @@
 <root BTCPP_format="4" main_tree_to_execute="I Want Candy">
   <BehaviorTree
     ID="I Want Candy"
-    _description="Finds candy in the right bin using SAM3, picks it up with the EPick suction gripper, and places it in the left bin."
+    _description="Finds candy in the right bin using SAM3, picks it up with the EPick suction gripper, and places it in the left bin. Rescans the bin each cycle."
     _favorite="false"
   >
     <Control ID="Sequence" name="TopLevelSequence">
       <!--Ensure vacuum is off at start-->
       <SubTree ID="Deactivate Vacuum" _collapsed="true" />
-      <!--Move to look at the right bin-->
-      <SubTree
-        ID="Move to Waypoint"
-        _collapsed="true"
-        waypoint_name="Look at Right Bin"
-        controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
-      />
-      <SubTree ID="Clear Snapshot" _collapsed="true" />
-      <!--Capture image, point cloud, and camera info from wrist camera-->
-      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
-      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
-      <!--SAM3 text-prompted segmentation-->
-      <Action
-        ID="GetMasks2DFromExemplar"
-        model_package="picknik_009_ur5e_config"
-        encoder_model_path="models/sam3_vision_encoder.onnx"
-        decoder_model_path="models/sam3_decoder.onnx"
-        geometry_encoder_model_path="models/sam3_geometry_encoder.onnx"
-        text_encoder_model_path="models/sam3_text_encoder.onnx"
-        confidence_threshold="0.7"
-        confidence_scores_str="{confidence_scores_str}"
-        target_image="{wrist_camera_image}"
-        text_prompt="white box of Olay soap"
-        confidence_scores="{confidence_scores}"
-        masks2d="{masks2d}"
-      />
-      <!--Visualize masks-->
-      <Action
-        ID="PublishMask2D"
-        bounding_box_labels="{confidence_scores_str}"
-        image="{wrist_camera_image}"
-        masks="{masks2d}"
-        masks_visualization_topic="/masks_visualization"
-        opacity="0.500000"
-      />
-      <!--Transform point cloud to world frame for planning-->
-      <Action
-        ID="TransformPointCloudFrame"
-        input_cloud="{wrist_camera_point_cloud}"
-        target_frame="world"
-        output_cloud="{point_cloud_world}"
-      />
-      <!--Update planning scene with point cloud (octomap)-->
-      <Action
-        ID="UpdatePlanningSceneService"
-        point_cloud="{point_cloud_world}"
-        point_cloud_service="/point_cloud_service"
-      />
-      <!--Convert 2D masks to 3D using depth-->
-      <Action
-        ID="GetMasks3DFromMasks2D"
-        camera_info="{wrist_camera_info}"
-        masks2d="{masks2d}"
-        point_cloud="{point_cloud_world}"
-        masks3d="{masks3d}"
-      />
-      <!--Try each mask until one succeeds-->
-      <Decorator
-        ID="ForEach"
-        vector_in="{masks3d}"
-        index="{object_index}"
-        out="{mask3d}"
-      >
+      <!--Each cycle: look at bin, detect objects, pick first plannable one, drop in left bin-->
+      <Decorator ID="Repeat" num_cycles="5">
         <Control ID="Sequence">
-          <!--Extract point cloud for this mask and create graspable object from centroid-->
+          <!--Move to look at the right bin-->
+          <SubTree
+            ID="Move to Waypoint"
+            _collapsed="true"
+            waypoint_name="Look at Right Bin"
+            controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+          />
+          <SubTree ID="Clear Snapshot" _collapsed="true" />
+          <!--Capture fresh image, point cloud, and camera info-->
+          <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+          <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+          <!--SAM3 text-prompted segmentation-->
           <Action
-            ID="GetPointCloudFromMask3D"
-            mask3d="{mask3d}"
+            ID="GetMasks2DFromExemplar"
+            model_package="picknik_009_ur5e_config"
+            encoder_model_path="models/sam3_vision_encoder.onnx"
+            decoder_model_path="models/sam3_decoder.onnx"
+            geometry_encoder_model_path="models/sam3_geometry_encoder.onnx"
+            text_encoder_model_path="models/sam3_text_encoder.onnx"
+            confidence_threshold="0.7"
+            confidence_scores_str="{confidence_scores_str}"
+            target_image="{wrist_camera_image}"
+            text_prompt="white box of Olay soap"
+            confidence_scores="{confidence_scores}"
+            masks2d="{masks2d}"
+          />
+          <!--Visualize masks-->
+          <Action
+            ID="PublishMask2D"
+            bounding_box_labels="{confidence_scores_str}"
+            image="{wrist_camera_image}"
+            masks="{masks2d}"
+            masks_visualization_topic="/masks_visualization"
+            opacity="0.500000"
+          />
+          <!--Transform point cloud to world frame for planning-->
+          <Action
+            ID="TransformPointCloudFrame"
+            input_cloud="{wrist_camera_point_cloud}"
+            target_frame="world"
+            output_cloud="{point_cloud_world}"
+          />
+          <!--Update planning scene with point cloud (octomap)-->
+          <Action
+            ID="UpdatePlanningSceneService"
             point_cloud="{point_cloud_world}"
-            point_cloud_fragment="{point_cloud_fragment}"
+            point_cloud_service="/point_cloud_service"
           />
-          <!--Visualize the masked point cloud for this object-->
+          <!--Convert 2D masks to 3D using depth-->
           <Action
-            ID="SendPointCloudToUI"
-            pcd_topic="/pcd_pointcloud_captures"
-            point_cloud="{point_cloud_fragment}"
+            ID="GetMasks3DFromMasks2D"
+            camera_info="{wrist_camera_info}"
+            masks2d="{masks2d}"
+            point_cloud="{point_cloud_world}"
+            masks3d="{masks3d}"
           />
-          <Action
-            ID="GetCentroidFromPointCloud"
-            point_cloud="{point_cloud_fragment}"
-            output_pose="{object_pose}"
-          />
-          <Action
-            ID="CreateGraspableObject"
-            cuboid_object="{graspable_object}"
-            dx="0.12"
-            dy="0.08"
-            dz="0.03"
-            generate_front_face="false"
-            generate_side_faces="false"
-            generate_top_face="true"
-            object_id="candy_object"
-            pose="{object_pose}"
-          />
-          <!--Identity transform: EE frame == TCP frame for EPick-->
-          <Action
-            ID="CreateStampedPose"
-            reference_frame="world"
-            stamped_pose="{ee_to_tcp}"
-            position_xyz="0;0;0"
-            orientation_xyzw="0;0;0;1"
-          />
-          <Action
-            ID="GetCurrentPlanningScene"
-            planning_scene_msg="{planning_scene}"
-          />
-          <!--Generate vacuum grasp poses normal to object surfaces-->
-          <Action
-            ID="GenerateVacuumGraspPoses"
-            ee_to_tcp_tf="{ee_to_tcp}"
-            end_effector_group_name="gripper"
-            generate_centroid_grasps="true"
-            grasp_poses="{grasp_poses}"
-            num_orientation_samples="20"
-            padding_dimension="0.01"
-            planning_scene_msg="{planning_scene}"
-            samples_per_plane="2"
-            target_object="{graspable_object}"
-            ui_grasp_link="grasp_link"
-          />
-          <!--Visualize the object pose for debugging-->
-          <Action
-            ID="VisualizePose"
-            marker_lifetime="0.000000"
-            marker_name="object_centroid"
-            marker_size="0.050000"
-            pose="{object_pose}"
-            marker_text="C"
-          />
-          <!--Try to plan and execute pick; if it fails, skip to next mask-->
-          <Control ID="Fallback">
+          <!--Try each mask until one succeeds, then break out to rescan-->
+          <Decorator
+            ID="ForEach"
+            vector_in="{masks3d}"
+            index="{object_index}"
+            out="{mask3d}"
+          >
             <Control ID="Sequence">
-              <!--Plan MTC pick trajectory-->
+              <!--Extract point cloud for this mask-->
               <Action
-                ID="InitializeMTCTask"
-                controller_names="joint_trajectory_controller"
-                task="{task}"
-                task_id=""
-                trajectory_monitoring="false"
-                timeout="-1.000000"
+                ID="GetPointCloudFromMask3D"
+                mask3d="{mask3d}"
+                point_cloud="{point_cloud_world}"
+                point_cloud_fragment="{point_cloud_fragment}"
               />
-              <Action ID="SetupMTCCurrentState" task="{task}" />
-              <!--Allow gripper to collide with octomap and totes during grasp-->
+              <!--Visualize the masked point cloud for this object-->
               <Action
-                ID="SetupMTCUpdateGroupCollisionRule"
-                allow_collision="true"
-                group_name="gripper"
-                object_name="&lt;octomap&gt;"
-                task="{task}"
+                ID="SendPointCloudToUI"
+                pcd_topic="/pcd_pointcloud_captures"
+                point_cloud="{point_cloud_fragment}"
               />
               <Action
-                ID="SetupMTCUpdateGroupCollisionRule"
-                allow_collision="true"
-                group_name="gripper"
-                object_name="right_tote_link"
-                task="{task}"
+                ID="GetCentroidFromPointCloud"
+                point_cloud="{point_cloud_fragment}"
+                output_pose="{object_pose}"
               />
               <Action
-                ID="SetupMTCUpdateGroupCollisionRule"
-                allow_collision="true"
-                group_name="gripper"
-                object_name="left_tote_link"
-                task="{task}"
+                ID="CreateGraspableObject"
+                cuboid_object="{graspable_object}"
+                dx="0.12"
+                dy="0.08"
+                dz="0.03"
+                generate_front_face="false"
+                generate_side_faces="false"
+                generate_top_face="true"
+                object_id="candy_object"
+                pose="{object_pose}"
               />
-              <!--Connect current state to grasp approach-->
+              <!--Identity transform: EE frame == TCP frame for EPick-->
               <Action
-                ID="SetupMTCConnectWithProRRT"
-                acceleration_scale_factor="1.000000"
-                keep_orientation="false"
-                keep_orientation_link_names="grasp_link"
-                keep_orientation_tolerance="0.100000"
-                link_padding="0.000000"
-                max_iterations="1500"
-                planning_group_name="manipulator"
-                seed="0"
-                task="{task}"
-                trajectory_sampling_rate="100"
-                velocity_scale_factor="0.500000"
-              />
-              <!--Approach along grasp_link Z-axis (toward object)-->
-              <Action
-                ID="SetupMTCMoveAlongFrameAxis"
-                acceleration_scale="0.500000"
-                axis_frame="grasp_link"
-                axis_x="0.000000"
-                axis_y="0.000000"
-                axis_z="1.000000"
-                hand_frame="grasp_link"
-                ignore_environment_collisions="false"
-                max_distance="0.15"
-                min_distance="0.03"
-                planning_group_name="manipulator"
-                task="{task}"
-                velocity_scale="0.500000"
-              />
-              <!--Solve IK for all grasp pose candidates-->
-              <Action
-                ID="SetupMTCBatchPoseIK"
-                end_effector_group="moveit_ee"
-                end_effector_link="grasp_link"
-                ik_group="manipulator"
-                ik_timeout_s="0.05"
-                max_ik_solutions="3"
-                monitored_stage="allow collision (&lt;octomap&gt;, gripper)"
-                target_poses="{grasp_poses}"
-                task="{task}"
-              />
-              <!--Plan the pick motion, then wait for user approval before executing-->
-              <Action
-                ID="PlanMTCTask"
-                solution="{solution}"
-                task="{task}"
+                ID="CreateStampedPose"
+                reference_frame="world"
+                stamped_pose="{ee_to_tcp}"
+                position_xyz="0;0;0"
+                orientation_xyzw="0;0;0;1"
               />
               <Action
-                ID="WaitForUserTrajectoryApproval"
-                solution="{solution}"
+                ID="GetCurrentPlanningScene"
+                planning_scene_msg="{planning_scene}"
               />
-              <SubTree
-                ID="Execute MTC Solution"
-                solution="{solution}"
-                goal_duration_tolerance="-1.0"
-              />
-              <!--Activate vacuum to grip the object-->
-              <SubTree ID="Activate Vacuum" _collapsed="true" />
-              <!--Retreat up to clear the right bin before moving to left bin-->
-              <SubTree
-                ID="Move to Waypoint"
-                _collapsed="true"
-                waypoint_name="Look at Right Bin"
-              />
-              <SubTree
-                ID="Move to Waypoint"
-                _collapsed="true"
-                waypoint_name="Look at Left Bin"
-              />
-              <!--Release object-->
-              <SubTree ID="Deactivate Vacuum" _collapsed="true" />
-              <!--Wait for user approval before picking next round-->
+              <!--Generate vacuum grasp poses normal to object surfaces-->
               <Action
-                ID="WaitForUserTrajectoryApproval"
-                solution="{solution}"
+                ID="GenerateVacuumGraspPoses"
+                ee_to_tcp_tf="{ee_to_tcp}"
+                end_effector_group_name="gripper"
+                generate_centroid_grasps="true"
+                grasp_poses="{grasp_poses}"
+                num_orientation_samples="20"
+                padding_dimension="0.01"
+                planning_scene_msg="{planning_scene}"
+                samples_per_plane="2"
+                target_object="{graspable_object}"
+                ui_grasp_link="grasp_link"
               />
+              <!--Visualize the object pose for debugging-->
+              <Action
+                ID="VisualizePose"
+                marker_lifetime="0.000000"
+                marker_name="object_centroid"
+                marker_size="0.050000"
+                pose="{object_pose}"
+                marker_text="C"
+              />
+              <!--Try to plan and execute pick; if it fails, skip to next mask-->
+              <Control ID="Fallback">
+                <Control ID="Sequence">
+                  <!--Plan MTC pick trajectory-->
+                  <Action
+                    ID="InitializeMTCTask"
+                    controller_names="joint_trajectory_controller"
+                    task="{task}"
+                    task_id=""
+                    trajectory_monitoring="false"
+                    timeout="-1.000000"
+                  />
+                  <Action ID="SetupMTCCurrentState" task="{task}" />
+                  <!--Allow gripper to collide with octomap and totes during grasp-->
+                  <Action
+                    ID="SetupMTCUpdateGroupCollisionRule"
+                    allow_collision="true"
+                    group_name="gripper"
+                    object_name="&lt;octomap&gt;"
+                    task="{task}"
+                  />
+                  <Action
+                    ID="SetupMTCUpdateGroupCollisionRule"
+                    allow_collision="true"
+                    group_name="gripper"
+                    object_name="right_tote_link"
+                    task="{task}"
+                  />
+                  <Action
+                    ID="SetupMTCUpdateGroupCollisionRule"
+                    allow_collision="true"
+                    group_name="gripper"
+                    object_name="left_tote_link"
+                    task="{task}"
+                  />
+                  <!--Connect current state to grasp approach-->
+                  <Action
+                    ID="SetupMTCConnectWithProRRT"
+                    acceleration_scale_factor="1.000000"
+                    keep_orientation="false"
+                    keep_orientation_link_names="grasp_link"
+                    keep_orientation_tolerance="0.100000"
+                    link_padding="0.000000"
+                    max_iterations="5000"
+                    planning_group_name="manipulator"
+                    seed="0"
+                    task="{task}"
+                    trajectory_sampling_rate="100"
+                    velocity_scale_factor="0.500000"
+                  />
+                  <!--Approach along grasp_link Z-axis (toward object)-->
+                  <Action
+                    ID="SetupMTCMoveAlongFrameAxis"
+                    acceleration_scale="0.500000"
+                    axis_frame="grasp_link"
+                    axis_x="0.000000"
+                    axis_y="0.000000"
+                    axis_z="1.000000"
+                    hand_frame="grasp_link"
+                    ignore_environment_collisions="false"
+                    max_distance="0.15"
+                    min_distance="0.03"
+                    planning_group_name="manipulator"
+                    task="{task}"
+                    velocity_scale="0.500000"
+                  />
+                  <!--Solve IK for all grasp pose candidates-->
+                  <Action
+                    ID="SetupMTCBatchPoseIK"
+                    end_effector_group="moveit_ee"
+                    end_effector_link="grasp_link"
+                    ik_group="manipulator"
+                    ik_timeout_s="0.05"
+                    max_ik_solutions="3"
+                    monitored_stage="allow collision (&lt;octomap&gt;, gripper)"
+                    target_poses="{grasp_poses}"
+                    task="{task}"
+                  />
+                  <!--Plan the pick motion, then wait for user approval before executing-->
+                  <Action
+                    ID="PlanMTCTask"
+                    solution="{solution}"
+                    task="{task}"
+                    max_solutions="1"
+                  />
+                  <Action
+                    ID="WaitForUserTrajectoryApproval"
+                    solution="{solution}"
+                  />
+                  <SubTree
+                    ID="Execute MTC Solution"
+                    solution="{solution}"
+                    goal_duration_tolerance="-1.0"
+                  />
+                  <!--Activate vacuum to grip the object-->
+                  <SubTree ID="Activate Vacuum" _collapsed="true" />
+                  <!--Retreat up to clear the right bin before moving to left bin-->
+                  <SubTree
+                    ID="Move to Waypoint"
+                    _collapsed="true"
+                    waypoint_name="Look at Right Bin"
+                  />
+                  <SubTree
+                    ID="Move to Waypoint"
+                    _collapsed="true"
+                    waypoint_name="Look at Left Bin"
+                  />
+                  <!--Release object-->
+                  <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+                  <!--Wait for user approval before next cycle-->
+                  <Action
+                    ID="WaitForUserTrajectoryApproval"
+                    solution="{solution}"
+                  />
+                </Control>
+                <!--If planning failed, return success so ForEach tries the next mask-->
+                <Action ID="AlwaysSuccess" name="Skip to next candidate" />
+              </Control>
             </Control>
-            <!--If planning failed, return success so ForEach tries the next mask-->
-            <Action ID="AlwaysSuccess" name="Skip to next candidate" />
-          </Control>
+          </Decorator>
         </Control>
       </Decorator>
     </Control>
   </BehaviorTree>
   <TreeNodesModel>
-    <SubTree ID="I Want Candy">
-      <MetadataFields>
-        <Metadata runnable="true" />
-        <Metadata subcategory="Office Demos" />
-      </MetadataFields>
-    </SubTree>
+    <SubTree ID="I Want Candy" />
   </TreeNodesModel>
 </root>
