@@ -124,10 +124,10 @@
                 end_effector_group_name="gripper"
                 generate_centroid_grasps="true"
                 grasp_poses="{grasp_poses}"
-                num_orientation_samples="20"
+                num_orientation_samples="1"
                 padding_dimension="0.01"
                 planning_scene_msg="{planning_scene}"
-                samples_per_plane="2"
+                samples_per_plane="1"
                 target_object="{graspable_object}"
                 ui_grasp_link="grasp_link"
               />
@@ -212,14 +212,14 @@
                     task="{task}"
                     velocity_scale="0.500000"
                   />
-                  <!--Solve IK for all grasp pose candidates-->
+                  <!--Solve IK for grasp pose candidates-->
                   <Action
                     ID="SetupMTCBatchPoseIK"
                     end_effector_group="moveit_ee"
                     end_effector_link="grasp_link"
                     ik_group="manipulator"
                     ik_timeout_s="0.05"
-                    max_ik_solutions="3"
+                    max_ik_solutions="1"
                     monitored_stage="allow collision (&lt;octomap&gt;, gripper)"
                     target_poses="{grasp_poses}"
                     task="{task}"
@@ -240,6 +240,7 @@
                     solution="{solution}"
                     goal_duration_tolerance="-1.0"
                     _collapsed="true"
+                    absolute_force_torque_threshold="{absolute_force_torque_threshold}"
                   />
                   <!--Push down until contact using force/torque feedback-->
                   <Action
