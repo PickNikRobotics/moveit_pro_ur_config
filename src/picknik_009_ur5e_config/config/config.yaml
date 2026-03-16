@@ -1,5 +1,5 @@
 #
-#  Site config for Dev-009 UR5e + EPick gripper
+#  Site config for Dev-009 UR5e + EPick gripper (real hardware)
 #  Based on ur_hw (which inherits from ur_mock)
 #
 
@@ -7,10 +7,10 @@
 based_on_package: "ur_hw"
 
 hardware:
-  simulated: true
+  simulated: false
 
   robot_driver_persist_launch_file:
-    package: "ur_hw"
+    package: "picknik_009_ur5e_config"
     path: "launch/robot_drivers_to_persist.launch.py"
 
   robot_description:
@@ -21,8 +21,9 @@ hardware:
       package: "picknik_009_ur5e_config"
       path: "config/moveit/picknik_009_ur5e.srdf"
     urdf_params:
-      - use_fake_hardware: "true"
-      - robot_ip: "0.0.0.0"
+      - use_fake_hardware: "false"
+      - robot_ip: "192.10.0.11"
+      - has_tool_changer: "false"
 
 objectives:
   behavior_loader_plugins:
@@ -31,6 +32,10 @@ objectives:
       - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
+  objective_library_paths:
+    site_objectives:
+      package_name: "picknik_009_ur5e_config"
+      relative_path: "objectives"
 
 # Use our own ros2_control config with EPick controller instead of Robotiq 2F-85
 ros2_control:
@@ -39,7 +44,9 @@ ros2_control:
     path: "config/control/picknik_ur.ros2_control.yaml"
   controllers_active_at_startup:
     - "force_torque_sensor_broadcaster"
+    - "epick_controller"
     - "joint_state_broadcaster"
+    - "io_and_status_controller"
   controllers_inactive_at_startup:
     - "joint_trajectory_controller"
     - "joint_trajectory_admittance_controller"

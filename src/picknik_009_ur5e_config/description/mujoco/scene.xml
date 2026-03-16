@@ -32,16 +32,16 @@
       material="groundplane"
     />
 
-    <!-- Scene Camera -->
+    <!-- Scene Camera (RealSense D415) -->
     <site
       name="scene_camera_optical_frame"
-      pos="0.372 0.644 0.726"
+      pos="0.29 0.6564 0.47"
       euler="-1.5708 0 -1.5708"
     />
     <camera
       name="scene_camera"
-      pos="0.372 0.644 0.726"
-      fovy="58"
+      pos="0.29 0.6564 0.47"
+      fovy="42"
       mode="fixed"
       resolution="640 480"
       euler="0 1.5708 0"

@@ -49,4 +49,14 @@ def generate_launch_description():
         launch_arguments={"robot_ip": "192.10.0.11"}.items(),
     )
 
-    return LaunchDescription([base_robot_drivers_to_persist_launch])
+    cameras_launch_path = PathJoinSubstitution(
+        [
+            FindPackageShare("picknik_009_ur5e_config"),
+            "launch",
+            "cameras.launch.xml",
+        ]
+    )
+
+    cameras_launch = IncludeLaunchDescription(cameras_launch_path)
+
+    return LaunchDescription([base_robot_drivers_to_persist_launch, cameras_launch])

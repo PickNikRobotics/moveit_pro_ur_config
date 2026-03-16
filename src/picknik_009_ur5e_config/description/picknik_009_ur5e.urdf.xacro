@@ -50,7 +50,7 @@
 
   <!-- EPick parameters -->
   <xacro:arg name="epick_extension_radius" default="0.005" />
-  <xacro:arg name="epick_extension_length" default="0.05" />
+  <xacro:arg name="epick_extension_length" default="0.08" />
   <xacro:arg name="epick_suction_cup_radius" default="0.012" />
   <xacro:arg name="epick_suction_cup_height" default="0.015" />
   <xacro:arg name="epick_tcp_stroke_compensation" default="0.005" />

@@ -5,12 +5,12 @@
     _description="Finds candy in the right bin using SAM3, picks it up with the EPick suction gripper, and places it in the left bin. Rescans the bin each cycle."
     _favorite="false"
   >
-    <Control ID="Sequence" name="TopLevelSequence">
+    <Control ID="Sequence" name="TopLevelSequence" _collapsed="true">
       <!--Ensure vacuum is off at start-->
       <SubTree ID="Deactivate Vacuum" _collapsed="true" />
       <!--Each cycle: look at bin, detect objects, pick first plannable one, drop in left bin-->
       <Decorator ID="Repeat" num_cycles="5">
-        <Control ID="Sequence">
+        <Control ID="Sequence" _collapsed="true">
           <!--Move to look at the right bin-->
           <SubTree
             ID="Move to Waypoint"
@@ -74,7 +74,7 @@
             index="{object_index}"
             out="{mask3d}"
           >
-            <Control ID="Sequence">
+            <Control ID="Sequence" _collapsed="true">
               <!--Extract point cloud for this mask-->
               <Action
                 ID="GetPointCloudFromMask3D"
@@ -132,17 +132,23 @@
                 ui_grasp_link="grasp_link"
               />
               <!--Visualize the object pose for debugging-->
-              <Action
-                ID="VisualizePose"
-                marker_lifetime="0.000000"
-                marker_name="object_centroid"
-                marker_size="0.050000"
-                pose="{object_pose}"
-                marker_text="C"
-              />
+              <Decorator
+                ID="ForEach"
+                vector_in="{grasp_poses}"
+                out="{object_pose}"
+              >
+                <Action
+                  ID="VisualizePose"
+                  marker_lifetime="0.000000"
+                  marker_name="object_centroid"
+                  marker_size="0.050000"
+                  pose="{object_pose}"
+                  marker_text="C"
+                />
+              </Decorator>
               <!--Try to plan and execute pick; if it fails, skip to next mask-->
-              <Control ID="Fallback">
-                <Control ID="Sequence">
+              <Control ID="Fallback" _collapsed="true">
+                <Control ID="Sequence" _collapsed="true">
                   <!--Plan MTC pick trajectory-->
                   <Action
                     ID="InitializeMTCTask"
@@ -233,9 +239,77 @@
                     ID="Execute MTC Solution"
                     solution="{solution}"
                     goal_duration_tolerance="-1.0"
+                    _collapsed="true"
+                  />
+                  <!--Push down until contact using force/torque feedback-->
+                  <Action
+                    ID="SwitchController"
+                    activate_controllers="velocity_force_controller"
+                  />
+                  <Action
+                    ID="CallTriggerService"
+                    service_name="/velocity_force_controller/zero_fts"
+                  />
+                  <Action
+                    ID="CreateStampedWrench"
+                    stamped_wrench="{desired_wrench}"
+                    reference_frame="grasp_link"
+                    torque_xyz="0;0;0"
+                    force_xyz="0;0;0"
+                  />
+                  <Action
+                    ID="CreateStampedTwist"
+                    reference_frame="grasp_link"
+                    stamped_twist="{desired_twist}"
+                    angular_velocity_xyz="0;0;0"
+                    linear_velocity_xyz="0;0;0.02"
+                  />
+                  <Action
+                    ID="CreateStampedPose"
+                    reference_frame="grasp_link"
+                    stamped_pose="{initial_pose}"
+                  />
+                  <Action
+                    ID="TransformPoseFrame"
+                    output_pose="{initial_pose}"
+                    input_pose="{initial_pose}"
+                  />
+                  <Control
+                    ID="Parallel"
+                    failure_count="1"
+                    success_count="1"
+                    _collapsed="true"
+                  >
+                    <Action
+                      ID="ForceExceedsThreshold"
+                      minimum_consecutive_wrench_values="5"
+                      wrench_frame_name="tool0"
+                      hand_frame_name="grasp_link"
+                      force_threshold="10"
+                    />
+                    <Action
+                      ID="PublishVelocityForceCommand"
+                      force_controlled_axes="0;0;0;0;0;0"
+                      wrench_gain="0.01"
+                      velocity_controlled_axes="0;0;1;0;0;0"
+                      publish_rate="50"
+                    />
+                  </Control>
+                  <!--Relax briefly to settle into contact-->
+                  <SubTree
+                    ID="Force Relaxation"
+                    _collapsed="true"
+                    wrench_gain="0.01"
+                    relaxation_time_ms="300"
+                    tip_link="grasp_link"
                   />
                   <!--Activate vacuum to grip the object-->
                   <SubTree ID="Activate Vacuum" _collapsed="true" />
+                  <!--Switch back to trajectory controller for waypoint moves-->
+                  <Action
+                    ID="SwitchController"
+                    activate_controllers="joint_trajectory_controller"
+                  />
                   <!--Retreat up to clear the right bin before moving to left bin-->
                   <SubTree
                     ID="Move to Waypoint"

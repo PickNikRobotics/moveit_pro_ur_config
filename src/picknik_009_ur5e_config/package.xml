@@ -3,7 +3,7 @@
   <name>picknik_009_ur5e_config</name>
   <version>0.8.0</version>
 
-  <description>Site config for Dev-009 UR-5e + EPick gripper</description>
+  <description>Site config for Dev-009 UR-5e + EPick gripper (real hardware)</description>
 
   <maintainer email="henningkayser@picknik.ai">Henning Kayser</maintainer>
 
@@ -11,8 +11,8 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>picknik_accessories</depend>
   <exec_depend>realsense2_camera</exec_depend>
+  <exec_depend>picknik_accessories</exec_depend>
   <depend>ur_hw</depend>
 
   <test_depend>ament_lint_auto</test_depend>

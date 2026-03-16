@@ -3,7 +3,7 @@
   <xacro:macro name="environment" params="parent">
     <!-- Import macros -->
     <xacro:include
-      filename="$(find picknik_accessories)/descriptions/sensors/realsense_d435.urdf.xacro"
+      filename="$(find picknik_accessories)/descriptions/sensors/extrinsic_calibrated_realsense.urdf.xacro"
     />
     <xacro:include
       filename="$(find picknik_009_ur5e_config)/description/generic_tote.xacro"
@@ -77,21 +77,41 @@
       side_wall_thickness="${tote_wall}"
       bottom_thickness="${tote_bottom}"/>
 
-    <!-- Scene camera (RealSense D435) -->
-    <link name="external_camera_link" />
-    <joint name="external_camera_joint" type="fixed">
+    <!-- 80/20 camera mount bar (24" long, 1.75"x1.75", horizontal, 17.75" above workcell surface) -->
+    <xacro:property name="bar_length" value="${24 * 0.0254}" />
+    <xacro:property name="bar_cross" value="${1.75 * 0.0254}" />
+    <link name="camera_mount_bar">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${bar_cross} ${bar_length} ${bar_cross}" />
+        </geometry>
+        <material name="aluminum_8020">
+          <color rgba="0.7 0.7 0.7 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${bar_cross} ${bar_length} ${bar_cross}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${parent}_to_camera_mount_bar" type="fixed">
       <parent link="${parent}" />
-      <child link="external_camera_link" />
-      <origin xyz="0.372 0.644 0.726" rpy="${-pi/2} 0 ${-pi/2}" />
+      <child link="camera_mount_bar" />
+      <!-- Center of bar: camera Y minus half bar length, at workcell surface + 17.75" -->
+      <origin xyz="0.45 0.538 0.469" rpy="0 0 0" />
     </joint>
 
-    <xacro:realsense_d435
-      parent="external_camera_link"
+    <!-- Scene camera (RealSense D415, pose loaded from calibration YAML) -->
+    <xacro:load_extrinsic_calibrated_realsense
       name="scene_camera"
-      visible="true"
-    >
-      <origin xyz="0 0 0" rpy="0 0 0" />
-    </xacro:realsense_d435>
+      parent="${parent}"
+      model="d415"
+      use_mesh="true"
+      extrinsic_calibration_parameter_file="$(find picknik_009_ur5e_config)/calibration/scene_camera_calibration.yaml"
+    />
 
   </xacro:macro>
 </robot>
