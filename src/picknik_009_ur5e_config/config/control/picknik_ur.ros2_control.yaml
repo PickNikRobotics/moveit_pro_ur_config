@@ -17,6 +17,8 @@ controller_manager:
       type: joint_velocity_controller/JointVelocityController
     epick_controller:
       type: epick_controllers/EpickGripperActionController
+    epick_status_publisher_controller:
+      type: epick_controllers/EpickStatusPublisherController
 
 io_and_status_controller:
   ros__parameters:

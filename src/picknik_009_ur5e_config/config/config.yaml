@@ -32,6 +32,10 @@ objectives:
       - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
+    epick:
+      - "epick_moveit_studio::BehaviorLoader"
+    custom:
+      - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"
   objective_library_paths:
     site_objectives:
       package_name: "picknik_009_ur5e_config"
@@ -45,6 +49,7 @@ ros2_control:
   controllers_active_at_startup:
     - "force_torque_sensor_broadcaster"
     - "epick_controller"
+    - "epick_status_publisher_controller"
     - "joint_state_broadcaster"
     - "io_and_status_controller"
   controllers_inactive_at_startup:

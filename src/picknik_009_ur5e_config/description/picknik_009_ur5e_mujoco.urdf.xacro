@@ -90,7 +90,7 @@
     prefix=""
     parent="gripper_mount_link"
     extension_radius="0.005"
-    extension_length="0.05"
+    extension_length="0.088"
     suction_cup_radius="0.012"
     suction_cup_height="0.015"
     tcp_stroke_compensation="0.005"
