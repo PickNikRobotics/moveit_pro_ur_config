@@ -182,8 +182,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && \
     rosdep install -q -y \
       --from-paths src \
-      --ignore-src \
-      --skip-keys "fanuc_lrmate200id_support"
+      --ignore-src
 
 # Set up colcon defaults for the new user
 USER ${USERNAME}
