@@ -29,7 +29,7 @@
 #pragma once
 
 #include <epick_msgs/msg/object_detection_status.hpp>
-#include <moveit_studio_behavior_interface/get_message_from_topic.hpp>
+#include <moveit_pro_behavior_interface/get_message_from_topic.hpp>
 
 namespace epick_moveit_studio
 {

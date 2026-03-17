@@ -6,8 +6,8 @@
 #
 
 # Specify the MoveIt Pro release to build on top of.
-ARG MOVEIT_STUDIO_BASE_IMAGE=picknikciuser/moveit-studio:${STUDIO_DOCKER_TAG:-main}
-ARG USERNAME=studio-user
+ARG MOVEIT_PRO_BASE_IMAGE=picknikciuser/moveit-studio:${MOVEIT_DOCKER_TAG:-main}-${MOVEIT_ROS_DISTRO:-humble}
+ARG USERNAME=moveit-pro-user
 ARG USER_UID=1000
 ARG USER_GID=1000
 
@@ -16,7 +16,7 @@ ARG USER_GID=1000
 ##################################################
 # The image tag is specified in the argument itself.
 # hadolint ignore=DL3006
-FROM ${MOVEIT_STUDIO_BASE_IMAGE} AS base
+FROM ${MOVEIT_PRO_BASE_IMAGE} AS base
 
 # Create a non-root user
 ARG USERNAME
@@ -65,7 +65,7 @@ RUN groupadd realtime && \
 # hadolint ignore=SC1091
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    --mount=type=bind,target=${USER_WS}/,source=. \
+    --mount=type=bind,target=${USER_WS}/src,source=./src \
     . /opt/overlay_ws/install/setup.sh && \
     apt-get update && \
     rosdep install -q -y \
@@ -114,7 +114,7 @@ CMD ["/usr/bin/bash"]
 ##################################################
 # The image tag is specified in the argument itself.
 # hadolint ignore=DL3006
-FROM ${MOVEIT_STUDIO_BASE_IMAGE} AS base-gpu
+FROM ${MOVEIT_PRO_BASE_IMAGE} AS base-gpu
 
 # Create a non-root user
 ARG USERNAME
@@ -182,7 +182,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && \
     rosdep install -q -y \
       --from-paths src \
-      --ignore-src
+      --ignore-src \
+      --skip-keys "fanuc_lrmate200id_support"
 
 # Set up colcon defaults for the new user
 USER ${USERNAME}
