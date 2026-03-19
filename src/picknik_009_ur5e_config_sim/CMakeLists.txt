@@ -7,6 +7,8 @@ install(
   DIRECTORY
     config
     launch
+    mjcf
+    urdf
   DESTINATION
     share/${PROJECT_NAME}
 )

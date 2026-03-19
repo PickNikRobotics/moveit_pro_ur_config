@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <!-- MuJoCo ros2_control -->
+  <ros2_control name="ur_mujoco_ros2_control" type="system">
+    <hardware>
+      <plugin>picknik_mujoco_ros/MujocoSystem</plugin>
+      <param name="mujoco_model">mjcf/assets/robot_description.xml</param>
+      <param name="mujoco_model_package">picknik_009_ur5e_config_sim</param>
+      <param name="render_publish_rate">10</param>
+      <param name="tf_publish_rate">60</param>
+      <param name="lidar_publish_rate">10</param>
+      <param name="mujoco_viewer">false</param>
+    </hardware>
+
+    <joint name="shoulder_pan_joint">
+      <command_interface name="position" />
+      <state_interface name="position">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="shoulder_lift_joint">
+      <command_interface name="position" />
+      <state_interface name="position">
+        <param name="initial_value">-1.5708</param>
+      </state_interface>
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="elbow_joint">
+      <command_interface name="position" />
+      <state_interface name="position">
+        <param name="initial_value">1.5708</param>
+      </state_interface>
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="wrist_1_joint">
+      <command_interface name="position" />
+      <state_interface name="position">
+        <param name="initial_value">-1.5708</param>
+      </state_interface>
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="wrist_2_joint">
+      <command_interface name="position" />
+      <state_interface name="position">
+        <param name="initial_value">-1.5708</param>
+      </state_interface>
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="wrist_3_joint">
+      <command_interface name="position" />
+      <state_interface name="position">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="velocity" />
+    </joint>
+    <sensor name="tcp_fts_sensor">
+      <state_interface name="force.x" />
+      <state_interface name="force.y" />
+      <state_interface name="force.z" />
+      <state_interface name="torque.x" />
+      <state_interface name="torque.y" />
+      <state_interface name="torque.z" />
+    </sensor>
+  </ros2_control>
+</robot>
