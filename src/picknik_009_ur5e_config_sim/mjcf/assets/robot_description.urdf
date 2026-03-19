@@ -284,7 +284,7 @@
     <visual>
       <origin rpy="0 0 3.141592653589793" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/base.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/base.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -303,7 +303,7 @@
     <visual>
       <origin rpy="0 0 3.141592653589793" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/shoulder.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/shoulder.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -322,7 +322,7 @@
     <visual>
       <origin rpy="1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0.138"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/upperarm.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/upperarm.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -341,7 +341,7 @@
     <visual>
       <origin rpy="1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0.007"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/forearm.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/forearm.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -360,7 +360,7 @@
     <visual>
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.127"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/wrist1.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/wrist1.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -379,7 +379,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 -0.0997"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/wrist2.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/wrist2.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -398,7 +398,7 @@
     <visual>
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.0989"/>
       <geometry>
-        <mesh filename="package://ur_description/meshes/ur5e/visual/wrist3.dae"/>
+        <mesh filename="package://ur_description/meshes/ur5e/collision/wrist3.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -527,7 +527,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://picknik_accessories/descriptions/brackets/ur_realsense_camera_adapter/picknik_ur5_realsense_camera_adapter_rev2.dae"/>
+        <mesh filename="package://picknik_accessories/descriptions/brackets/ur_realsense_camera_adapter/picknik_ur5_realsense_camera_adapter_rev2_collision.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -569,9 +569,9 @@
   </joint>
   <link name="wrist_mounted_camera_link">
     <visual>
-      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.00987 -0.02 0"/>
+      <origin rpy="0 0 0" xyz="0 -0.02 0"/>
       <geometry>
-        <mesh filename="package://realsense2_description/meshes/d415.stl"/>
+        <box size="0.02005 0.099 0.023"/>
       </geometry>
       <material name="rs_aluminum">
         <color rgba="0.5 0.5 0.5 1.0"/>
@@ -713,7 +713,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://robotiq_description/meshes/visual/2f_85/ur_to_robotiq_adapter.dae"/>
+        <mesh filename="package://robotiq_description/meshes/collision/2f_85/ur_to_robotiq_adapter.stl"/>
       </geometry>
     </visual>
     <collision>
@@ -884,7 +884,13 @@
     <origin rpy="0 0 0" xyz="0 0 -0.005"/>
   </joint>
   <!-- To allow MoveIt to actuate the gripper as part of a trajectory, we need to include a fake "joint" in the URDF corresponding to the Epick's vacuum state. -->
-  <link name="epick_vacuum_state"/>
+  <link name="epick_vacuum_state">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
+    </inertial>
+  </link>
   <joint name="gripper" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="epick_tcp"/>
@@ -1130,5 +1136,12 @@
     <!-- Center of bar: camera Y minus half bar length, at workcell surface + 17.75" -->
     <origin rpy="0 0 0" xyz="0.45 0.538 0.469"/>
   </joint>
-</robot>
 
+  <mujoco model="ur5e">
+    <compiler fusestatic="false" discardvisual="false" />
+    <option integrator="implicitfast">
+      <flag multiccd="enable" />
+    </option>
+  </mujoco>
+
+</robot>
