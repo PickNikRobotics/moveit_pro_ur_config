@@ -23,6 +23,45 @@
     <exclude body1="base_link_inertia" body2="shoulder_link" />
   </contact>
 
+  <asset>
+    <texture
+      type="2d"
+      name="groundplane"
+      builtin="checker"
+      mark="edge"
+      rgb1="0.2 0.3 0.4"
+      rgb2="0.1 0.2 0.3"
+      markrgb="0.8 0.8 0.8"
+      width="300"
+      height="300"
+    />
+    <material
+      name="groundplane"
+      texture="groundplane"
+      texuniform="true"
+      texrepeat="5 5"
+      reflectance="0.2"
+    />
+  </asset>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.1 0.1 0.1" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="120" elevation="-20" />
+    <map zfar="50" />
+  </visual>
+
+  <worldbody>
+    <light pos="0 0 2.5" dir="0 0 -1" directional="true" />
+    <geom
+      name="floor"
+      pos="0 0 -0.9220147132873535"
+      size="0 0 0.05"
+      type="plane"
+      material="groundplane"
+    />
+  </worldbody>
+
   <actuator>
     <position joint="shoulder_pan_joint" name="shoulder_pan_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
     <position joint="shoulder_lift_joint" name="shoulder_lift_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
@@ -67,7 +106,9 @@
                     <joint name="wrist_3_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" actuatorfrcrange="-28 28"/>
                     <geom pos="0 0 -0.0989" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="wrist3" name="wrist3"/>
                     <geom pos="0 0 -0.0989" quat="0.707107 0.707107 0 0" type="mesh" mesh="wrist3" name="wrist32"/>
-                    <body name="ft_frame" quat="0 1 0 0" gravcomp="1"/>
+                    <body name="ft_frame" quat="0 1 0 0" gravcomp="1">
+                      <site name="tcp_fts_sensor" size="0.01" pos="0 0 0" quat="-1 1 0 0"/>
+                    </body>
                     <body name="flange" quat="0.5 -0.5 -0.5 -0.5" gravcomp="1">
                       <body name="tool0" quat="0.5 0.5 0.5 0.5" gravcomp="1">
                         <body name="realsense_camera_adapter_link" gravcomp="1">
@@ -111,8 +152,11 @@
                                 <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.072" diaginertia="0.00388124 0.00387926 0.00049894"/>
                                 <geom size="0.010025 0.0495 0.0115" pos="0 -0.02 0" type="box" contype="0" conaffinity="0" group="1" density="0" name="wrist_mounted_camera_link"/>
                                 <geom size="0.010025 0.0495 0.0115" pos="0 -0.02 0" type="box" name="wrist_mounted_camera_link2"/>
+                                <camera name="wrist_mounted_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" xyaxes="1 0 0 0 1 0"/>
                                 <body name="wrist_mounted_camera_depth_frame" gravcomp="1">
-                                  <body name="wrist_mounted_camera_depth_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1"/>
+                                  <body name="wrist_mounted_camera_depth_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1">
+                                    <site name="wrist_mounted_camera_depth_optical_frame" pos="0 0 0" quat="1 0 0 0"/>
+                                  </body>
                                 </body>
                                 <body name="wrist_mounted_camera_infra1_frame" gravcomp="1">
                                   <body name="wrist_mounted_camera_infra1_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1"/>
@@ -176,4 +220,9 @@
       <geom size="0.022225 0.3048 0.022225" type="box" rgba="0.7 0.7 0.7 1" name="camera_mount_bar2"/>
     </body>
   </worldbody>
+
+  <sensor>
+    <force site="tcp_fts_sensor"/>
+    <torque site="tcp_fts_sensor"/>
+  </sensor>
 </mujoco>
