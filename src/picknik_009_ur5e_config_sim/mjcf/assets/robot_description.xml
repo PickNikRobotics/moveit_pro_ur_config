@@ -1,0 +1,175 @@
+<?xml version="1.0" ?><mujoco model="ur5e">
+  <compiler angle="radian"/>
+
+  <option integrator="implicitfast">
+    <flag multiccd="enable"/>
+  </option>
+
+  <asset>
+    <mesh name="base" file="base.stl"/>
+    <mesh name="shoulder" file="shoulder.stl"/>
+    <mesh name="upperarm" file="upperarm.stl"/>
+    <mesh name="forearm" file="forearm.stl"/>
+    <mesh name="wrist1" file="wrist1.stl"/>
+    <mesh name="wrist2" file="wrist2.stl"/>
+    <mesh name="wrist3" file="wrist3.stl"/>
+    <mesh name="picknik_ur5_realsense_camera_adapter_rev2_collision" file="picknik_ur5_realsense_camera_adapter_rev2_collision.stl"/>
+    <mesh name="ur_to_robotiq_adapter" file="ur_to_robotiq_adapter.stl"/>
+    <mesh name="epick_body" file="epick_body.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="workcell_no_totes" file="workcell_no_totes.stl"/>
+  </asset>
+
+  <actuator>
+    <position joint="shoulder_pan_joint" name="shoulder_pan_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="shoulder_lift_joint" name="shoulder_lift_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="elbow_joint" name="elbow_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="wrist_1_joint" name="wrist_1_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="wrist_2_joint" name="wrist_2_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="wrist_3_joint" name="wrist_3_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="gripper" name="gripper" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+</actuator><worldbody>
+    <body name="base_link" gravcomp="1">
+      <body name="base_link_inertia" quat="0 0 0 1" gravcomp="1">
+        <inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="4" diaginertia="0.0072 0.00443333 0.00443333"/>
+        <geom pos="0 0 0" quat="0 0 0 1" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="base" name="base"/>
+        <geom pos="0 0 0" quat="0 0 0 1" type="mesh" mesh="base" name="base2"/>
+        <body name="shoulder_link" pos="0 0 0.1625" gravcomp="1">
+          <inertial pos="0 -0.00193 -0.02561" mass="3.761" diaginertia="0.0102675 0.0102675 0.00666"/>
+          <joint name="shoulder_pan_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" actuatorfrcrange="-150 150"/>
+          <geom quat="0 0 0 1" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="shoulder" name="shoulder"/>
+          <geom quat="0 0 0 1" type="mesh" mesh="shoulder" name="shoulder2"/>
+          <body name="upper_arm_link" quat="0.707107 0.707107 0 0" gravcomp="1">
+            <inertial pos="-0.2125 0 0.11336" mass="8.058" diaginertia="0.133886 0.133886 0.0151074"/>
+            <joint name="shoulder_lift_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" actuatorfrcrange="-150 150"/>
+            <geom pos="0 0 0.138" quat="0.5 0.5 -0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="upperarm" name="upperarm"/>
+            <geom pos="0 0 0.138" quat="0.5 0.5 -0.5 -0.5" type="mesh" mesh="upperarm" name="upperarm2"/>
+            <body name="forearm_link" pos="-0.425 0 0" gravcomp="1">
+              <inertial pos="-0.2422 0 0.0265" mass="2.846" diaginertia="0.0312094 0.0312094 0.004095"/>
+              <joint name="elbow_joint" pos="0 0 0" axis="0 0 1" range="-3.14159 3.14159" actuatorfrcrange="-150 150"/>
+              <geom pos="0 0 0.007" quat="0.5 0.5 -0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="forearm" name="forearm"/>
+              <geom pos="0 0 0.007" quat="0.5 0.5 -0.5 -0.5" type="mesh" mesh="forearm" name="forearm2"/>
+              <body name="wrist_1_link" pos="-0.3922 0 0.1333" gravcomp="1">
+                <inertial pos="0 -0.01634 -0.0018" mass="1.37" diaginertia="0.0025599 0.0025599 0.0021942"/>
+                <joint name="wrist_1_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" actuatorfrcrange="-28 28"/>
+                <geom pos="0 0 -0.127" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="wrist1" name="wrist1"/>
+                <geom pos="0 0 -0.127" quat="0.707107 0.707107 0 0" type="mesh" mesh="wrist1" name="wrist12"/>
+                <body name="wrist_2_link" pos="0 -0.0997 -2.04488e-11" quat="0.707107 0.707107 0 0" gravcomp="1">
+                  <inertial pos="0 0.01634 -0.0018" mass="1.3" diaginertia="0.0025599 0.0025599 0.0021942"/>
+                  <joint name="wrist_2_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" actuatorfrcrange="-28 28"/>
+                  <geom pos="0 0 -0.0997" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="wrist2" name="wrist2"/>
+                  <geom pos="0 0 -0.0997" quat="1 0 0 0" type="mesh" mesh="wrist2" name="wrist22"/>
+                  <body name="wrist_3_link" pos="0 0.0996 -2.04283e-11" quat="0.707107 -0.707107 0 0" gravcomp="1">
+                    <inertial pos="0 0 -0.001159" quat="0.5 0.5 -0.5 0.5" mass="0.365" diaginertia="0.000132117 9.89041e-05 9.89041e-05"/>
+                    <joint name="wrist_3_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" actuatorfrcrange="-28 28"/>
+                    <geom pos="0 0 -0.0989" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="wrist3" name="wrist3"/>
+                    <geom pos="0 0 -0.0989" quat="0.707107 0.707107 0 0" type="mesh" mesh="wrist3" name="wrist32"/>
+                    <body name="ft_frame" quat="0 1 0 0" gravcomp="1"/>
+                    <body name="flange" quat="0.5 -0.5 -0.5 -0.5" gravcomp="1">
+                      <body name="tool0" quat="0.5 0.5 0.5 0.5" gravcomp="1">
+                        <body name="realsense_camera_adapter_link" gravcomp="1">
+                          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="picknik_ur5_realsense_camera_adapter_rev2_collision" name="picknik_ur5_realsense_camera_adapter_rev2_collision"/>
+                          <geom type="mesh" mesh="picknik_ur5_realsense_camera_adapter_rev2_collision" name="picknik_ur5_realsense_camera_adapter_rev2_collision2"/>
+                          <body name="realsense_camera_adapter_tool0" pos="0 0 0.007" gravcomp="1">
+                            <body name="ur_to_robotiq_link" gravcomp="1">
+                              <inertial pos="0 0 0" mass="0.01" diaginertia="4.4e-05 2.7e-05 2.7e-05"/>
+                              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="ur_to_robotiq_adapter" name="ur_to_robotiq_adapter"/>
+                              <geom type="mesh" mesh="ur_to_robotiq_adapter" name="ur_to_robotiq_adapter2"/>
+                              <body name="gripper_mount_link" pos="0 0 0.011" gravcomp="1">
+                                <body name="epick_base_link" gravcomp="1">
+                                  <body name="epick_body" pos="0 0 0.05115" gravcomp="1">
+                                    <geom pos="0 0 -0.05115" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.25 0.25 0.25 1" mesh="epick_body" name="epick_body"/>
+                                    <geom size="0.044 0.05115" type="cylinder" rgba="0.25 0.25 0.25 1" name="epick_body2"/>
+                                    <body name="epick_extension" pos="0 0 0.09515" gravcomp="1">
+                                      <geom size="0.005 0.044" type="cylinder" contype="0" conaffinity="0" group="1" density="0" rgba="0.25 0.25 0.25 1" name="epick_extension"/>
+                                      <geom size="0.005 0.044" type="cylinder" rgba="0.25 0.25 0.25 1" name="epick_extension2"/>
+                                      <body name="epick_suction_cup" pos="0 0 0.0515" gravcomp="1">
+                                        <geom size="0.012 0.0075" type="cylinder" contype="0" conaffinity="0" group="1" density="0" rgba="0.25 0.25 0.25 1" name="epick_suction_cup"/>
+                                        <geom size="0.012 0.0075" type="cylinder" rgba="0.25 0.25 0.25 1" name="epick_suction_cup2"/>
+                                        <body name="epick_tip" pos="0 0 0.0075" gravcomp="1">
+                                          <body name="epick_tcp" pos="0 0 -0.005" gravcomp="1">
+                                            <body name="epick_vacuum_state" gravcomp="1">
+                                              <inertial pos="0 0 0" mass="0.01" diaginertia="1e-05 1e-05 1e-05"/>
+                                              <joint name="gripper" pos="0 0 0" axis="1 0 0" range="0 1" actuatorfrcrange="-30 30"/>
+                                            </body>
+                                            <body name="grasp_link" gravcomp="1"/>
+                                          </body>
+                                        </body>
+                                      </body>
+                                    </body>
+                                  </body>
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                          <body name="d415_mount_link" pos="0 -0.067 0.0171" quat="0.525483 0.473147 -0.473147 0.525483" gravcomp="1">
+                            <body name="wrist_mounted_camera_bottom_screw_frame" gravcomp="1">
+                              <body name="wrist_mounted_camera_link" pos="0 0.02 0.0115" gravcomp="1">
+                                <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.072" diaginertia="0.00388124 0.00387926 0.00049894"/>
+                                <geom size="0.010025 0.0495 0.0115" pos="0 -0.02 0" type="box" contype="0" conaffinity="0" group="1" density="0" name="wrist_mounted_camera_link"/>
+                                <geom size="0.010025 0.0495 0.0115" pos="0 -0.02 0" type="box" name="wrist_mounted_camera_link2"/>
+                                <body name="wrist_mounted_camera_depth_frame" gravcomp="1">
+                                  <body name="wrist_mounted_camera_depth_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1"/>
+                                </body>
+                                <body name="wrist_mounted_camera_infra1_frame" gravcomp="1">
+                                  <body name="wrist_mounted_camera_infra1_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1"/>
+                                </body>
+                                <body name="wrist_mounted_camera_infra2_frame" pos="0 -0.055 0" gravcomp="1">
+                                  <body name="wrist_mounted_camera_infra2_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1"/>
+                                </body>
+                                <body name="wrist_mounted_camera_color_frame" pos="0 0.015 0" gravcomp="1">
+                                  <body name="wrist_mounted_camera_color_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1"/>
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                          <body name="l515_mount_link" pos="0 -0.0406 0.0173" quat="0.525483 0.473147 -0.473147 0.525483" gravcomp="1"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="base" quat="0 0 0 1" gravcomp="1"/>
+    </body>
+    <body name="workcell" pos="0.026 0.28 0.2" quat="0.707107 0 0 -0.707107" gravcomp="1">
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.792 0.82 0.933 1" mesh="workcell_no_totes" name="workcell_no_totes"/>
+      <geom type="mesh" rgba="0.792 0.82 0.933 1" mesh="workcell_no_totes" name="workcell_no_totes2"/>
+      <body name="left_tote_origin" pos="0.008 -0.055 -0.2189" quat="0 0 0 1" gravcomp="1">
+        <body name="left_tote_link" gravcomp="1">
+          <inertial pos="0 0 0" mass="1" diaginertia="1 1 1"/>
+          <geom size="0.3048 0.1905 0.0025" pos="0.3048 0.1905 0.0025" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.0125 0.1905 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link2"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.0125 0.1905 0.09525" type="box" name="left_tote_link3"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.5971 0.1905 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link4"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.5971 0.1905 0.09525" type="box" name="left_tote_link5"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.0125 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link6"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.0125 0.09525" type="box" name="left_tote_link7"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.3685 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link8"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.3685 0.09525" type="box" name="left_tote_link9"/>
+        </body>
+      </body>
+      <body name="right_tote_origin" pos="0.008 0.4 -0.2189" quat="0 0 0 1" gravcomp="1">
+        <body name="right_tote_link" gravcomp="1">
+          <inertial pos="0 0 0" mass="1" diaginertia="1 1 1"/>
+          <geom size="0.3048 0.1905 0.0025" pos="0.3048 0.1905 0.0025" type="box" contype="0" conaffinity="0" group="1" density="0" name="right_tote_link"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.0125 0.1905 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="right_tote_link2"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.0125 0.1905 0.09525" type="box" name="right_tote_link3"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.5971 0.1905 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="right_tote_link4"/>
+          <geom size="0.0125 0.1905 0.09525" pos="0.5971 0.1905 0.09525" type="box" name="right_tote_link5"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.0125 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="right_tote_link6"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.0125 0.09525" type="box" name="right_tote_link7"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.3685 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="right_tote_link8"/>
+          <geom size="0.3048 0.0125 0.09525" pos="0.3048 0.3685 0.09525" type="box" name="right_tote_link9"/>
+        </body>
+      </body>
+    </body>
+    <body name="camera_mount_bar" pos="0.45 0.538 0.469" gravcomp="1">
+      <geom size="0.022225 0.3048 0.022225" type="box" contype="0" conaffinity="0" group="1" density="0" rgba="0.7 0.7 0.7 1" name="camera_mount_bar"/>
+      <geom size="0.022225 0.3048 0.022225" type="box" rgba="0.7 0.7 0.7 1" name="camera_mount_bar2"/>
+    </body>
+  </worldbody>
+</mujoco>
