@@ -1,0 +1,33 @@
+#
+#  Simulation config for Dev-009 UR5e + EPick gripper
+#  Inherits from picknik_009_ur5e_config, overrides for fake hardware
+#
+
+based_on_package: "picknik_009_ur5e_config"
+
+hardware:
+  simulated: true
+
+  robot_description:
+    urdf_params:
+      - use_fake_hardware: "true"
+      - robot_ip: "0.0.0.0"
+      - has_tool_changer: "false"
+
+ros2_control:
+  config:
+    package: "picknik_009_ur5e_config_sim"
+    path: "config/control/picknik_ur.ros2_control.yaml"
+  controllers_active_at_startup:
+    # - "force_torque_sensor_broadcaster"
+    # - "epick_controller"
+    # - "epick_status_publisher_controller"
+    - "joint_state_broadcaster"
+    # - "io_and_status_controller"
+  controllers_inactive_at_startup:
+    - "joint_trajectory_controller"
+    - "joint_trajectory_admittance_controller"
+    - "velocity_force_controller"
+    - "joint_velocity_controller"
+  controllers_not_managed: []
+  controller_shared_topics: []
