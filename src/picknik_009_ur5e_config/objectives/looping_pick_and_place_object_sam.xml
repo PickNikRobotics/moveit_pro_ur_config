@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Looping Pick and Place Object SAM">
+  <!--//////////-->
+  <BehaviorTree
+    ID="Looping Pick and Place Object SAM"
+    _description="Repeatedly detect objects in the right bin using SAM3, pick with EPick suction gripper, and place in the left bin."
+    _favorite="true"
+  >
+    <Control ID="Sequence">
+      <!--Initialize-->
+      <Action
+        ID="ResetPlanningSceneObjects"
+        apply_planning_scene_service="apply_planning_scene"
+      />
+      <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+      <Action ID="Script" code="joint_group_name:='manipulator'" />
+      <Action ID="Script" code="grasp_count:=20" />
+      <Decorator ID="KeepRunningUntilFailure">
+        <Decorator ID="ForceSuccess">
+          <Decorator ID="KeepRunningUntilFailure">
+            <Control ID="Sequence">
+              <!--Re-zero FTS every 20 grasps to mitigate drift-->
+              <Control ID="IfThenElse" name="Periodic FTS re-zero">
+                <Decorator
+                  ID="Precondition"
+                  if="grasp_count >= 20"
+                  else="FAILURE"
+                >
+                  <Action ID="AlwaysSuccess" />
+                </Decorator>
+                <Control ID="Sequence">
+                  <SubTree ID="Re-Zero Force-Torque Sensors" _collapsed="true" />
+                  <Action ID="Script" code="grasp_count:=0" />
+                </Control>
+                <Action ID="AlwaysSuccess" name="Skip re-zero" />
+              </Control>
+              <Decorator
+                ID="RetryUntilSuccessful"
+                num_attempts="5"
+                name="Attempt vision+pick planning up to 5 times"
+              >
+                <Control ID="Fallback" name="TryGraspInner">
+                  <Control
+                    ID="Sequence"
+                    name="Perception, pick plan, pick execution"
+                  >
+                    <Control
+                      ID="Sequence"
+                      name="Move to overhead sense position"
+                    >
+                      <Action
+                        ID="ResetPlanningSceneObjects"
+                        apply_planning_scene_service="apply_planning_scene"
+                      />
+                      <SubTree
+                        ID="Move to Waypoint"
+                        _collapsed="true"
+                        waypoint_name="Look at Right Bin"
+                      />
+                      <Action ID="ClearSnapshot" />
+                    </Control>
+                    <!--Capture fresh image, point cloud, and camera info-->
+                    <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+                    <SubTree
+                      ID="Get Wrist Camera Point Cloud"
+                      _collapsed="true"
+                    />
+                    <!--SAM3 text-prompted segmentation-->
+                    <Action
+                      ID="GetMasks2DFromExemplar"
+                      model_package="picknik_009_ur5e_config"
+                      encoder_model_path="models/sam3_vision_encoder.onnx"
+                      decoder_model_path="models/sam3_decoder.onnx"
+                      geometry_encoder_model_path="models/sam3_geometry_encoder.onnx"
+                      text_encoder_model_path="models/sam3_text_encoder.onnx"
+                      confidence_threshold="0.7"
+                      confidence_scores_str="{confidence_scores_str}"
+                      target_image="{wrist_camera_image}"
+                      text_prompt="white box of Olay soap"
+                      confidence_scores="{confidence_scores}"
+                      masks2d="{masks2d}"
+                    />
+                    <!--Visualize masks-->
+                    <Action
+                      ID="PublishMask2D"
+                      bounding_box_labels="{confidence_scores_str}"
+                      image="{wrist_camera_image}"
+                      masks="{masks2d}"
+                      masks_visualization_topic="/masks_visualization"
+                      opacity="0.500000"
+                    />
+                    <!--Transform point cloud to world frame for planning-->
+                    <Action
+                      ID="TransformPointCloudFrame"
+                      input_cloud="{wrist_camera_point_cloud}"
+                      target_frame="world"
+                      output_cloud="{point_cloud_world}"
+                    />
+                    <!--Update planning scene with point cloud (octomap)-->
+                    <Action
+                      ID="UpdatePlanningSceneService"
+                      point_cloud="{point_cloud_world}"
+                      point_cloud_service="/point_cloud_service"
+                    />
+                    <!--Convert 2D masks to 3D using depth-->
+                    <Action
+                      ID="GetMasks3DFromMasks2D"
+                      camera_info="{wrist_camera_info}"
+                      masks2d="{masks2d}"
+                      point_cloud="{point_cloud_world}"
+                      masks3d="{masks3d}"
+                    />
+                    <!--Convert 3D masks into graspable objects-->
+                    <Action
+                      ID="GetGraspableObjectsFromMasks3D"
+                      graspable_objects="{objects}"
+                      plane_inlier_threshold="0.020000"
+                      base_frame="world"
+                      minimum_face_area="0"
+                      masks3d="{masks3d}"
+                      face_separation_threshold="0.025000"
+                      point_cloud="{point_cloud_world}"
+                    />
+                    <Control ID="Sequence" name="Pick plan and execution">
+                      <Action ID="Script" code="found_plan:=false" />
+                      <Action ID="Script" code="picked_object := false" />
+                      <Decorator ID="ForceSuccess">
+                        <Decorator
+                          ID="ForEach"
+                          vector_in="{objects}"
+                          out="{object}"
+                          name="Attempt vacuum pick for each object"
+                        >
+                          <Control
+                            ID="Sequence"
+                            name="Attempt pick plan + execution"
+                          >
+                            <Decorator ID="ForceSuccess">
+                              <Control ID="Sequence">
+                                <!--Identity transform: EE frame == TCP frame for EPick-->
+                                <Action
+                                  ID="CreateStampedPose"
+                                  reference_frame="world"
+                                  stamped_pose="{ee_to_tcp}"
+                                  position_xyz="0;0;0"
+                                  orientation_xyzw="0;0;0;1"
+                                />
+                                <Action
+                                  ID="GetCurrentPlanningScene"
+                                  planning_scene_msg="{planning_scene}"
+                                />
+                                <!--Generate vacuum grasp poses-->
+                                <Action
+                                  ID="GenerateVacuumGraspPoses"
+                                  ee_to_tcp_tf="{ee_to_tcp}"
+                                  end_effector_group_name="gripper"
+                                  generate_centroid_grasps="true"
+                                  grasp_poses="{grasp_poses}"
+                                  num_orientation_samples="1"
+                                  padding_dimension="0.02"
+                                  planning_scene_msg="{planning_scene}"
+                                  samples_per_plane="1"
+                                  target_object="{object}"
+                                  ui_grasp_link="grasp_link"
+                                />
+                                <!--Use first grasp pose as the pick target-->
+                                <Action
+                                  ID="GetElementOfVector"
+                                  vector_in="{grasp_poses}"
+                                  index="0"
+                                  element="{grasp_pose}"
+                                />
+                                <!--Create pre-grasp pose: offset above grasp along world Z-->
+                                <Action
+                                  ID="CreateStampedPose"
+                                  reference_frame="world"
+                                  stamped_pose="{z_offset}"
+                                  position_xyz="0;0;-0.1"
+                                  orientation_xyzw="0;0;0;1"
+                                />
+                                <Action
+                                  ID="TransformPoseWithPose"
+                                  input_pose="{grasp_pose}"
+                                  transform_pose="{z_offset}"
+                                  output_pose="{pre_grasp_pose}"
+                                />
+                                <!--Plan MTC: move to pre-grasp, then Cartesian down to grasp, then Cartesian up to retract-->
+                                <Action
+                                  ID="InitializeMTCTask"
+                                  task_id="pick_object"
+                                  controller_names="joint_trajectory_controller"
+                                  task="{task}"
+                                />
+                                <Action
+                                  ID="SetupMTCCurrentState"
+                                  task="{task}"
+                                />
+                                <!--Allow gripper to collide with octomap and totes-->
+                                <Action
+                                  ID="SetupMTCUpdateGroupCollisionRule"
+                                  allow_collision="true"
+                                  group_name="gripper"
+                                  object_name="&lt;octomap&gt;"
+                                  task="{task}"
+                                />
+                                <Action
+                                  ID="SetupMTCUpdateGroupCollisionRule"
+                                  allow_collision="true"
+                                  group_name="gripper"
+                                  object_name="right_tote_link"
+                                  task="{task}"
+                                />
+                                <Action
+                                  ID="SetupMTCUpdateGroupCollisionRule"
+                                  allow_collision="true"
+                                  group_name="gripper"
+                                  object_name="left_tote_link"
+                                  task="{task}"
+                                />
+                                <!--Move to pre-grasp pose (above the object)-->
+                                <Action
+                                  ID="SetupMTCPlanToPose"
+                                  task="{task}"
+                                  target_pose="{pre_grasp_pose}"
+                                  planning_group_name="manipulator"
+                                  ik_frame="grasp_link"
+                                />
+                                <!--Cartesian straight down in world Z to grasp-->
+                                <Action
+                                  ID="SetupMTCMoveAlongFrameAxis"
+                                  task="{task}"
+                                  hand_frame="grasp_link"
+                                  axis_frame="world"
+                                  axis_x="0.0"
+                                  axis_y="0.0"
+                                  axis_z="-1.0"
+                                  max_distance="0.15"
+                                  min_distance="0.05"
+                                  planning_group_name="manipulator"
+                                  velocity_scale="0.25"
+                                  acceleration_scale="0.5"
+                                />
+                                <!--Cartesian straight up in world Z to retract-->
+                                <Action
+                                  ID="SetupMTCMoveAlongFrameAxis"
+                                  task="{task}"
+                                  hand_frame="grasp_link"
+                                  axis_frame="world"
+                                  axis_x="0.0"
+                                  axis_y="0.0"
+                                  axis_z="1.0"
+                                  max_distance="0.15"
+                                  min_distance="0.1"
+                                  planning_group_name="manipulator"
+                                  velocity_scale="0.25"
+                                  acceleration_scale="0.5"
+                                />
+                                <Control ID="Sequence">
+                                  <Action
+                                    ID="PlanMTCTask"
+                                    solution="{solution}"
+                                    task="{task}"
+                                  />
+                                  <Action
+                                    ID="Script"
+                                    code="found_plan = true"
+                                    name="Set Plan Found"
+                                  />
+                                </Control>
+                                <Decorator
+                                  ID="Precondition"
+                                  if="found_plan"
+                                  else="FAILURE"
+                                  name="Check if plan found"
+                                >
+                                  <Action
+                                    ID="AlwaysSuccess"
+                                    name="Skip this object and try next one"
+                                  />
+                                </Decorator>
+                                <Action
+                                  ID="WaitForUserTrajectoryApproval"
+                                  solution="{solution}"
+                                  name="Approve pick trajectory"
+                                />
+                                <SubTree
+                                  ID="Activate Vacuum"
+                                  _collapsed="true"
+                                />
+                                <!--Execute the pick trajectory (monitors vacuum state)-->
+                                <SubTree
+                                  ID="Move Until Vacuum State"
+                                  _collapsed="true"
+                                  expected_vacuum_status="OBJECT_DETECTED_AT_MIN_PRESSURE"
+                                  solution="{solution}"
+                                  trajectory_execution_succeeded="{trajectory_execution_succeeded}"
+                                />
+                                <Decorator
+                                  ID="Precondition"
+                                  if="trajectory_execution_succeeded == true"
+                                  else="SUCCESS"
+                                  name="Check if trajectory finished (vacuum failed)"
+                                >
+                                  <Action
+                                    ID="AlwaysFailure"
+                                    name="Skip this object and try next one"
+                                  />
+                                </Decorator>
+                                <Action
+                                  ID="Script"
+                                  code="picked_object = true"
+                                />
+                                <Action
+                                  ID="Script"
+                                  code="object_in_hand:=object"
+                                />
+                              </Control>
+                            </Decorator>
+                            <Decorator
+                              ID="Precondition"
+                              name="Terminate ForEach if object pick was successful"
+                              if="picked_object == true"
+                              else="SUCCESS"
+                            >
+                              <Action
+                                ID="AlwaysFailure"
+                                name="Attempt vacuum pick for next object"
+                              />
+                            </Decorator>
+                          </Control>
+                        </Decorator>
+                      </Decorator>
+                      <Decorator
+                        ID="Precondition"
+                        name="Check if object picked"
+                        if="picked_object == true"
+                        else="FAILURE"
+                      >
+                        <Action
+                          ID="AlwaysSuccess"
+                          name="If fail: move back to overhead view and try again"
+                        />
+                      </Decorator>
+                    </Control>
+                  </Control>
+                  <!--TryGraspInner fallback: turn off vacuum before retrying-->
+                  <Control
+                    ID="Sequence"
+                    name="Turn off vacuum before re-trying"
+                  >
+                    <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+                    <Action ID="WaitForDuration" delay_duration="1" />
+                    <Action
+                      ID="AlwaysFailure"
+                      name="Move back to overhead view and try again"
+                    />
+                  </Control>
+                </Control>
+              </Decorator>
+              <!--Place logic: add collision object for grasped item, move to left bin, place gently-->
+              <Action
+                ID="CreateStampedPose"
+                stamped_pose="{collision_object_pose}"
+                reference_frame="epick_tip"
+                orientation_xyzw="0;0;0;1"
+                position_xyz="0;0;0.055"
+              />
+              <Action
+                ID="CreateGraspableObject"
+                cuboid_object="{collision_object}"
+                generate_side_faces="false"
+                generate_top_face="false"
+                dy="0.075"
+                dx="0.075"
+                generate_front_face="false"
+                object_id="object"
+                dz="0.1"
+                pose="{collision_object_pose}"
+              />
+              <Control
+                ID="Sequence"
+                name="Add grasped object to EEF to prevent collisions"
+              >
+                <Action
+                  ID="InitializeMTCTask"
+                  task_id="allow_bin_collision"
+                  controller_names="joint_trajectory_controller"
+                  task="{allow_collision_task}"
+                />
+                <Action
+                  ID="SetupMTCCurrentState"
+                  task="{allow_collision_task}"
+                />
+                <Action
+                  ID="SetupMTCUpdateObjectCollisionRule"
+                  task="{allow_collision_task}"
+                  allow_collision="true"
+                  object="{collision_object}"
+                  object_or_group_name="left_tote_link"
+                />
+                <Action
+                  ID="SetupMTCUpdateObjectCollisionRule"
+                  task="{allow_collision_task}"
+                  object="{collision_object}"
+                  object_or_group_name="gripper"
+                  allow_collision="true"
+                />
+                <Action
+                  ID="PlanMTCTask"
+                  solution="{allow_collision_solution}"
+                  task="{allow_collision_task}"
+                />
+                <Action
+                  ID="WaitForUserTrajectoryApproval"
+                  solution="{allow_collision_solution}"
+                  name="Approve collision object attach"
+                />
+                <SubTree
+                  ID="Execute MTC Solution"
+                  solution="{allow_collision_solution}"
+                  _collapsed="true"
+                />
+              </Control>
+              <Control ID="Sequence" name="Plan place motion">
+                <Action
+                  ID="RetrieveWaypoint"
+                  waypoint_name="Look at Left Bin"
+                  waypoint_joint_state="{place_joint_state}"
+                  joint_group_name="{joint_group_name}"
+                />
+                <Action
+                  ID="InitializeMTCTask"
+                  task_id="place_object"
+                  controller_names="joint_trajectory_controller"
+                  task="{task_place}"
+                />
+                <Action ID="SetupMTCCurrentState" task="{task_place}" />
+                <Action
+                  ID="SetupMTCAttachObject"
+                  task="{task_place}"
+                  object="{collision_object}"
+                  frame_id="grasp_link"
+                />
+                <!--Lift up in world Z-->
+                <Action
+                  ID="SetupMTCMoveAlongFrameAxis"
+                  task="{task_place}"
+                  hand_frame="grasp_link"
+                  axis_frame="world"
+                  axis_x="0.0"
+                  axis_y="0.0"
+                  axis_z="1.0"
+                  max_distance="0.3"
+                  min_distance="0.2"
+                  planning_group_name="manipulator"
+                  velocity_scale="0.5"
+                  acceleration_scale="0.3"
+                />
+                <Action
+                  ID="SetupMTCUpdateObjectCollisionRule"
+                  task="{task_place}"
+                  allow_collision="false"
+                  object="{collision_object}"
+                  object_or_group_name="left_tote_link"
+                />
+                <!--Move to left bin waypoint-->
+                <Action
+                  ID="SetupMTCPlanToJointState"
+                  joint_state="{place_joint_state}"
+                  planning_group_name="manipulator"
+                  task="{task_place}"
+                />
+                <Action
+                  ID="SetupMTCDetachObject"
+                  task="{task_place}"
+                  object="{object}"
+                  frame_id="grasp_link"
+                />
+                <!--Lower down in world -Z for gentle place-->
+                <Action
+                  ID="SetupMTCMoveAlongFrameAxis"
+                  task="{task_place}"
+                  hand_frame="grasp_link"
+                  axis_frame="world"
+                  axis_x="0.0"
+                  axis_y="0.0"
+                  axis_z="-1.0"
+                  max_distance="0.2"
+                  min_distance="0.001"
+                  planning_group_name="manipulator"
+                  velocity_scale="0.25"
+                  acceleration_scale="0.3"
+                />
+                <Decorator
+                  ID="RetryUntilSuccessful"
+                  num_attempts="3"
+                  name="Attempt place planning up to 3 times"
+                >
+                  <Action
+                    ID="PlanMTCTask"
+                    solution="{solution_place}"
+                    task="{task_place}"
+                  />
+                </Decorator>
+              </Control>
+              <!--Approve place trajectory before executing-->
+              <Action
+                ID="WaitForUserTrajectoryApproval"
+                solution="{solution_place}"
+                name="Approve place trajectory"
+              />
+              <!--Monitor trajectory execution for gentle placement via FTS or unintentional drop via vacuum sensor-->
+              <SubTree
+                ID="Move Until Vacuum State or Collision"
+                _collapsed="true"
+                solution="{solution_place}"
+                trajectory_execution_succeeded="{trajectory_execution_succeeded}"
+                expected_vacuum_status="NO_OBJECT_DETECTED"
+                force_threshold="7"
+              />
+              <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+              <!--Increment grasp counter-->
+              <Action ID="Script" code="grasp_count = grasp_count + 1" />
+            </Control>
+          </Decorator>
+        </Decorator>
+      </Decorator>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Looping Pick and Place Object SAM" />
+  </TreeNodesModel>
+</root>

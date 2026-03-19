@@ -1,0 +1,4 @@
+objectives:
+  behavior_loader_plugins:
+    filter_graspable_objects:
+      - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"

@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.22)
 project(ur_hw)
 
 find_package(ament_cmake REQUIRED)
-find_package(moveit_studio_common REQUIRED)
-moveit_studio_package()
+find_package(moveit_pro_package REQUIRED)
+moveit_pro_package()
 
 # add custom behaviors
 add_subdirectory(behaviors)
@@ -25,6 +25,6 @@ endif()
 # plugin loaders that load the behavior base class library from the
 # moveit_studio_behavior package.
 pluginlib_export_plugin_description_file(
-        moveit_studio_behavior_interface behaviors/trigger_pstop_reset_service_plugin_description.xml)
+        moveit_pro_behavior_interface behaviors/trigger_pstop_reset_service_plugin_description.xml)
 
 ament_package()

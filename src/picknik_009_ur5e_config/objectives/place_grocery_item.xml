@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Place Grocery Item">
+  <BehaviorTree
+    ID="Place Grocery Item"
+    _description="Detects grocery items with best-fit shape (box/cylinder/sphere), captures a shelf target via teleop, lets the user teleop to grasp, activates vacuum, adds the picked object to the planning scene for collision avoidance, then places the object upright at the target with the longest axis perpendicular to the shelf."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--Ensure vacuum is off at start-->
+      <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+
+      <!--=== STEP 1: CAPTURE SHELF TARGET via teleop ===-->
+      <!--
+        The user teleops the end effector to the desired shelf placement location.
+        We capture grasp_link's pose in the world frame as the place target.
+        The shelf surface should be perpendicular to world Z (i.e. horizontal).
+      -->
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Teleop the end effector to the shelf location where the object should be placed. Press Continue when positioned."
+      />
+      <SubTree
+        ID="Request Teleoperation"
+        enable_user_interaction="true"
+        user_interaction_prompt="Move end effector to the shelf target location, then press Continue."
+        initial_teleop_mode="2"
+        controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        joint_trajectory_controller_name="joint_trajectory_admittance_controller"
+      />
+      <!--Capture the current grasp_link pose as the shelf target-->
+      <Action
+        ID="GetLatestTransform"
+        target_frame_id="world"
+        source_frame_id="grasp_link"
+        transform="{shelf_target_tf_stamped}"
+      />
+      <Action
+        ID="ConvertTransformStampedToPoseStamped"
+        transform_stamped="{shelf_target_tf_stamped}"
+        pose_stamped="{shelf_target_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="shelf_target"
+        marker_size="0.050000"
+        pose="{shelf_target_pose}"
+        marker_text="shelf target"
+      />
+
+      <!--=== STEP 2: PERCEPTION — Detect grocery objects with shape fitting ===-->
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="{scan_waypoint}"
+        controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+      />
+      <SubTree ID="Clear Snapshot" _collapsed="true" />
+      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="GetMasks2DFromExemplar"
+        model_package="picknik_009_ur5e_config"
+        encoder_model_path="models/sam3_vision_encoder.onnx"
+        decoder_model_path="models/sam3_decoder.onnx"
+        geometry_encoder_model_path="models/sam3_geometry_encoder.onnx"
+        text_encoder_model_path="models/sam3_text_encoder.onnx"
+        confidence_threshold="0.5"
+        confidence_scores_str="{confidence_scores_str}"
+        target_image="{wrist_camera_image}"
+        text_prompt="{text_prompt}"
+        confidence_scores="{confidence_scores}"
+        masks2d="{masks2d}"
+      />
+      <Action
+        ID="PublishMask2D"
+        bounding_box_labels="{confidence_scores_str}"
+        image="{wrist_camera_image}"
+        masks="{masks2d}"
+        masks_visualization_topic="/masks_visualization"
+        opacity="0.500000"
+      />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{point_cloud_world}"
+      />
+      <Action
+        ID="UpdatePlanningSceneService"
+        point_cloud="{point_cloud_world}"
+        point_cloud_service="/point_cloud_service"
+      />
+      <Action
+        ID="GetMasks3DFromMasks2D"
+        camera_info="{wrist_camera_info}"
+        masks2d="{masks2d}"
+        point_cloud="{point_cloud_world}"
+        masks3d="{masks3d}"
+      />
+
+      <!--Run our custom shape-fitting behavior-->
+      <Action
+        ID="GetGraspableGroceryObjectsFromMasks3D"
+        point_cloud="{point_cloud_world}"
+        masks3d="{masks3d}"
+        base_frame="world"
+        plane_inlier_threshold="0.020000"
+        minimum_face_area="0"
+        face_separation_threshold="0.025000"
+        graspable_objects="{grocery_objects}"
+      />
+
+      <!--Get the first detected object and compute place height from its shape-->
+      <Action
+        ID="GetElementOfVector"
+        vector_in="{grocery_objects}"
+        index="0"
+        element="{graspable_object}"
+      />
+      <Action
+        ID="ExtractGraspableObjectPose"
+        graspable_object="{graspable_object}"
+        pose="{object_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="detected_object"
+        marker_size="0.050000"
+        pose="{object_pose}"
+        marker_text="object"
+      />
+
+      <!--Compute place height based on shape type and grasp convention-->
+      <Action
+        ID="ComputeGroceryPlaceHeight"
+        graspable_object="{graspable_object}"
+        place_height="{place_height}"
+        shape_type="{shape_type}"
+      />
+
+      <!--=== STEP 3: TELEOP TO GRASP — User grasps the object manually ===-->
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Objects detected. Teleop to grasp the object. Press Continue when grasped."
+      />
+      <SubTree
+        ID="Request Teleoperation"
+        enable_user_interaction="true"
+        user_interaction_prompt="Teleop to grasp the object, then press Continue."
+        initial_teleop_mode="2"
+        controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        joint_trajectory_controller_name="joint_trajectory_admittance_controller"
+      />
+
+      <!--=== STEP 4: ACTIVATE VACUUM ===-->
+      <SubTree ID="Activate Vacuum" _collapsed="true" />
+      <Action ID="WaitForDuration" delay_duration="2.0" />
+
+      <!--Check vacuum grip-->
+      <Action
+        ID="GetEpickObjectDetectionStatus"
+        topic_name="/object_detection_status"
+        message_out="{vacuum_status}"
+      />
+      <Control ID="Fallback" name="CheckVacuumGrip">
+        <Action
+          ID="CompareEpickObjectDetectionStatus"
+          value1="{vacuum_status}"
+          value2="OBJECT_DETECTED_AT_MAX_PRESSURE"
+        />
+        <Action
+          ID="CompareEpickObjectDetectionStatus"
+          value1="{vacuum_status}"
+          value2="OBJECT_DETECTED_AT_MIN_PRESSURE"
+        />
+      </Control>
+
+      <!--=== STEP 4b: ADD PICKED OBJECT TO PLANNING SCENE ===-->
+      <!--
+        Add a collision proxy for the grasped object and attach it to grasp_link.
+        This prevents the planner from generating trajectories that collide the
+        held object with the environment or the robot itself.
+      -->
+      <Action
+        ID="AddURDF"
+        urdf_name="grocery_item"
+        urdf_pose="{object_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/grocery_item_collision.urdf"
+      />
+      <Action
+        ID="AttachURDF"
+        urdf_name="grocery_item"
+        allowed_collision_links="grasp_link"
+        parent_link_name="grasp_link"
+      />
+
+      <!--=== STEP 5: PLACE OBJECT UPRIGHT AT CAPTURED TARGET ===-->
+      <!--
+        Build the place pose from the captured shelf_target_pose.
+        We override the orientation to point grasp_link Z downward (into the shelf)
+        and offset the position upward by the computed place_height.
+
+        The place_height is computed by ComputeGroceryPlaceHeight based on:
+          - Box (grasped at center): half the longest dimension.
+          - Cylinder (grasped on top): full cylinder height.
+          - Sphere: full diameter.
+
+        Orientation: we want grasp_link Z pointing down. The shelf_target_pose
+        was captured with whatever orientation grasp_link had during teleop.
+        We override it to a fixed downward orientation (180 deg about X).
+      -->
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_target_pose}"
+        orientation_xyzw="1;0;0;0"
+        output_pose="{place_pose}"
+      />
+      <!--Offset upward by place_height so the object bottom touches the shelf-->
+      <Action
+        ID="TransformPose"
+        input_pose="{place_pose}"
+        translation_xyz="0;0;-{place_height}"
+        quaternion_xyzw="0;0;0;1"
+        output_pose="{place_pose}"
+        visualize_pose="true"
+        marker_text="place"
+        marker_size="0.050000"
+      />
+
+      <!--Plan and execute placement using MTC-->
+      <Action
+        ID="InitializeMTCTask"
+        controller_names="joint_trajectory_controller"
+        task="{mtc_task}"
+        task_id="place_grocery_item"
+        trajectory_monitoring="false"
+        timeout="-1.000000"
+      />
+      <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
+      <!--Allow collisions between the attached grocery item and nearby robot links-->
+      <Action
+        ID="SetupMTCIgnoreCollisionsBetweenObjects"
+        allow_collision="true"
+        task="{mtc_task}"
+        object_names="grasp_link;grocery_item"
+      />
+      <Action
+        ID="SetupMTCConnectWithProRRT"
+        acceleration_scale_factor="1.000000"
+        keep_orientation="true"
+        keep_orientation_link_names="grasp_link"
+        keep_orientation_tolerance="0.200000"
+        link_padding="0.005"
+        max_iterations="5000"
+        planning_group_name="manipulator"
+        seed="0"
+        task="{mtc_task}"
+        trajectory_sampling_rate="100"
+        velocity_scale_factor="0.500000"
+      />
+      <!--Approach: move along grasp_link Z toward the shelf-->
+      <Action
+        ID="SetupMTCMoveAlongFrameAxis"
+        acceleration_scale="0.500000"
+        axis_frame="grasp_link"
+        axis_x="0.000000"
+        axis_y="0.000000"
+        axis_z="1.000000"
+        hand_frame="grasp_link"
+        ignore_environment_collisions="false"
+        max_distance="{approach_distance}"
+        min_distance="0.03"
+        planning_group_name="manipulator"
+        task="{mtc_task}"
+        velocity_scale="0.500000"
+      />
+      <Action ID="ResetPoseStampedVector" vector="{place_pose_vector}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{place_pose}"
+        vector="{place_pose_vector}"
+      />
+      <Action
+        ID="SetupMTCBatchPoseIK"
+        end_effector_group="moveit_ee"
+        end_effector_link="grasp_link"
+        ik_group="manipulator"
+        ik_timeout_s="0.05"
+        max_ik_solutions="4"
+        monitored_stage="current state"
+        target_poses="{place_pose_vector}"
+        task="{mtc_task}"
+      />
+      <Action
+        ID="PlanMTCTask"
+        solution="{mtc_solution}"
+        task="{mtc_task}"
+        max_solutions="1"
+      />
+      <Action ID="WaitForUserTrajectoryApproval" solution="{mtc_solution}" />
+      <SubTree
+        ID="Execute MTC Solution"
+        solution="{mtc_solution}"
+        _collapsed="true"
+      />
+
+      <!--=== STEP 6: DEACTIVATE VACUUM, DETACH OBJECT, AND RETRACT ===-->
+      <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+      <Action ID="WaitForDuration" delay_duration="1.0" />
+
+      <!--Detach and remove the collision object from the planning scene-->
+      <Action ID="DetachURDF" urdf_name="grocery_item" />
+      <Action ID="RemoveURDFFromScene" urdf_name="grocery_item" />
+
+      <!--Retract upward after releasing-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="grasp_link"
+        stamped_pose="{retract_pose}"
+        position_xyz="0;0;-0.1"
+      />
+      <Action ID="ResetPoseStampedVector" vector="{retract_path}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{retract_pose}"
+        vector="{retract_path}"
+      />
+      <Action
+        ID="PlanCartesianPath"
+        acceleration_scale_factor="1.000000"
+        blending_radius="0.020000"
+        debug_solution="{debug_solution}"
+        ik_cartesian_space_density="0.010000"
+        ik_joint_space_density="0.100000"
+        joint_trajectory_msg="{joint_trajectory_msg}"
+        path="{retract_path}"
+        planning_group_name="manipulator"
+        position_only="false"
+        tip_links="grasp_link"
+        trajectory_sampling_rate="100"
+        velocity_scale_factor="1.000000"
+      />
+      <Action ID="ExecuteTrajectory" />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Place Grocery Item">
+      <MetadataFields>
+        <Metadata subcategory="Application - Grocery" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+      <inout_port name="scan_waypoint" default="Look at Right Bin">Name of the waypoint to move to for scanning objects.</inout_port>
+      <inout_port name="text_prompt" default="grocery item">SAM3 text prompt describing what to detect.</inout_port>
+      <inout_port name="approach_distance" default="0.10">Distance to approach the place pose from above, in meters.</inout_port>
+    </SubTree>
+  </TreeNodesModel>
+</root>

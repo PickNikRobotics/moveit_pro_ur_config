@@ -28,10 +28,10 @@ hardware:
     # Many of these are specific to the UR descriptions packages, and can be customized as needed.
     # [Optional]
     urdf_params:
-      - name: "ur10e"
+      - name: "ur5e"
       # NOTE: If using a different UR model, update type here and joint limits in the config/moveit/joint_limits.yaml file.
       # possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30
-      - ur_type: "ur10e"
+      - ur_type: "ur5e"
       - use_fake_hardware: "true"
       - robot_ip: "0.0.0.0"
       - headless_mode: "true"
@@ -54,9 +54,6 @@ moveit_params:
   kinematics:
     package: "ur_mock"
     path: "config/moveit/pose_ik_distance.yaml"
-  servo:
-    package: "ur_mock"
-    path: "config/moveit/ur_servo.yaml"
   sensors_3d:
     package: "ur_mock"
     path: "config/moveit/sensors_3d.yaml"
@@ -69,7 +66,10 @@ moveit_params:
   pose_jog:
     package: "ur_mock"
     path: "config/moveit/pose_jog.yaml"
-
+  joint_jog: 
+    package: "ur_mock" 
+    path: "config/moveit/joint_jog.yaml" 
+    
   publish:
     planning_scene: True
     geometry_updates: True
@@ -89,11 +89,10 @@ objectives:
     # This plugin will load the core MoveIt Pro Behaviors.
     # Add additional plugin loaders as needed.
     core:
-      - "moveit_studio::behaviors::CoreBehaviorsLoader"
-      - "moveit_studio::behaviors::MTCCoreBehaviorsLoader"
-      - "moveit_studio::behaviors::ServoBehaviorsLoader"
-      - "moveit_studio::behaviors::VisionBehaviorsLoader"
-      - "moveit_studio::behaviors::ConverterBehaviorsLoader"
+      - "moveit_pro::behaviors::CoreBehaviorsLoader"
+      - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
+      - "moveit_pro::behaviors::VisionBehaviorsLoader"
+      - "moveit_pro::behaviors::ConverterBehaviorsLoader"
     trigger_pstop_reset_service:
       - "trigger_pstop_reset_service::TriggerPStopResetServiceBehaviorsLoader"
   objective_library_paths:
@@ -130,7 +129,6 @@ ros2_control:
     - "force_torque_sensor_broadcaster"
     - "robotiq_gripper_controller"
     - "joint_state_broadcaster"
-    - "servo_controller"
     - "io_and_status_controller"
     - "robotiq_activation_controller"
   # Load but do not start these controllers so they can be activated later if needed.
@@ -139,6 +137,7 @@ ros2_control:
     - "joint_trajectory_controller"
     - "joint_trajectory_admittance_controller"
     - "velocity_force_controller"
+    - "joint_velocity_controller"
   # Any controllers here will not be spawned by MoveIt Pro.
   # [Optional, default=[]]
   controllers_not_managed: []

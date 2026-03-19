@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Get Wrist Camera Point Cloud">
+  <BehaviorTree
+    ID="Get Wrist Camera Point Cloud"
+    _description="Captures a point cloud from the wrist-mounted RealSense camera."
+    _favorite="false"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action
+        ID="GetPointCloud"
+        topic_name="/camera/wrist_mounted_camera/depth/color/points"
+        message_timeout_sec="5.000000"
+        message_out="{wrist_camera_point_cloud}"
+        publisher_timeout_sec="5.000000"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Get Wrist Camera Point Cloud">
+      <inout_port name="wrist_camera_point_cloud" default="{wrist_camera_point_cloud}" />
+      <MetadataFields>
+        <Metadata subcategory="Perception - 3D" />
+        <Metadata runnable="false" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

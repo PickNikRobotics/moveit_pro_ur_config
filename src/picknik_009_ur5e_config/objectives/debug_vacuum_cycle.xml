@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Debug Vacuum Cycle">
+  <BehaviorTree
+    ID="Debug Vacuum Cycle"
+    _description="Cycles vacuum on 3s / off 3s, 5 times. Use ros2 topic echo /object_detection_status to debug."
+    _favorite="false"
+  >
+    <Decorator ID="Repeat" num_cycles="5">
+      <Control ID="Sequence">
+        <SubTree ID="Activate Vacuum" _collapsed="true" />
+        <Action ID="WaitForDuration" delay_duration="3" />
+        <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+        <Action ID="WaitForDuration" delay_duration="3" />
+      </Control>
+    </Decorator>
+  </BehaviorTree>
+</root>

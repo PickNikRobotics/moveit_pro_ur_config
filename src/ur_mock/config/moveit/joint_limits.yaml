@@ -16,7 +16,7 @@ joint_limits:
     has_position_limits: true
     has_velocity_limits: true
     max_acceleration: !degrees 30.0
-    max_effort: 330.0
+    max_effort: 150.0
     max_position: !degrees  360.0
     max_velocity: !degrees  30.0
     min_position: !degrees -360.0
@@ -26,7 +26,7 @@ joint_limits:
     has_position_limits: true
     has_velocity_limits: true
     max_acceleration: !degrees 30.0
-    max_effort: 330.0
+    max_effort: 150.0
     max_position: !degrees  360.0
     max_velocity: !degrees  30.0
     min_position: !degrees -360.0
@@ -56,7 +56,7 @@ joint_limits:
     has_position_limits: true
     has_velocity_limits: true
     max_acceleration: !degrees 30.0
-    max_effort: 54.0
+    max_effort: 28.0
     max_position: !degrees  360.0
     max_velocity: !degrees  60.0
     min_position: !degrees -360.0
@@ -76,7 +76,7 @@ joint_limits:
     has_position_limits: true
     has_velocity_limits: true
     max_acceleration: !degrees 30.0
-    max_effort: 54.0
+    max_effort: 28.0
     max_position: !degrees  360.0
     max_velocity: !degrees  60.0
     min_position: !degrees -360.0

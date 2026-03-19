@@ -1,0 +1,62 @@
+#
+#  Site config for Dev-009 UR5e + EPick gripper (real hardware)
+#  Based on ur_hw (which inherits from ur_mock)
+#
+
+# Inherit from ur_hw
+based_on_package: "ur_hw"
+
+hardware:
+  simulated: false
+
+  robot_driver_persist_launch_file:
+    package: "picknik_009_ur5e_config"
+    path: "launch/robot_drivers_to_persist.launch.py"
+
+  robot_description:
+    urdf:
+      package: "picknik_009_ur5e_config"
+      path: "description/picknik_009_ur5e.urdf.xacro"
+    srdf:
+      package: "picknik_009_ur5e_config"
+      path: "config/moveit/picknik_009_ur5e.srdf"
+    urdf_params:
+      - use_fake_hardware: "false"
+      - robot_ip: "192.10.0.11"
+      - has_tool_changer: "false"
+
+objectives:
+  behavior_loader_plugins:
+    core:
+      - "moveit_pro::behaviors::CoreBehaviorsLoader"
+      - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
+      - "moveit_pro::behaviors::VisionBehaviorsLoader"
+      - "moveit_pro::behaviors::ConverterBehaviorsLoader"
+    epick:
+      - "epick_moveit_studio::BehaviorLoader"
+    custom:
+      - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"
+      - "get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader"
+  objective_library_paths:
+    site_objectives:
+      package_name: "picknik_009_ur5e_config"
+      relative_path: "objectives"
+
+# Use our own ros2_control config with EPick controller instead of Robotiq 2F-85
+ros2_control:
+  config:
+    package: "picknik_009_ur5e_config"
+    path: "config/control/picknik_ur.ros2_control.yaml"
+  controllers_active_at_startup:
+    - "force_torque_sensor_broadcaster"
+    - "epick_controller"
+    - "epick_status_publisher_controller"
+    - "joint_state_broadcaster"
+    - "io_and_status_controller"
+  controllers_inactive_at_startup:
+    - "joint_trajectory_controller"
+    - "joint_trajectory_admittance_controller"
+    - "velocity_force_controller"
+    - "joint_velocity_controller"
+  controllers_not_managed: []
+  controller_shared_topics: []
