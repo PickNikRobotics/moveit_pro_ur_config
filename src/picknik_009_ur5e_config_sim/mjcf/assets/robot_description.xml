@@ -63,12 +63,12 @@
   </worldbody>
 
   <actuator>
-    <position joint="shoulder_pan_joint" name="shoulder_pan_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
-    <position joint="shoulder_lift_joint" name="shoulder_lift_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
-    <position joint="elbow_joint" name="elbow_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
-    <position joint="wrist_1_joint" name="wrist_1_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
-    <position joint="wrist_2_joint" name="wrist_2_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
-    <position joint="wrist_3_joint" name="wrist_3_joint" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
+    <position joint="shoulder_pan_joint" name="shoulder_pan_joint" ctrlrange="-3.14 3.14" kp="5000" forcelimited="false" dampratio="1"/>
+    <position joint="shoulder_lift_joint" name="shoulder_lift_joint" ctrlrange="-3.14 3.14" kp="5000" forcelimited="false" dampratio="1"/>
+    <position joint="elbow_joint" name="elbow_joint" ctrlrange="-3.14 3.14" kp="5000" forcelimited="false" dampratio="1"/>
+    <position joint="wrist_1_joint" name="wrist_1_joint" ctrlrange="-3.14 3.14" kp="5000" forcelimited="false" dampratio="1"/>
+    <position joint="wrist_2_joint" name="wrist_2_joint" ctrlrange="-3.14 3.14" kp="5000" forcelimited="false" dampratio="1"/>
+    <position joint="wrist_3_joint" name="wrist_3_joint" ctrlrange="-3.14 3.14" kp="5000" forcelimited="false" dampratio="1"/>
     <position joint="gripper" name="gripper" ctrlrange="-3.14 3.14" kp="1000" forcelimited="false" dampratio="1"/>
 </actuator><worldbody>
     <body name="base_link" gravcomp="1">
