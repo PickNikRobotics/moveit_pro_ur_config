@@ -153,9 +153,9 @@
                                 <geom size="0.010025 0.0495 0.0115" pos="0 -0.02 0" type="box" contype="0" conaffinity="0" group="1" density="0" name="wrist_mounted_camera_link"/>
                                 <geom size="0.010025 0.0495 0.0115" pos="0 -0.02 0" type="box" name="wrist_mounted_camera_link2"/>
                                 <body name="wrist_mounted_camera_depth_frame" gravcomp="1">
-                                  <camera name="wrist_mounted_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" xyaxes="1 0 0 0 1 0"/>
                                   <body name="wrist_mounted_camera_depth_optical_frame" quat="0.5 -0.5 0.5 -0.5" gravcomp="1">
-                                    <site name="wrist_mounted_camera_optical_frame" pos="0 0 0" quat="0.5 -0.5 0.5 -0.5"/>
+                                    <camera name="wrist_mounted_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" quat="0.0 -1.0 0.0 0.0"/>
+                                    <site name="wrist_mounted_camera_optical_frame" pos="0 0 0" quat="1.0 0.0 0.0 0.0"/>
                                   </body>
                                 </body>
                                 <body name="wrist_mounted_camera_infra1_frame" gravcomp="1">
