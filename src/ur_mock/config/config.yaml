@@ -93,8 +93,8 @@ objectives:
       - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
-    trigger_pstop_reset_service:
-      - "trigger_pstop_reset_service::TriggerPStopResetServiceBehaviorsLoader"
+    # trigger_pstop_reset_service:
+    #   - "trigger_pstop_reset_service::TriggerPStopResetServiceBehaviorsLoader"
   objective_library_paths:
     # You must use a unique key for each package.
     core_objectives:
