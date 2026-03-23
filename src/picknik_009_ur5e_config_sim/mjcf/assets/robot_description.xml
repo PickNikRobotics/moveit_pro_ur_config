@@ -135,6 +135,9 @@
                                             <body name="epick_vacuum_state" gravcomp="1">
                                               <inertial pos="0 0 0" mass="0.01" diaginertia="1e-05 1e-05 1e-05"/>
                                               <joint name="gripper" pos="0 0 0" axis="1 0 0" range="0 1" actuatorfrcrange="-30 30"/>
+                                              <!-- suction cup site and geometry -->
+                                              <site name="suction_cup_epick"/>
+                                              <geom margin="0.01" gap="0.01" type="sphere" size="0.01"/>
                                             </body>
                                             <body name="grasp_link" gravcomp="1"/>
                                           </body>
@@ -190,6 +193,7 @@
         <body name="left_tote_link" gravcomp="1">
           <inertial pos="0 0 0" mass="1" diaginertia="1 1 1"/>
           <geom size="0.3048 0.1905 0.0025" pos="0.3048 0.1905 0.0025" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link"/>
+          <geom size="0.3048 0.1905 0.0025" pos="0.3048 0.1905 0.0025" type="box" name="left_tote_link10"/>
           <geom size="0.0125 0.1905 0.09525" pos="0.0125 0.1905 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link2"/>
           <geom size="0.0125 0.1905 0.09525" pos="0.0125 0.1905 0.09525" type="box" name="left_tote_link3"/>
           <geom size="0.0125 0.1905 0.09525" pos="0.5971 0.1905 0.09525" type="box" contype="0" conaffinity="0" group="1" density="0" name="left_tote_link4"/>

@@ -20,6 +20,12 @@ controller_manager:
     epick_status_publisher_controller:
       type: epick_controllers/EpickStatusPublisherController
 
+epick_controller:
+  ros__parameters:
+    default: true
+    joint: suction_cup_epick # Should match the MuJoCo site name.
+    allow_stalling: true
+
 io_and_status_controller:
   ros__parameters:
     tf_prefix: ""
