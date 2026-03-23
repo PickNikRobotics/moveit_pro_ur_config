@@ -76,5 +76,17 @@
             <inertial pos="0 0 0" euler="0 0 0" mass="0.349" diaginertia="0.001 0.001 0.001" />
 		</body>
 
+		<!-- scene cameras -->
+
+		<body name="tote_camera" pos="0.4 0.538 0.469" quat="0.3050092 -0.6377455 -0.6382535 0.3047664">
+			<camera name="tote_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" quat="0.0 -1.0 0.0 0.0"/>
+			<site name="tote_camera_optical_frame" pos="0 0 0" quat="1.0 0.0 0.0 0.0"/>
+		</body>
+
+		<body name="rack_camera" pos="0.0 -0.175 -0.05" euler="1.57 0 1.57">
+			<camera name="rack_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" quat="0.0 -1.0 0.0 0.0"/>
+			<site name="rack_camera_optical_frame" pos="0 0 0" quat="1.0 0.0 0.0 0.0"/>
+		</body>
+
 	</worldbody>
 </sim_additions>
