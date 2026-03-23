@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Load Can In Planning Scene">
+  <!--//////////-->
+  <BehaviorTree
+    ID="Load Can In Planning Scene"
+    _description=""
+    _favorite="false"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action ID="CreateColorRGBAMessage" a="1.0" b="0.5" g="0.5" r="0.5" />
+      <Action
+        ID="CreateStampedPose"
+        stamped_pose="{pose_stamped}"
+        reference_frame="tomato_soup_can_1_tf"
+        orientation_xyzw="0;0;0;1"
+        position_xyz="0;0;0"
+      />
+      <Action
+        ID="AddURDF"
+        package_name="picknik_009_ur5e_config_sim"
+        urdf_name="tomato_soup_can_1"
+        urdf_color="{color_rgba}"
+        urdf_file_path="urdf/tomato_soup_can.urdf"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Load Can In Planning Scene">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Planning" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>
