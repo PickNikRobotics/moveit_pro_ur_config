@@ -1,0 +1,4 @@
+<mujoco model="picknik_009_ur5e_config_sim_scene">
+  <include file="assets/robot_description.xml" />
+  <include file="assets/additions.xml" />
+</mujoco>
