@@ -157,6 +157,7 @@
   </joint>
 
   <!-- Environment: table, walls, scene camera -->
-  <xacro:include filename="$(find picknik_009_ur5e_config)/description/environment.xacro"/>
+  <!-- Swap to environment_shelving_test.xacro to remove left tote for testing -->
+  <xacro:include filename="$(find picknik_009_ur5e_config)/description/environment_shelving_test.xacro"/>
   <xacro:environment parent="world"/>
 </robot>

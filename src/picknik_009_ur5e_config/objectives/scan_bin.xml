@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Scan Bin">
+  <BehaviorTree
+    ID="Scan Bin"
+    _description="Moves to 4 scan waypoints around the bin, captures a point cloud at each, merges them into a single fused cloud, updates the planning scene, and saves the fused cloud to file."
+    _favorite="true"
+  >
+    <Control ID="Sequence">
+      <SubTree ID="Clear Snapshot" _collapsed="true" />
+
+      <!--=== Scan position 1 ===-->
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="Scan 1"
+      />
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{scan_cloud_1}"
+      />
+      <Action
+        ID="AddPointCloudToVector"
+        point_cloud="{scan_cloud_1}"
+        point_cloud_vector="{scan_clouds}"
+      />
+
+      <!--=== Scan position 2 ===-->
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="Scan 2"
+      />
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{scan_cloud_2}"
+      />
+      <Action
+        ID="AddPointCloudToVector"
+        point_cloud="{scan_cloud_2}"
+        point_cloud_vector="{scan_clouds}"
+      />
+
+      <!--=== Scan position 3 ===-->
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="Scan 3"
+      />
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{scan_cloud_3}"
+      />
+      <Action
+        ID="AddPointCloudToVector"
+        point_cloud="{scan_cloud_3}"
+        point_cloud_vector="{scan_clouds}"
+      />
+
+      <!--=== Scan position 4 ===-->
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="Scan 4"
+      />
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{scan_cloud_4}"
+      />
+      <Action
+        ID="AddPointCloudToVector"
+        point_cloud="{scan_cloud_4}"
+        point_cloud_vector="{scan_clouds}"
+      />
+
+      <!--=== Merge all point clouds ===-->
+      <Action
+        ID="MergePointClouds"
+        point_clouds="{scan_clouds}"
+        grid_resolution_meters="0.005"
+        align_point_clouds="false"
+        merged_cloud="{fused_point_cloud}"
+      />
+
+      <!--Update planning scene with the fused cloud-->
+      <Action
+        ID="UpdatePlanningSceneService"
+        point_cloud="{fused_point_cloud}"
+        point_cloud_service="/point_cloud_service"
+      />
+
+      <!--Save fused point cloud to file-->
+      <Action
+        ID="SavePointCloudToFile"
+        file_path="~/.config/moveit_pro/saved_behavior_data"
+        file_prefix="fused_bin_scan"
+        point_cloud="{fused_point_cloud}"
+      />
+
+      <!--Publish for debugging-->
+      <Action
+        ID="PublishPointCloud"
+        point_cloud="{fused_point_cloud}"
+        point_cloud_topic="/fused_scan_cloud"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Bin scan complete. Fused point cloud saved and published on /fused_scan_cloud."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Scan Bin">
+      <MetadataFields>
+        <Metadata subcategory="Application - Grocery" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+      <inout_port name="fused_point_cloud" default="{fused_point_cloud}">Fused multi-view point cloud output.</inout_port>
+      <inout_port name="scan_waypoint_1" default="Scan 1">First scan waypoint name.</inout_port>
+      <inout_port name="scan_waypoint_2" default="Scan 2">Second scan waypoint name.</inout_port>
+      <inout_port name="scan_waypoint_3" default="Scan 3">Third scan waypoint name.</inout_port>
+      <inout_port name="scan_waypoint_4" default="Scan 4">Fourth scan waypoint name.</inout_port>
+    </SubTree>
+  </TreeNodesModel>
+</root>

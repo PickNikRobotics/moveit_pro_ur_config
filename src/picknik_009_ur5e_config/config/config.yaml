@@ -37,6 +37,8 @@ objectives:
     custom:
       - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"
       - "get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader"
+      - "generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader"
+      - "compute_place_orientation::ComputePlaceOrientationBehaviorsLoader"
   objective_library_paths:
     site_objectives:
       package_name: "picknik_009_ur5e_config"

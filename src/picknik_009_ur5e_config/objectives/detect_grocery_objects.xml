@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Detect Grocery Objects">
+  <BehaviorTree
+    ID="Detect Grocery Objects"
+    _description="Captures wrist camera image and point cloud, runs SAM3 segmentation, fits shapes to detected objects, and visualizes the results. Move the robot to the scan waypoint before running."
+    _favorite="true"
+  >
+    <Control ID="Sequence">
+      <SubTree ID="Clear Snapshot" _collapsed="true" />
+      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="GetMasks2DFromExemplar"
+        model_package="picknik_009_ur5e_config"
+        encoder_model_path="models/sam3_vision_encoder.onnx"
+        decoder_model_path="models/sam3_decoder.onnx"
+        geometry_encoder_model_path="models/sam3_geometry_encoder.onnx"
+        text_encoder_model_path="models/sam3_text_encoder.onnx"
+        confidence_threshold="0.5"
+        confidence_scores_str="{confidence_scores_str}"
+        target_image="{wrist_camera_image}"
+        text_prompt="A tall red can of Pringles potato chips with a white design on the lid "
+        confidence_scores="{confidence_scores}"
+        masks2d="{masks2d}"
+      />
+      <Action
+        ID="PublishMask2D"
+        bounding_box_labels="{confidence_scores_str}"
+        image="{wrist_camera_image}"
+        masks="{masks2d}"
+        masks_visualization_topic="/masks_visualization"
+        opacity="0.500000"
+      />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{point_cloud_world}"
+      />
+      <Action
+        ID="UpdatePlanningSceneService"
+        point_cloud="{point_cloud_world}"
+        point_cloud_service="/point_cloud_service"
+      />
+      <Action
+        ID="GetMasks3DFromMasks2D"
+        camera_info="{wrist_camera_info}"
+        masks2d="{masks2d}"
+        point_cloud="{point_cloud_world}"
+        masks3d="{masks3d}"
+      />
+      <Action
+        ID="GetGraspableGroceryObjectsFromMasks3D"
+        point_cloud="{point_cloud_world}"
+        masks3d="{masks3d}"
+        base_frame="world"
+        plane_inlier_threshold="0.020000"
+        minimum_face_area="0"
+        face_separation_threshold="0.025000"
+        bin_floor_frame="right_tote_origin"
+        shape_type="{shape_type_override}"
+        graspable_objects="{grocery_objects}"
+        segment_cloud="{segment_cloud}"
+      />
+      <!--Publish segment point cloud for debugging-->
+      <Action
+        ID="PublishPointCloud"
+        point_cloud="{segment_cloud}"
+        point_cloud_topic="/grocery_segment_cloud"
+      />
+      <Action
+        ID="GetElementOfVector"
+        vector_in="{grocery_objects}"
+        index="0"
+        element="{graspable_object}"
+      />
+      <Action
+        ID="ExtractGraspableObjectPose"
+        graspable_object="{graspable_object}"
+        pose="{object_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="detected_object"
+        marker_size="0.050000"
+        pose="{object_pose}"
+        marker_text="object"
+      />
+      <Action
+        ID="ComputeGroceryPlaceHeight"
+        graspable_object="{graspable_object}"
+        place_height="{place_height}"
+        grasp_approach_translation_xyz="{grasp_approach_translation_xyz}"
+        collision_dimensions="{collision_dimensions}"
+        collision_rpy="{collision_rpy}"
+        pick_pose="{pick_pose}"
+        top_offset="{top_offset}"
+        shape_type="{shape_type}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Detection complete. Check visualization for fitted shape."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Detect Grocery Objects">
+      <MetadataFields>
+        <Metadata subcategory="Application - Grocery" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+      <inout_port name="shape_type_override" default="">
+        Force shape type: 'cylinder', 'box', or 'sphere'. Leave empty to auto-detect.
+      </inout_port>
+      <inout_port name="text_prompt" default="grocery item">
+        SAM3 text prompt describing what to detect.
+      </inout_port>
+      <inout_port name="object_pose" default="{object_pose}">Detected object pose.</inout_port>
+      <inout_port name="graspable_object" default="{graspable_object}">Detected graspable object.</inout_port>
+      <inout_port name="place_height" default="{place_height}">Computed place height.</inout_port>
+      <inout_port name="grasp_approach_translation_xyz" default="{grasp_approach_translation_xyz}">Translation from object center to grasp approach.</inout_port>
+      <inout_port name="collision_dimensions" default="{collision_dimensions}">Dimensions for collision URDF generation.</inout_port>
+      <inout_port name="collision_rpy" default="{collision_rpy}">Object orientation relative to grasp_link as RPY.</inout_port>
+      <inout_port name="pick_pose" default="{pick_pose}">Grasp_link pose at pick time (optional, for collision RPY).</inout_port>
+      <inout_port name="top_offset" default="{top_offset}">Distance from object center to top surface.</inout_port>
+      <inout_port name="shape_type" default="{shape_type}">Detected shape type (cylinder, box, sphere).</inout_port>
+      <inout_port name="place_translation_xyz" default="{place_translation_xyz}">Translation vector for place offset.</inout_port>
+      <inout_port name="grocery_objects" default="{grocery_objects}">All detected graspable objects.</inout_port>
+    </SubTree>
+  </TreeNodesModel>
+</root>

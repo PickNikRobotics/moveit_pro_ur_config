@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Save Shelf Target">
+  <BehaviorTree
+    ID="Save Shelf Target"
+    _description="Captures the current grasp_link pose in the world frame and saves it to a YAML file for use by Place Grocery Item. Teleop the end effector to the desired shelf placement location before running this objective."
+    _favorite="true"
+  >
+    <Control ID="Sequence">
+      <Action
+        ID="GetLatestTransform"
+        target_frame_id="world"
+        source_frame_id="grasp_link"
+        transform="{shelf_target_tf_stamped}"
+      />
+      <Action
+        ID="ConvertTransformStampedToPoseStamped"
+        transform_stamped="{shelf_target_tf_stamped}"
+        pose_stamped="{shelf_target_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="shelf_target"
+        marker_size="0.050000"
+        pose="{shelf_target_pose}"
+        marker_text="shelf target"
+      />
+      <Action
+        ID="SaveTransformStampedToYaml"
+        yaml_filename="shelf_target.yaml"
+        overwrite="true"
+        message="{shelf_target_tf_stamped}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf target saved successfully."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Save Shelf Target">
+      <MetadataFields>
+        <Metadata subcategory="Application - Grocery" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>
