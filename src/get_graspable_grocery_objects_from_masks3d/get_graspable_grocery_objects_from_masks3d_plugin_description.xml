@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<library path="get_graspable_grocery_objects_from_masks3d">
+  <class
+    type="get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader"
+    base_class_type="moveit_pro::behaviors::SharedResourcesNodeLoaderBase"
+  />
+</library>
