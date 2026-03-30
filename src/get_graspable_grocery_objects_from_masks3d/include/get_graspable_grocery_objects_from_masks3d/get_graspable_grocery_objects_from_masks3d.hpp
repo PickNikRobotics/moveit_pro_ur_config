@@ -10,6 +10,7 @@
 
 #include <moveit_pro_behavior_interface/async_behavior_base.hpp>
 #include <rclcpp/publisher.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
 
 namespace get_graspable_grocery_objects_from_masks3d
@@ -60,6 +61,7 @@ private:
   std::shared_future<tl::expected<bool, std::string>> future_;
 
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr segment_cloud_pub_;
 };
 
 }  // namespace get_graspable_grocery_objects_from_masks3d

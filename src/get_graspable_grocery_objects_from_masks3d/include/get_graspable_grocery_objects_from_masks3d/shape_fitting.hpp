@@ -44,7 +44,8 @@ struct ShapeFitResult
  */
 [[nodiscard]] tl::expected<ShapeFitResult, std::string>
 fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-       const std::shared_ptr<const pcl::PointIndices>& indices);
+       const std::shared_ptr<const pcl::PointIndices>& indices,
+       double bin_floor_z = std::numeric_limits<double>::quiet_NaN());
 
 /**
  * @brief Fit a cylinder to the point cloud segment using RANSAC.
@@ -53,9 +54,15 @@ fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
  * @param distance_threshold RANSAC inlier distance threshold in meters.
  * @return ShapeFitResult for a CYLINDER, or error string.
  */
+/**
+ * @param bin_floor_z Z coordinate of the bin floor in the cloud frame. The cylinder bottom
+ *                    is clamped to this value when the top-down view doesn't reveal the full height.
+ *                    Set to NaN to disable floor clamping.
+ */
 [[nodiscard]] tl::expected<ShapeFitResult, std::string>
 fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-            const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold);
+            const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
+            double bin_floor_z = std::numeric_limits<double>::quiet_NaN());
 
 /**
  * @brief Fit a sphere to the point cloud segment using RANSAC.
@@ -66,7 +73,8 @@ fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& clou
  */
 [[nodiscard]] tl::expected<ShapeFitResult, std::string>
 fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-          const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold);
+          const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
+          double bin_floor_z = std::numeric_limits<double>::quiet_NaN());
 
 /**
  * @brief Fit box, cylinder, and sphere to a point cloud segment and return the best fit.
@@ -77,8 +85,14 @@ fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
  * @param distance_threshold RANSAC inlier distance threshold for cylinder/sphere fitting.
  * @return The ShapeFitResult with the smallest volume, or error string if all fits fail.
  */
+/**
+ * @param forced_shape If non-empty, only fit this shape type ("cylinder", "box", or "sphere").
+ *                     If empty, tries all three and selects the best.
+ */
 [[nodiscard]] tl::expected<ShapeFitResult, std::string>
 fitBestShape(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-             const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold);
+             const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
+             double bin_floor_z = std::numeric_limits<double>::quiet_NaN(),
+             const std::string& forced_shape = "");
 
 }  // namespace get_graspable_grocery_objects_from_masks3d

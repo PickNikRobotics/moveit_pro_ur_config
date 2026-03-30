@@ -10,6 +10,7 @@
 #include <pcl/common/common.h>
 #include <pcl/common/pca.h>
 #include <pcl/features/normal_3d.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/search/kdtree.h>
@@ -26,7 +27,13 @@ constexpr int kMinPointsForFitting = 10;
 constexpr int kRansacMaxIterations = 1000;
 constexpr double kPi = 3.14159265358979323846;
 
-/** @brief Extract the subset of points from a cloud given indices. */
+// Max dimensions for grocery items
+constexpr double kMaxCylinderRadius = 0.20;   // 20cm
+constexpr double kMaxCylinderHeight = 0.40;   // 40cm
+constexpr double kMaxBoxDimension = 0.40;     // 40cm
+constexpr double kMaxSphereRadius = 0.10;     // 10cm
+
+/** @brief Extract the subset of points from a cloud given indices, with statistical outlier removal. */
 [[nodiscard]] pcl::PointCloud<pcl::PointXYZRGB>::Ptr
 extractPoints(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
               const std::shared_ptr<const pcl::PointIndices>& indices)
@@ -40,13 +47,27 @@ extractPoints(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cl
   subset->width = subset->points.size();
   subset->height = 1;
   subset->is_dense = false;
+
+  // Remove statistical outliers (noisy depth points from the mask projection).
+  if (subset->points.size() > 20)
+  {
+    auto filtered = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
+    sor.setInputCloud(subset);
+    sor.setMeanK(20);
+    sor.setStddevMulThresh(1.5);
+    sor.filter(*filtered);
+    spdlog::info("Outlier removal: {} -> {} points", subset->points.size(), filtered->points.size());
+    return filtered;
+  }
+
   return subset;
 }
 }  // namespace
 
 tl::expected<ShapeFitResult, std::string>
 fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-       const std::shared_ptr<const pcl::PointIndices>& indices)
+       const std::shared_ptr<const pcl::PointIndices>& indices, double /*bin_floor_z*/)
 {
   if (static_cast<int>(indices->indices.size()) < kMinPointsForFitting)
   {
@@ -55,52 +76,52 @@ fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
 
   const auto subset = extractPoints(cloud, indices);
 
-  // Compute PCA to get principal axes.
-  pcl::PCA<pcl::PointXYZRGB> pca;
-  pca.setInputCloud(subset);
-
-  const Eigen::Vector4f centroid_4f = pca.getMean();
-  const Eigen::Vector3f centroid = centroid_4f.head<3>();
-  const Eigen::Matrix3f eigenvectors = pca.getEigenVectors();
-
-  // Build transform from cloud frame to PCA-aligned frame.
-  Eigen::Isometry3d origin = Eigen::Isometry3d::Identity();
-  origin.translation() = centroid.cast<double>();
-  origin.linear() = eigenvectors.cast<double>();
-
-  // Project points into PCA frame and find extents.
-  Eigen::Vector3f min_pt(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
-                         std::numeric_limits<float>::max());
-  Eigen::Vector3f max_pt(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(),
-                         std::numeric_limits<float>::lowest());
+  // Find axis-aligned (world frame) extents for bin floor clamping.
+  double world_min_z = std::numeric_limits<double>::max();
+  double world_max_z = std::numeric_limits<double>::lowest();
+  double world_min_x = std::numeric_limits<double>::max();
+  double world_max_x = std::numeric_limits<double>::lowest();
+  double world_min_y = std::numeric_limits<double>::max();
+  double world_max_y = std::numeric_limits<double>::lowest();
 
   for (const auto& pt : subset->points)
   {
-    const Eigen::Vector3f local = eigenvectors.transpose() * (Eigen::Vector3f(pt.x, pt.y, pt.z) - centroid);
-    min_pt = min_pt.cwiseMin(local);
-    max_pt = max_pt.cwiseMax(local);
+    world_min_x = std::min(world_min_x, static_cast<double>(pt.x));
+    world_max_x = std::max(world_max_x, static_cast<double>(pt.x));
+    world_min_y = std::min(world_min_y, static_cast<double>(pt.y));
+    world_max_y = std::max(world_max_y, static_cast<double>(pt.y));
+    world_min_z = std::min(world_min_z, static_cast<double>(pt.z));
+    world_max_z = std::max(world_max_z, static_cast<double>(pt.z));
   }
 
-  const Eigen::Vector3f size = max_pt - min_pt;
-  const Eigen::Vector3f box_center_local = (min_pt + max_pt) * 0.5f;
+  // Build an axis-aligned bounding box in world frame from the observed points.
+  const double size_x = world_max_x - world_min_x;
+  const double size_y = world_max_y - world_min_y;
+  const double size_z = world_max_z - world_min_z;
 
-  // Adjust origin to be at the center of the bounding box.
-  origin.translation() += (eigenvectors * box_center_local).cast<double>();
+  Eigen::Isometry3d origin = Eigen::Isometry3d::Identity();
+  origin.translation() = Eigen::Vector3d(
+      (world_min_x + world_max_x) / 2.0,
+      (world_min_y + world_max_y) / 2.0,
+      (world_min_z + world_max_z) / 2.0);
 
   ShapeFitResult result;
   result.origin = origin;
   result.shape_type = "box";
   result.primitive.type = shape_msgs::msg::SolidPrimitive::BOX;
-  result.primitive.dimensions = { static_cast<double>(size.x()), static_cast<double>(size.y()),
-                                  static_cast<double>(size.z()) };
-  result.volume = static_cast<double>(size.x()) * static_cast<double>(size.y()) * static_cast<double>(size.z());
+  const double clamped_x = std::min(size_x, kMaxBoxDimension);
+  const double clamped_y = std::min(size_y, kMaxBoxDimension);
+  const double clamped_z = std::min(size_z, kMaxBoxDimension);
+  result.primitive.dimensions = { clamped_x, clamped_y, clamped_z };
+  result.volume = clamped_x * clamped_y * clamped_z;
 
   return result;
 }
 
 tl::expected<ShapeFitResult, std::string>
 fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-            const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold)
+            const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
+            double /*bin_floor_z*/)
 {
   if (static_cast<int>(indices->indices.size()) < kMinPointsForFitting)
   {
@@ -143,9 +164,12 @@ fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& clou
   const Eigen::Vector3d axis_point(coefficients.values[0], coefficients.values[1], coefficients.values[2]);
   const Eigen::Vector3d axis_dir(coefficients.values[3], coefficients.values[4], coefficients.values[5]);
   const double radius = std::abs(coefficients.values[6]);
-
-  // Project all points onto the axis to find the height extent.
   const Eigen::Vector3d axis_normalized = axis_dir.normalized();
+
+  spdlog::info("Cylinder RANSAC: axis=[{:.3f}, {:.3f}, {:.3f}], radius={:.4f}",
+               axis_normalized.x(), axis_normalized.y(), axis_normalized.z(), radius);
+
+  // Project all points onto the cylinder axis to find the height extent.
   double min_proj = std::numeric_limits<double>::max();
   double max_proj = std::numeric_limits<double>::lowest();
 
@@ -185,16 +209,18 @@ fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& clou
   result.origin = origin;
   result.shape_type = "cylinder";
   result.primitive.type = shape_msgs::msg::SolidPrimitive::CYLINDER;
-  // CYLINDER dimensions: [height, radius].
-  result.primitive.dimensions = { height, radius };
-  result.volume = kPi * radius * radius * height;
+  const double clamped_height = std::min(height, kMaxCylinderHeight);
+  const double clamped_radius = std::min(radius, kMaxCylinderRadius);
+  result.primitive.dimensions = { clamped_height, clamped_radius };
+  result.volume = kPi * clamped_radius * clamped_radius * clamped_height;
 
   return result;
 }
 
 tl::expected<ShapeFitResult, std::string>
 fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-          const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold)
+          const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
+          double /*bin_floor_z*/)
 {
   if (static_cast<int>(indices->indices.size()) < kMinPointsForFitting)
   {
@@ -230,49 +256,82 @@ fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
   result.origin.translation() = center;
   result.shape_type = "sphere";
   result.primitive.type = shape_msgs::msg::SolidPrimitive::SPHERE;
-  // SPHERE dimensions: [radius].
-  result.primitive.dimensions = { radius };
-  result.volume = (4.0 / 3.0) * kPi * radius * radius * radius;
+  const double clamped_radius = std::min(radius, kMaxSphereRadius);
+  result.primitive.dimensions = { clamped_radius };
+  result.volume = (4.0 / 3.0) * kPi * clamped_radius * clamped_radius * clamped_radius;
 
   return result;
 }
 
 tl::expected<ShapeFitResult, std::string>
 fitBestShape(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-             const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold)
+             const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
+             double bin_floor_z, const std::string& forced_shape)
 {
-  const auto box_result = fitBox(cloud, indices);
-  const auto cylinder_result = fitCylinder(cloud, indices, distance_threshold);
-  const auto sphere_result = fitSphere(cloud, indices, distance_threshold);
+  // If a specific shape is forced, only fit that one.
+  if (forced_shape == "cylinder")
+  {
+    spdlog::info("  Forced shape: cylinder");
+    return fitCylinder(cloud, indices, distance_threshold, bin_floor_z);
+  }
+  if (forced_shape == "box")
+  {
+    spdlog::info("  Forced shape: box");
+    return fitBox(cloud, indices, bin_floor_z);
+  }
+  if (forced_shape == "sphere")
+  {
+    spdlog::info("  Forced shape: sphere");
+    return fitSphere(cloud, indices, distance_threshold, bin_floor_z);
+  }
 
-  // Collect successful fits.
-  std::vector<ShapeFitResult> candidates;
+  // Auto-detect: try all three and pick smallest volume.
+  const auto box_result = fitBox(cloud, indices, bin_floor_z);
+  const auto cylinder_result = fitCylinder(cloud, indices, distance_threshold, bin_floor_z);
+  const auto sphere_result = fitSphere(cloud, indices, distance_threshold, bin_floor_z);
+
   if (box_result.has_value())
   {
     spdlog::info("  Box fit: volume={:.6f} m^3, dims=[{:.4f}, {:.4f}, {:.4f}]", box_result->volume,
                  box_result->primitive.dimensions[0], box_result->primitive.dimensions[1],
                  box_result->primitive.dimensions[2]);
-    candidates.push_back(box_result.value());
+  }
+  else
+  {
+    spdlog::warn("  Box fit FAILED: {}", box_result.error());
   }
   if (cylinder_result.has_value())
   {
     spdlog::info("  Cylinder fit: volume={:.6f} m^3, height={:.4f}, radius={:.4f}", cylinder_result->volume,
                  cylinder_result->primitive.dimensions[0], cylinder_result->primitive.dimensions[1]);
-    candidates.push_back(cylinder_result.value());
+  }
+  else
+  {
+    spdlog::warn("  Cylinder fit FAILED: {}", cylinder_result.error());
   }
   if (sphere_result.has_value())
   {
     spdlog::info("  Sphere fit: volume={:.6f} m^3, radius={:.4f}", sphere_result->volume,
                  sphere_result->primitive.dimensions[0]);
-    candidates.push_back(sphere_result.value());
   }
+  else
+  {
+    spdlog::warn("  Sphere fit FAILED: {}", sphere_result.error());
+  }
+
+  std::vector<ShapeFitResult> candidates;
+  if (box_result.has_value())
+    candidates.push_back(box_result.value());
+  if (cylinder_result.has_value())
+    candidates.push_back(cylinder_result.value());
+  if (sphere_result.has_value())
+    candidates.push_back(sphere_result.value());
 
   if (candidates.empty())
   {
     return tl::make_unexpected("All shape fitting methods failed.");
   }
 
-  // Select the candidate with the smallest bounding volume.
   auto best = std::min_element(candidates.begin(), candidates.end(),
                                [](const ShapeFitResult& a, const ShapeFitResult& b) { return a.volume < b.volume; });
 

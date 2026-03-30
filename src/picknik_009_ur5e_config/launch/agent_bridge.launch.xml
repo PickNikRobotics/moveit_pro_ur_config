@@ -6,4 +6,7 @@
   <include
     file="$(find-pkg-share picknik_009_ur5e_config)/launch/cameras.launch.xml"
   />
+  <include
+    file="$(find-pkg-share picknik_009_ur5e_config)/launch/zed_cameras.launch.xml"
+  />
 </launch>

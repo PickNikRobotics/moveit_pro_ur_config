@@ -101,7 +101,7 @@
       <Action
         ID="GetElementOfVector"
         vector_in="{grocery_objects}"
-        index="0"
+        index="01"
         element="{graspable_object}"
       />
       <Action
@@ -196,16 +196,11 @@
           <!--Check if we have a grip-->
           <Control ID="Sequence" name="CheckGrip">
             <Action ID="WaitForDuration" delay_duration="2.0" />
-            <Action
-              ID="GetEpickObjectDetectionStatus"
-              topic_name="/object_detection_status"
-              message_out="{vacuum_status}"
-            />
             <Control ID="Fallback">
               <Action
-                ID="CompareEpickObjectDetectionStatus"
-                value1="{vacuum_status}"
-                value2="OBJECT_DETECTED_AT_MAX_PRESSURE"
+                ID="GetEpickObjectDetectionStatus"
+                topic_name="/object_detection_status"
+                message_out="{vacuum_status}"
               />
               <Action
                 ID="CompareEpickObjectDetectionStatus"

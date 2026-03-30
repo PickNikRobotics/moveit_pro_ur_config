@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<launch>
+  <!-- Top shelf ZED 2i camera -->
+  <include
+    file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py"
+  >
+    <arg name="camera_name" value="top_shelf_zed" />
+    <arg name="camera_model" value="zed2i" />
+    <arg name="serial_number" value="36944623" />
+    <arg name="publish_tf" value="true" />
+    <arg name="publish_map_tf" value="false" />
+    <arg name="publish_urdf" value="true" />
+  </include>
+
+  <!-- Bottom shelf ZED 2i camera -->
+  <include
+    file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py"
+  >
+    <arg name="camera_name" value="bottom_shelf_zed" />
+    <arg name="camera_model" value="zed2i" />
+    <arg name="serial_number" value="34758561" />
+    <arg name="publish_tf" value="true" />
+    <arg name="publish_map_tf" value="false" />
+    <arg name="publish_urdf" value="true" />
+  </include>
+</launch>
