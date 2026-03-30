@@ -14,6 +14,9 @@
         _collapsed="true"
         wrist_camera_point_cloud="/camera/scene_camera/depth/color/points"
       />
+      <Control ID="Fallback">
+        <SubTree ID="Look at Table" _collapsed="true" />
+      </Control>
     </Control>
   </BehaviorTree>
   <TreeNodesModel>
