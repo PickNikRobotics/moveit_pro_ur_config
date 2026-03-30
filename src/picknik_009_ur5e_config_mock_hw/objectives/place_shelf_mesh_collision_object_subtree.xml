@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root
+  BTCPP_format="4"
+  main_tree_to_execute="Place Shelf Mesh Collision Object Subtree"
+>
+  <BehaviorTree
+    ID="Place Shelf Mesh Collision Object Subtree"
+    _description=""
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree ID="Reset Planning Scene" _collapsed="true" />
+      <Action ID="CreateStampedPose" position_xyz="-0.6096;-0.8509;0.3556" />
+      <Action
+        ID="AddURDF"
+        urdf_name="shelf"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf.urdf"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Place Shelf Mesh Collision Object Subtree">
+      <MetadataFields>
+        <Metadata subcategory="Perception - Planning Scene" />
+        <Metadata runnable="false" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

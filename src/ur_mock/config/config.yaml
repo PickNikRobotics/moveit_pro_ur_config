@@ -48,9 +48,6 @@ moveit_params:
   # Used by the Waypoint Manager to save joint states from this joint group.
   joint_group_name: "manipulator"
 
-  ompl_planning:
-    package: "ur_mock"
-    path: "config/moveit/ompl_planning.yaml"
   kinematics:
     package: "ur_mock"
     path: "config/moveit/pose_ik_distance.yaml"
@@ -60,16 +57,13 @@ moveit_params:
   joint_limits:
     package: "ur_mock"
     path: "config/moveit/joint_limits.yaml"
-  servo_joint_limits:
-    package: "ur_mock"
-    path: "config/moveit/hard_joint_limits.yaml"
   pose_jog:
     package: "ur_mock"
     path: "config/moveit/pose_jog.yaml"
-  joint_jog: 
-    package: "ur_mock" 
-    path: "config/moveit/joint_jog.yaml" 
-    
+  joint_jog:
+    package: "ur_mock"
+    path: "config/moveit/joint_jog.yaml"
+
   publish:
     planning_scene: True
     geometry_updates: True
@@ -93,6 +87,8 @@ objectives:
       - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
+    ur_behaviors:
+      - "ur_behaviors::UrBehaviorsLoader"
     # trigger_pstop_reset_service:
     #   - "trigger_pstop_reset_service::TriggerPStopResetServiceBehaviorsLoader"
   objective_library_paths:

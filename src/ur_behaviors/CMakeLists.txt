@@ -1,23 +1,13 @@
 cmake_minimum_required(VERSION 3.22)
-project(ur_mock)
+project(ur_behaviors)
 
 find_package(ament_cmake REQUIRED)
 find_package(moveit_pro_package REQUIRED)
+find_package(pluginlib REQUIRED)
 moveit_pro_package()
 
 # add custom behaviors
 add_subdirectory(behaviors)
-
-install(
-  DIRECTORY
-    config
-    description
-    launch
-    objectives
-    waypoints
-  DESTINATION
-    share/${PROJECT_NAME}
-)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -28,6 +18,6 @@ endif()
 # plugin loaders that load the behavior base class library from the
 # moveit_pro_behavior package.
 pluginlib_export_plugin_description_file(
-        moveit_pro_behavior_interface behaviors/trigger_pstop_reset_service_plugin_description.xml)
+        moveit_pro_behavior_interface behaviors/ur_behaviors_plugin_description.xml)
 
 ament_package()

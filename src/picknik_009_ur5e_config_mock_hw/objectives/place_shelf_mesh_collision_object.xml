@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Place Shelf Mesh Collision Object">
+  <BehaviorTree
+    ID="Place Shelf Mesh Collision Object"
+    _description=""
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree ID="Reset Planning Scene" _collapsed="true" />
+      <Action ID="CreateStampedPose" position_xyz="0;-0.6096;-0.8128" />
+      <Action
+        ID="AddURDF"
+        urdf_name="shelf"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf.urdf"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_name="shelf_mid_pose"
+        marker_size="0.100000"
+        marker_text="shelf_mid_pose"
+      />
+      <Control ID="Sequence">
+        <Action ID="CreateSolidPrimitiveBox" dimensions="10;10;1" />
+        <Action ID="CreateStampedPose" position_xyz="0;0;-1.3128" />
+        <Action
+          ID="CreateCollisionObjectFromSolidPrimitive"
+          object_id="floor"
+          pose="{pose_stamped}"
+        />
+        <SubTree
+          ID="Convert CollisionObject To GraspableObject"
+          _collapsed="true"
+          graspable_object="{graspable_object}"
+        />
+        <Action ID="ModifyObjectInPlanningScene" object="{graspable_object}" />
+      </Control>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Place Shelf Mesh Collision Object">
+      <MetadataFields>
+        <Metadata subcategory="Perception - Planning Scene" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Place Shelf Collision Object">
+  <BehaviorTree
+    ID="Place Shelf Collision Object"
+    _description=""
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree ID="Reset Planning Scene" _collapsed="true" />
+      <Action ID="CreateStampedPose" position_xyz="0;-0.75;0.3" />
+      <Action ID="CreateSolidPrimitiveBox" dimensions="1.2192;0.4826;1.3716" />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        object_id="shelf"
+        pose="{pose_stamped}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        graspable_object="{graspable_object}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{graspable_object}"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Place Shelf Collision Object" />
+  </TreeNodesModel>
+</root>

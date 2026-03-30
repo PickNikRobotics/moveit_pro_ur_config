@@ -76,6 +76,28 @@ joint_trajectory_controller:
       wrist_3_joint:
         goal: 0.05
 
+joint_velocity_controller:
+  ros__parameters:
+    planning_group_name: manipulator
+    max_joint_velocity:
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+    max_joint_acceleration:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+    command_interfaces: ["position"]
+    joint_limit_position_tolerance: 0.02
+    command_timeout: 0.2
+    state_publish_rate: 20
+
 robotiq_gripper_controller:
   ros__parameters:
     default: true
@@ -140,25 +162,3 @@ velocity_force_controller:
       - 40.0
       - 40.0
       - 40.0
-
-joint_velocity_controller:
-  ros__parameters:
-    planning_group_name: manipulator
-    max_joint_velocity:
-      - 0.524
-      - 0.524
-      - 0.524
-      - 1.047
-      - 1.047
-      - 1.047
-    max_joint_acceleration:
-      - 52.4
-      - 52.4
-      - 52.4
-      - 52.4
-      - 52.4
-      - 52.4
-    command_interfaces: ["position"]
-    joint_limit_position_tolerance: 0.02
-    command_timeout: 0.2
-    state_publish_rate: 20

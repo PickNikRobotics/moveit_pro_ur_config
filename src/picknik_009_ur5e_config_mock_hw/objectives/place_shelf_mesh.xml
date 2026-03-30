@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Place Shelf Mesh">
+  <!--//////////-->
+  <BehaviorTree ID="Place Shelf Mesh" _description="" _favorite="true">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action ID="CreateStampedPose" position_xyz="-0.6096;-0.8509;0.3556" />
+      <Action
+        ID="VisualizeMesh"
+        mesh_name="shelf"
+        mesh_path="package://picknik_009_ur5e_config/description/shelf.stl"
+        mesh_pose="{pose_stamped}"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Place Shelf Mesh">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Perception - Planning Scene" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

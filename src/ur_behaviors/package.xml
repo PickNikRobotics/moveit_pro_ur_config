@@ -1,10 +1,9 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <package format="3">
-  <name>ur_mock</name>
-  <version>9.0.0</version>
-
+  <name>ur_behaviors</name>
+  <version>0.0.0</version>
   <description>
-    MoveIt Pro configuration package for a mock hardware UR arm.
+    Custom behaviors for the UR robot configuration.
   </description>
 
   <maintainer email="support@picknik.ai">MoveIt Pro Maintainer</maintainer>
@@ -16,11 +15,10 @@
   <build_depend>moveit_pro_package</build_depend>
 
   <depend>moveit_pro_behavior_interface</depend>
-  <depend>picknik_accessories</depend>
-  <depend>robotiq_description</depend>
-  <depend>ur_description</depend>
-  <depend>ur_robot_driver</depend>
-  <depend>ur_behaviors</depend>
+  <depend>pluginlib</depend>
+  <depend>tf2_eigen</depend>
+  <depend>visualization_msgs</depend>
+  <depend>geometry_msgs</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

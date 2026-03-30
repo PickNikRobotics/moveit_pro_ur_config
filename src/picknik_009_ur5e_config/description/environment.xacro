@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="environment" params="parent">
+  <xacro:macro name="environment" params="parent xyz:='0 0 0' rpy:='0 0 0'">
     <!-- Import macros -->
     <xacro:include
       filename="$(find picknik_009_ur5e_config)/description/generic_tote.xacro"
     />
+
+    <!-- Environment base link: move this to reposition the entire environment -->
+    <link name="environment_base" />
+    <joint name="${parent}_to_environment_base" type="fixed">
+      <parent link="${parent}" />
+      <child link="environment_base" />
+      <origin xyz="${xyz}" rpy="${rpy}" />
+    </joint>
 
     <!-- Workcell (80/20 aluminum extrusion frame) -->
     <!-- robot_mount in the Locus config is at xyz="0.28 -0.026 -0.2" rpy="0 0 pi/2" from workcell.
@@ -27,8 +35,8 @@
       </collision>
     </link>
 
-    <joint name="${parent}_to_workcell" type="fixed">
-      <parent link="${parent}" />
+    <joint name="environment_base_to_workcell" type="fixed">
+      <parent link="environment_base" />
       <child link="workcell" />
       <origin xyz="0.026 0.28 0.2" rpy="0 0 ${-pi/2}" />
     </joint>
@@ -56,30 +64,6 @@
       z_length="${tote_z}"
       side_wall_thickness="${tote_wall}"
       bottom_thickness="${tote_bottom}"/>
-
-    <!-- Left tote lid (collision-only box on top of the left tote) -->
-    <link name="left_tote_lid">
-      <visual>
-        <geometry>
-          <box size="${tote_x} ${tote_y} ${tote_bottom}"/>
-        </geometry>
-        <origin xyz="${tote_x/2} ${tote_y/2} 0"/>
-        <material name="tote_color">
-          <color rgba="0.5 0.5 0.5 0.5"/>
-        </material>
-      </visual>
-      <collision>
-        <geometry>
-          <box size="${tote_x} ${tote_y} ${tote_bottom}"/>
-        </geometry>
-        <origin xyz="${tote_x/2} ${tote_y/2} 0"/>
-      </collision>
-    </link>
-    <joint name="left_tote_lid_joint" type="fixed">
-      <parent link="left_tote_origin"/>
-      <child link="left_tote_lid"/>
-      <origin xyz="0 0 ${tote_z}" rpy="0 0 0"/>
-    </joint>
 
     <!-- Right tote -->
     <link name="right_tote_origin"/>
@@ -118,12 +102,11 @@
         </geometry>
       </collision>
     </link>
-    <joint name="${parent}_to_camera_mount_bar" type="fixed">
-      <parent link="${parent}" />
+    <joint name="environment_base_to_camera_mount_bar" type="fixed">
+      <parent link="environment_base" />
       <child link="camera_mount_bar" />
       <!-- Center of bar: camera Y minus half bar length, at workcell surface + 17.75" -->
       <origin xyz="0.45 0.538 0.469" rpy="0 0 0" />
     </joint>
-
   </xacro:macro>
 </robot>
