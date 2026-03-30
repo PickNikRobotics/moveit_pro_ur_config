@@ -1,0 +1,4 @@
+objectives:
+  behavior_loader_plugins:
+    ur_behaviors:
+      - "ur_behaviors::UrBehaviorsLoader"

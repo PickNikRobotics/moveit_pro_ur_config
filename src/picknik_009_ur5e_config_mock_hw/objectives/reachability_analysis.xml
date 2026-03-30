@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Reachability Analysis">
+  <BehaviorTree ID="Reachability Analysis" _description="" _favorite="true">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Control ID="Sequence">
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="1.47808;-0.75;0.6698"
+          reference_frame="world"
+          orientation_xyzw="0.500; -0.500; 0.500; 0.500"
+          _skipIf="true"
+        />
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0.47808;-0.75;0.35"
+          reference_frame="world"
+          orientation_xyzw="0.500; -0.500; 0.500; 0.500"
+        />
+        <Action ID="VisualizePose" />
+      </Control>
+      <Control ID="Sequence">
+        <Action
+          ID="CreatePoseStampedGrid"
+          poses="{poses_grid}"
+          pose="{pose_stamped}"
+          offset_x="-0.3048"
+          offset_y="0.24384"
+          repeat_x="3"
+          repeat_y="4"
+        />
+        <Action ID="VisualizePath" path="{poses_grid}" show_poses="true" />
+      </Control>
+      <Control ID="Sequence">
+        <Action ID="ResetVector" vector="{success_vector}" />
+        <Decorator ID="ForEach" vector_in="{poses_grid}" out="{pose}">
+          <Control ID="IfThenElse">
+            <SubTree
+              ID="MTC Plan To Pose Only"
+              _collapsed="true"
+              preview_plans="false"
+            />
+            <Control ID="Sequence">
+              <Action ID="CreateInt32Message" data="1" />
+              <Action ID="UnpackInt32Message" />
+              <Action
+                ID="PushBackVector"
+                input_vector="{success_vector}"
+                output_vector="{success_vector}"
+                element="{data}"
+              />
+            </Control>
+            <Control ID="Sequence">
+              <Action ID="CreateInt32Message" data="0" />
+              <Action ID="UnpackInt32Message" />
+              <Action
+                ID="PushBackVector"
+                input_vector="{success_vector}"
+                output_vector="{success_vector}"
+                element="{data}"
+              />
+            </Control>
+          </Control>
+        </Decorator>
+      </Control>
+      <Control ID="Sequence">
+        <Action
+          ID="SolveIKQueries"
+          target_poses="{poses_grid}"
+          ik_query_results="{ik_query_results}"
+          _skipIf="true"
+        />
+        <Action ID="ResetVector" vector="{successful_poses}" />
+        <Decorator ID="ForEach" vector_in="{success_vector}">
+          <Control ID="IfThenElse">
+            <Decorator ID="Precondition" else="FAILURE" if="out==1">
+              <Action ID="AlwaysSuccess" />
+            </Decorator>
+            <Control ID="Sequence">
+              <Action
+                ID="GetElementOfVector"
+                element="{element}"
+                vector_in="{poses_grid}"
+              />
+              <Action
+                ID="PushBackVector"
+                element="{element}"
+                input_vector="{successful_poses}"
+                output_vector="{successful_poses}"
+              />
+            </Control>
+            <Action ID="AlwaysSuccess" />
+          </Control>
+        </Decorator>
+        <Control ID="Sequence">
+          <Action
+            ID="PublishMarkers"
+            marker_type="sphere"
+            marker_poses="{successful_poses}"
+            marker_scale_xyz="0.05;0.05;0.05"
+          />
+        </Control>
+      </Control>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Reachability Analysis" />
+  </TreeNodesModel>
+</root>

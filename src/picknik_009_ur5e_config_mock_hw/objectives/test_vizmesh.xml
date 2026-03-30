@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="test_vizMesh">
+  <!--//////////-->
+  <BehaviorTree ID="test_vizMesh" _description="" _favorite="false">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action ID="AlwaysSuccess" />
+      <Action ID="CreateStampedPose" />
+      <Action ID="VisualizePose" />
+      <Action
+        ID="VisualizeMesh"
+        mesh_pose="{pose_stamped}"
+        mesh_path="package://picknik_009_ur5e_config/description/rail_lower.stl"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="test_vizMesh">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Uncategorized" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

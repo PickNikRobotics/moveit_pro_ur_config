@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="MTC Plan To Pose Only">
+  <!--//////////-->
+  <BehaviorTree ID="MTC Plan To Pose Only">
+    <Control ID="Sequence">
+      <Action ID="InitializeMTCTask" />
+      <Action ID="SetupMTCCurrentState" />
+      <Action ID="SetupMTCPlanToPose" target_pose="{pose}" />
+      <Action ID="PlanMTCTask" max_solutions="4" />
+      <Decorator ID="Precondition" else="SUCCESS" if="preview_plans==true">
+        <Action ID="WaitForUserTrajectoryApproval" />
+      </Decorator>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="MTC Plan To Pose Only">
+      <MetadataFields>
+        <Metadata runnable="false" />
+        <Metadata subcategory="Motion - Planning" />
+      </MetadataFields>
+      <inout_port
+        name="pose"
+        default="{pose}"
+        type="geometry_msgs::msg::PoseStamped"
+      />
+      <inout_port name="preview_plans" default="false" type="bool" />
+    </SubTree>
+  </TreeNodesModel>
+</root>

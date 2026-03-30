@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Determine Camera Placement">
+  <BehaviorTree
+    ID="Determine Camera Placement"
+    _description=""
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Control ID="Sequence">
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0.4;0.4;0.2"
+          orientation_xyzw="0.643; 0.000; 0.000; 0.766"
+          stamped_pose="{camera_pose_1}"
+        />
+        <Action
+          ID="VisualizePose"
+          marker_name="camera_pose_1"
+          marker_size="1"
+          marker_text="camera_pose_1"
+          pose="{camera_pose_1}"
+        />
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="-0.4;0.4;0.2"
+          orientation_xyzw="0.643; 0.000; 0.000; 0.766"
+          stamped_pose="{camera_pose_2}"
+          _skipIf="true"
+        />
+        <Action
+          ID="VisualizePose"
+          marker_name="camera_pose_2"
+          marker_size="1"
+          marker_text="camera_pose_2"
+          pose="{camera_pose_2}"
+          _skipIf="true"
+        />
+      </Control>
+      <Control ID="Sequence">
+        <Action
+          ID="VisualizeCameraFrustum"
+          camera_pose="{camera_pose_1}"
+          horizontal_fov="65"
+          vertical_fov="40"
+          near_plane=".5"
+          far_plane="3"
+          marker_namespace="c1"
+        />
+        <Action
+          ID="VisualizeCameraFrustum"
+          camera_pose="{camera_pose_2}"
+          horizontal_fov="65"
+          vertical_fov="40"
+          near_plane=".5"
+          far_plane="3"
+          marker_namespace="c2"
+        />
+      </Control>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Determine Camera Placement" />
+  </TreeNodesModel>
+</root>

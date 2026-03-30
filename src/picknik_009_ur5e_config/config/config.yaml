@@ -32,10 +32,11 @@ objectives:
       - "moveit_pro::behaviors::MTCCoreBehaviorsLoader"
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
-    epick:
-      - "epick_moveit_studio::BehaviorLoader"
-    custom:
-      - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"
+
+    # epick:
+    #   - "epick_moveit_studio::BehaviorLoader"
+    # custom:
+    #   - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"
   objective_library_paths:
     site_objectives:
       package_name: "picknik_009_ur5e_config"

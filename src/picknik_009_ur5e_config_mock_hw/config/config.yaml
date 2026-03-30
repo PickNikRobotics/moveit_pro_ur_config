@@ -1,0 +1,21 @@
+#
+#  Mock hardware config for Dev-009 UR5e + EPick gripper
+#  Inherits from picknik_009_ur5e_config, overrides for fake hardware
+#
+
+based_on_package: "picknik_009_ur5e_config"
+
+hardware:
+  simulated: true
+
+  robot_description:
+    urdf_params:
+      - use_fake_hardware: "true"
+      - robot_ip: "0.0.0.0"
+      - has_tool_changer: "false"
+
+objectives:
+  objective_library_paths:
+    mock_hw_objectives:
+      package_name: "picknik_009_ur5e_config_mock_hw"
+      relative_path: "objectives"

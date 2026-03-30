@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Visualize Grasp Link">
+  <!--//////////-->
+  <BehaviorTree ID="Visualize Grasp Link" _description="" _favorite="false">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action ID="CreateStampedPose" reference_frame="grasp_link" />
+      <Action
+        ID="VisualizePose"
+        marker_text="grasp_link"
+        marker_name="grasp_link"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Visualize Grasp Link">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Basic Examples" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

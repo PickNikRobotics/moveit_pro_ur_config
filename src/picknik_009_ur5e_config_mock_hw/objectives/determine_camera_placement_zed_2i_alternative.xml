@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root
+  BTCPP_format="4"
+  main_tree_to_execute="Determine Camera Placement Zed 2i alternative"
+>
+  <BehaviorTree
+    ID="Determine Camera Placement Zed 2i alternative"
+    _description=""
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Control ID="Sequence">
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0;-0.1;0"
+          orientation_xyzw="0.707; 0.000; 0.000; 0.707"
+          stamped_pose="{camera_pose_1}"
+        />
+        <Action
+          ID="VisualizePose"
+          marker_name="camera_pose_1"
+          marker_size="0.1"
+          marker_text="camera_pose_1"
+          pose="{camera_pose_1}"
+        />
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0.6;0.1;0.6"
+          orientation_xyzw="0.683; -0.183; -0.183; 0.683"
+          stamped_pose="{camera_pose_2}"
+        />
+        <Action
+          ID="VisualizePose"
+          marker_name="camera_pose_2"
+          marker_size="0.1"
+          marker_text="camera_pose_2"
+          pose="{camera_pose_2}"
+        />
+      </Control>
+      <Control ID="Sequence">
+        <Action
+          ID="VisualizeCameraFrustum"
+          camera_pose="{camera_pose_1}"
+          horizontal_fov="120"
+          vertical_fov="70"
+          near_plane="0.3"
+          far_plane="12"
+          marker_namespace="c1"
+        />
+        <Action
+          ID="VisualizeCameraFrustum"
+          camera_pose="{camera_pose_2}"
+          horizontal_fov="120"
+          vertical_fov="70"
+          near_plane="0.3"
+          far_plane="12"
+          marker_namespace="c2"
+        />
+      </Control>
+      <Control ID="Sequence">
+        <Action ID="CreateStampedPose" position_xyz="0.6;0.1;0.2" />
+        <Action ID="CreateSolidPrimitiveBox" dimensions="0.1;0.1;1.5" />
+        <Action
+          ID="CreateCollisionObjectFromSolidPrimitive"
+          object_id="tripod"
+          pose="{pose_stamped}"
+        />
+        <SubTree
+          ID="Convert CollisionObject To GraspableObject"
+          graspable_object="{graspable_object}"
+        />
+        <Action ID="GetCurrentPlanningScene" />
+        <Action
+          ID="AddVirtualObjectToPlanningScene"
+          object="{graspable_object}"
+        />
+      </Control>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Determine Camera Placement Zed 2i alternative">
+      <MetadataFields>
+        <Metadata subcategory="Perception - 2D Image" />
+        <Metadata runnable="true" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>
