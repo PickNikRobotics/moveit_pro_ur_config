@@ -156,8 +156,56 @@
     <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <!-- Environment removed for current setup -->
+  <!-- Environment: table, walls, scene camera -->
   <xacro:include filename="$(find picknik_009_ur5e_config)/description/environment.xacro"/>
-  <xacro:environment parent="world"/>
+  <xacro:environment parent="world" xyz="0.0 -0.78 -0.435" rpy="0.0 0.0 0.0"/>
+
+  <link name="ur_stand">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://picknik_009_ur5e_config/description/ur_stand.stl" />
+      </geometry>
+      <material name="workcell_material">
+        <color rgba="0.792 0.820 0.933 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://picknik_009_ur5e_config/description/ur_stand.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="world_to_ur_stand" type="fixed">
+    <parent link="world"/>
+    <child link="ur_stand"/>
+    <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0"/>
+  </joint>
+
+  <link name="shelf">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://picknik_009_ur5e_config/description/shelf.stl" />
+      </geometry>
+      <material name="workcell_material">
+        <color rgba="0.792 0.820 0.933 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://picknik_009_ur5e_config/description/shelf.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="world_to_shelf" type="fixed">
+    <parent link="world"/>
+    <child link="shelf"/>
+    <origin xyz="0.0 0.66 -0.805" rpy="0.0 0.0 3.14159"/>
+  </joint>
 
 </robot>
