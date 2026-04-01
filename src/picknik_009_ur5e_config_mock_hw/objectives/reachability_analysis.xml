@@ -12,9 +12,9 @@
         />
         <Action
           ID="CreateStampedPose"
-          position_xyz="0.47808;-0.75;0.35"
+          position_xyz="0.47808;0.8;0.4"
           reference_frame="world"
-          orientation_xyzw="0.500; -0.500; 0.500; 0.500"
+          orientation_xyzw="-0.707; 0.000; 0.000; 0.707"
         />
         <Action ID="VisualizePose" />
       </Control>
@@ -23,10 +23,10 @@
           ID="CreatePoseStampedGrid"
           poses="{poses_grid}"
           pose="{pose_stamped}"
-          offset_x="-0.3048"
-          offset_y="0.24384"
-          repeat_x="3"
-          repeat_y="4"
+          offset_x="-0.24384"
+          offset_y="0.3048"
+          repeat_x="4"
+          repeat_y="3"
         />
         <Action ID="VisualizePath" path="{poses_grid}" show_poses="true" />
       </Control>
@@ -37,7 +37,7 @@
             <SubTree
               ID="MTC Plan To Pose Only"
               _collapsed="true"
-              preview_plans="false"
+              preview_plans="true"
             />
             <Control ID="Sequence">
               <Action ID="CreateInt32Message" data="1" />
