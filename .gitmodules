@@ -17,3 +17,7 @@
 	path = src/external_dependencies/ros2_epick_gripper
 	url = git@github.com:arthurgomes4/ros2_epick_gripper.git
 	branch = pr-mpro-9.1
+	ignore = dirty
+[submodule "src/zed-ros2-wrapper"]
+	path = src/zed-ros2-wrapper
+	url = git@github.com:PickNikRobotics/zed-ros2-wrapper.git

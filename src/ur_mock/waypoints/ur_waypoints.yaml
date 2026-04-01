@@ -1,6 +1,82 @@
 - description: ''
   favorite: false
   joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
+    - 5.732798099517822
+    - -3.32279171566152
+    - -1.609384298324585
+    - 4.884222405939855
+    - -0.5008519331561487
+    - -1.578332249318258
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Bottom Left Shelf Staging
+- description: ''
+  favorite: false
+  joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
+    - 4.059340476989746
+    - -3.3408662281432093
+    - -1.323786735534668
+    - 4.604496164912842
+    - -2.2536190191852015
+    - -1.568756405507223
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Bottom Right Shelf Staging
+- description: ''
+  favorite: false
+  joint_group_names:
   - manipulator
   joint_state:
     effort: []
@@ -35,154 +111,6 @@
     twist: []
     wrench: []
   name: Drop
-- description: ''
-  favorite: true
-  joint_group_names:
-  - manipulator
-  joint_state:
-    effort: []
-    header:
-      frame_id: world
-      stamp:
-        nanosec: 0
-        sec: 0
-    name:
-    - shoulder_pan_joint
-    - shoulder_lift_joint
-    - elbow_joint
-    - wrist_1_joint
-    - wrist_2_joint
-    - wrist_3_joint
-    position:
-    - 0
-    - -1.41
-    - -0.7
-    - -2.12
-    - 1.67
-    - 0
-    velocity: []
-  multi_dof_joint_state:
-    header:
-      frame_id: ''
-      stamp:
-        nanosec: 0
-        sec: 0
-    joint_names: []
-    transforms: []
-    twist: []
-    wrench: []
-  name: Forward Down
-- description: ''
-  favorite: true
-  joint_group_names:
-  - manipulator
-  joint_state:
-    effort: []
-    header:
-      frame_id: world
-      stamp:
-        nanosec: 0
-        sec: 0
-    name:
-    - shoulder_pan_joint
-    - shoulder_lift_joint
-    - elbow_joint
-    - wrist_1_joint
-    - wrist_2_joint
-    - wrist_3_joint
-    position:
-    - 2.7712432925819273
-    - -1.4531914890259676
-    - -1.96615025453015
-    - -1.0617789845470658
-    - 1.5878968566255958
-    - -0.07080028000697597
-    velocity: []
-  multi_dof_joint_state:
-    header:
-      frame_id: ''
-      stamp:
-        nanosec: 0
-        sec: 0
-    joint_names: []
-    transforms: []
-    twist: []
-    wrench: []
-  name: Grab
-- description: ''
-  favorite: true
-  joint_group_names:
-  - manipulator
-  joint_state:
-    effort: []
-    header:
-      frame_id: world
-      stamp:
-        nanosec: 0
-        sec: 0
-    name:
-    - shoulder_pan_joint
-    - shoulder_lift_joint
-    - elbow_joint
-    - wrist_1_joint
-    - wrist_2_joint
-    - wrist_3_joint
-    position:
-    - 0
-    - -0.78
-    - -0.51
-    - -2.4
-    - 1.65
-    - 0
-    velocity: []
-  multi_dof_joint_state:
-    header:
-      frame_id: ''
-      stamp:
-        nanosec: 0
-        sec: 0
-    joint_names: []
-    transforms: []
-    twist: []
-    wrench: []
-  name: Home
-- description: ''
-  favorite: true
-  joint_group_names:
-  - manipulator
-  joint_state:
-    effort: []
-    header:
-      frame_id: world
-      stamp:
-        nanosec: 0
-        sec: 0
-    name:
-    - shoulder_pan_joint
-    - shoulder_lift_joint
-    - elbow_joint
-    - wrist_1_joint
-    - wrist_2_joint
-    - wrist_3_joint
-    position:
-    - 0.58
-    - -0.78
-    - -0.45
-    - -2.33
-    - 1.64
-    - 0
-    velocity: []
-  multi_dof_joint_state:
-    header:
-      frame_id: ''
-      stamp:
-        nanosec: 0
-        sec: 0
-    joint_names: []
-    transforms: []
-    twist: []
-    wrench: []
-  name: Left Corner
 - description: ''
   favorite: false
   joint_group_names:
@@ -277,6 +205,44 @@
     - wrist_2_joint
     - wrist_3_joint
     position:
+    - -2.0377066771136683
+    - -1.5402558551034709
+    - 1.150489632283346
+    - 1.5726730066486816
+    - 1.3857605457305908
+    - -3.5445810000049036
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Look at Grocery Bin
+- description: ''
+  favorite: false
+  joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
     - -0.9470306734584135
     - -1.8352257443577602
     - -1.2294066378076531
@@ -295,43 +261,6 @@
     twist: []
     wrench: []
   name: Look at Left Bin
-- description: ''
-  favorite: true
-  joint_group_names:
-  - manipulator
-  joint_state:
-    effort: []
-    header:
-      frame_id: world
-      stamp:
-        nanosec: 0
-        sec: 0
-    name:
-    - shoulder_pan_joint
-    - shoulder_lift_joint
-    - elbow_joint
-    - wrist_1_joint
-    - wrist_2_joint
-    - wrist_3_joint
-    position:
-    - 3.03
-    - -0.78
-    - -0.51
-    - -2.39
-    - 1.65
-    - 0
-    velocity: []
-  multi_dof_joint_state:
-    header:
-      frame_id: ''
-      stamp:
-        nanosec: 0
-        sec: 0
-    joint_names: []
-    transforms: []
-    twist: []
-    wrench: []
-  name: Look at Pick and Place Zone
 - description: ''
   favorite: false
   joint_group_names:
@@ -371,13 +300,14 @@
     wrench: []
   name: Look at Right Bin
 - description: ''
-  favorite: true
+  favorite: false
   joint_group_names:
+  - gripper
   - manipulator
   joint_state:
     effort: []
     header:
-      frame_id: world
+      frame_id: ''
       stamp:
         nanosec: 0
         sec: 0
@@ -389,12 +319,12 @@
     - wrist_2_joint
     - wrist_3_joint
     position:
-    - 3.03
-    - -0.78
-    - -0.51
-    - -2.39
-    - 1.65
-    - 0
+    - 4.953617572784424
+    - -1.7825623951353968
+    - -2.142378330230713
+    - 5.552966105728903
+    - 1.6278605461120605
+    - -2.760094229375021
     velocity: []
   multi_dof_joint_state:
     header:
@@ -406,7 +336,7 @@
     transforms: []
     twist: []
     wrench: []
-  name: Look at Table
+  name: Middle Shelf Top Pick
 - description: ''
   favorite: false
   joint_group_names:
@@ -592,43 +522,6 @@
     twist: []
     wrench: []
   name: Place Right
-- description: ''
-  favorite: true
-  joint_group_names:
-  - manipulator
-  joint_state:
-    effort: []
-    header:
-      frame_id: world
-      stamp:
-        nanosec: 0
-        sec: 0
-    name:
-    - shoulder_pan_joint
-    - shoulder_lift_joint
-    - elbow_joint
-    - wrist_1_joint
-    - wrist_2_joint
-    - wrist_3_joint
-    position:
-    - -0.61
-    - -0.78
-    - -0.45
-    - -2.49
-    - 1.64
-    - 0
-    velocity: []
-  multi_dof_joint_state:
-    header:
-      frame_id: ''
-      stamp:
-        nanosec: 0
-        sec: 0
-    joint_names: []
-    transforms: []
-    twist: []
-    wrench: []
-  name: Right Corner
 - description: ''
   favorite: false
   joint_group_names:

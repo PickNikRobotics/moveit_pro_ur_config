@@ -46,6 +46,13 @@
       <SubTree ID="Clear Snapshot" _collapsed="true" />
       <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
       <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <!--Load Pringles exemplar image for multimodal segmentation-->
+      <Action
+        ID="LoadImageFromFile"
+        file_path="~/user_ws/qualcomm_image_exemplars/pringles.png"
+        frame_id="camera"
+        image="{pringles_exemplar_image}"
+      />
       <Action
         ID="GetMasks2DFromExemplar"
         model_package="picknik_009_ur5e_config"
@@ -56,7 +63,8 @@
         confidence_threshold="0.5"
         confidence_scores_str="{confidence_scores_str}"
         target_image="{wrist_camera_image}"
-        text_prompt="a tall red can of Pringles potato chips. There is a white design on the side and the lid of the can. The item has a red lid with a white logo. "
+        exemplar_image="{pringles_exemplar_image}"
+        text_prompt="a tall red can of Pringles potato chips. There is a white design on the side and the lid of the can.  "
         confidence_scores="{confidence_scores}"
         masks2d="{masks2d}"
       />
@@ -95,6 +103,7 @@
         plane_inlier_threshold="0.020000"
         minimum_face_area="0"
         face_separation_threshold="0.025000"
+        max_objects="1"
         graspable_objects="{grocery_objects}"
         segment_cloud="{segment_cloud}"
       />

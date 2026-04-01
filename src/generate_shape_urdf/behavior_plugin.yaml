@@ -1,0 +1,4 @@
+objectives:
+  behavior_loader_plugins:
+    generate_shape_urdf:
+      - "generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader"
