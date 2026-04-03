@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Visualize Placement Zones">
+  <BehaviorTree
+    ID="Visualize Placement Zones"
+    _description="Loads calibrated shelf poses and visualizes placement zones with product names from config/placement_zones.yaml."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action ID="LoadPoseStampedFromYaml" file_path="calibration/top_shelf_pose.yaml" output="{top_shelf_pose}" />
+      <Action ID="LoadPoseStampedFromYaml" file_path="calibration/bottom_shelf_pose.yaml" output="{bottom_shelf_pose}" />
+      <Action
+        ID="VisualizePlacementZones"
+        top_shelf_pose="{top_shelf_pose}"
+        bottom_shelf_pose="{bottom_shelf_pose}"
+        config_file="../config/placement_zones.yaml"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Visualize Placement Zones">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

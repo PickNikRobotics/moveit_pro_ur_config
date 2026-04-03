@@ -122,10 +122,130 @@
         object="{shelf_base_graspable}"
       />
 
+      <!--=== LOAD CALIBRATED TABLE ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/table_calibrated_pose.yaml"
+        output="{table_calibrated_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.8288;0.46;0.74"
+        solid_primitive="{table_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{table_box}"
+        pose="{table_calibrated_pose}"
+        object_id="calibrated_table"
+        collision_object="{table_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{table_collision}"
+        graspable_object="{table_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{table_graspable}"
+      />
+
+      <!--=== LOAD CALIBRATED BIN ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bin_calibrated_pose.yaml"
+        output="{bin_calibrated_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.6096;0.381;0.1905"
+        solid_primitive="{bin_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{bin_box}"
+        pose="{bin_calibrated_pose}"
+        object_id="calibrated_bin"
+        collision_object="{bin_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{bin_collision}"
+        graspable_object="{bin_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{bin_graspable}"
+      />
+
+      <!--=== LOAD CALIBRATED POLE ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/pole_calibrated_pose.yaml"
+        output="{pole_calibrated_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.06;0.06;0.7112"
+        solid_primitive="{pole_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{pole_box}"
+        pose="{pole_calibrated_pose}"
+        object_id="calibrated_pole"
+        collision_object="{pole_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{pole_collision}"
+        graspable_object="{pole_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{pole_graspable}"
+      />
+
+      <!--=== LOAD CALIBRATED CAMERA ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/camera_calibrated_pose.yaml"
+        output="{camera_calibrated_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.10;0.10;0.05"
+        solid_primitive="{camera_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{camera_box}"
+        pose="{camera_calibrated_pose}"
+        object_id="calibrated_camera"
+        collision_object="{camera_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{camera_collision}"
+        graspable_object="{camera_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{camera_graspable}"
+      />
+
       <Action
         ID="LogMessage"
         log_level="info"
-        message="Calibrated scene loaded: top shelf, bottom shelf, back, and base."
+        message="Calibrated scene loaded: shelves, back, base, table, bin, pole, and camera."
       />
     </Control>
   </BehaviorTree>

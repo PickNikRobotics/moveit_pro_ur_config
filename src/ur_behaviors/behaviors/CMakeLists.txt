@@ -4,16 +4,20 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   tf2_eigen
   visualization_msgs
   geometry_msgs
+  moveit_studio_vision_msgs
   )
 foreach(package IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${package} REQUIRED)
 endforeach()
+find_package(yaml-cpp REQUIRED)
 
 add_library(
         ur_behaviors
         SHARED
         src/visualize_camera_frustum.cpp
         src/create_pose_stamped_grid.cpp
+        src/visualize_placement_zones.cpp
+        src/get_highest_confidence_mask.cpp
         src/register_behaviors.cpp)
 target_include_directories(
         ur_behaviors
@@ -21,6 +25,7 @@ target_include_directories(
         $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(ur_behaviors
         ${THIS_PACKAGE_INCLUDE_DEPENDS})
+target_link_libraries(ur_behaviors yaml-cpp)
 
 # Install Libraries
 install(

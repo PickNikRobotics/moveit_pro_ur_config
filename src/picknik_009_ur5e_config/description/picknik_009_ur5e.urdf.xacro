@@ -156,17 +156,26 @@
     <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <!-- Environment: table, tote, scene camera pole -->
+  <!-- Environment objects (table, bin, pole, camera) are placed dynamically
+       by the "Calibrate Bin" and "Load Calibrated Scene" objectives. -->
   <xacro:include filename="$(find picknik_009_ur5e_config)/description/environment.xacro"/>
-  <xacro:environment parent="world" xyz="0.0 -0.74 -0.435" rpy="0.0 0.0 0.0"/>
+  <xacro:environment parent="world"/>
 
-  <!-- Scene camera (D415) on pole above bin, facing down at 75 degrees -->
+  <!-- Scene camera (D415) at calibrated mount position above bin.
+       Position from calibration/camera_calibrated_pose.yaml.
+       Orientation: flipped (roll=pi), pitched 75 deg down, rotated 90 deg yaw. -->
+  <link name="scene_camera_mount" />
+  <joint name="world_to_scene_camera_mount" type="fixed">
+    <parent link="world" />
+    <child link="scene_camera_mount" />
+    <origin xyz="0.046 -0.984 0.563" rpy="0 0 0" />
+  </joint>
   <xacro:realsense_d415
     parent="scene_camera_mount"
     name="scene_camera"
     use_mesh="true"
   >
-    <origin xyz="0 0 0" rpy="${pi} ${75 * pi / 180} ${pi / 2}" />
+    <origin xyz="0 0 0" rpy="${pi} ${100 * pi / 180} ${-pi / 2}" />
   </xacro:realsense_d415>
 
   <link name="ur_stand">

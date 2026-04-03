@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Calibrate Bin">
+  <BehaviorTree
+    ID="Calibrate Bin"
+    _description="Calibrates the bin position using AprilTag 4. Places approximate bin and pole collision objects, detects tag 4 from multiple waypoints, computes calibrated bin opening center, and places calibrated bin, pole, and camera collision objects."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--=== PLACE APPROXIMATE BIN + POLE for collision avoidance ===-->
+      <Action
+        ID="CreateStampedPose"
+        position_xyz="0.0;-0.74;0.031"
+        orientation_xyzw="0;0;0;1"
+        reference_frame="world"
+        stamped_pose="{bin_estimate_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.6096;0.381;0.1905"
+        solid_primitive="{bin_estimate_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{bin_estimate_box}"
+        pose="{bin_estimate_pose}"
+        object_id="bin_estimate"
+        collision_object="{bin_estimate_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{bin_estimate_collision}"
+        graspable_object="{bin_estimate_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{bin_estimate_graspable}"
+      />
+      <Action
+        ID="CreateStampedPose"
+        position_xyz="0.0;-0.97;0.291"
+        orientation_xyzw="0;0;0;1"
+        reference_frame="world"
+        stamped_pose="{pole_estimate_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.06;0.06;0.7112"
+        solid_primitive="{pole_estimate_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{pole_estimate_box}"
+        pose="{pole_estimate_pose}"
+        object_id="pole_estimate"
+        collision_object="{pole_estimate_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{pole_estimate_collision}"
+        graspable_object="{pole_estimate_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{pole_estimate_graspable}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Bin and pole estimates placed. Starting bin tag detection..."
+      />
+
+      <!--=== DETECT TAG 4 ===-->
+      <Action ID="ResetPoseStampedVector" vector="{tag4_poses}" />
+      <Decorator ID="ForceSuccess">
+        <SubTree
+          ID="Detect Tag at Waypoint"
+          _collapsed="true"
+          waypoint_name="Bin Tag 1"
+          target_id="4"
+          tag_pose="{tag_pose_tmp}"
+          tag_poses_vector="{tag4_poses}"
+        />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <SubTree
+          ID="Detect Tag at Waypoint"
+          _collapsed="true"
+          waypoint_name="Bin Tag 2"
+          target_id="4"
+          tag_pose="{tag_pose_tmp}"
+          tag_poses_vector="{tag4_poses}"
+        />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <SubTree
+          ID="Detect Tag at Waypoint"
+          _collapsed="true"
+          waypoint_name="Bin Tag 3"
+          target_id="4"
+          tag_pose="{tag_pose_tmp}"
+          tag_poses_vector="{tag4_poses}"
+        />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <SubTree
+          ID="Detect Tag at Waypoint"
+          _collapsed="true"
+          waypoint_name="Bin Tag 4"
+          target_id="4"
+          tag_pose="{tag_pose_tmp}"
+          tag_poses_vector="{tag4_poses}"
+        />
+      </Decorator>
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag4_poses}"
+        average_pose_stamped="{tag4_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag4_bin"
+        marker_size="0.105000"
+        pose="{tag4_avg_pose}"
+        marker_text="Tag 4 (Bin)"
+      />
+
+      <!--=== COMPUTE CALIBRATED BIN OPENING CENTER ===-->
+      <!--The detected tag pose has a rotated orientation (tag Z points toward robot).
+          Override to identity first so TransformPose offsets apply in world frame.
+          From tag to bin opening center (world frame):
+            X: +0.2525 (right, since tag is 25.25cm to the left of center)
+            Y: -0.18125 (away from robot, tag is 18.125cm toward robot from center)
+            Z: +0.0525 (up, tag is 5.25cm below the opening) -->
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{tag4_avg_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{tag4_world_aligned}"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{tag4_world_aligned}"
+        output_pose="{bin_opening_center}"
+        translation_xyz="0.2525;-0.18125;0.0525"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bin_opening_center"
+        marker_size="0.100000"
+        pose="{bin_opening_center}"
+        marker_text="Bin Opening Center (Calibrated)"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{bin_opening_center}"
+        file_name="calibration/bin_opening_center_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bin_opening_center_pose.yaml"
+        overwrite="true"
+        message="{bin_opening_center}"
+      />
+
+      <!--=== PLACE CALIBRATED BIN BOX ===-->
+      <!--Bin center = opening_center + (0, 0, -tote_z/2) = (0, 0, -0.095) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{bin_calibrated_pose}"
+        translation_xyz="0;0;-0.095"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.6096;0.381;0.1905"
+        solid_primitive="{bin_cal_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{bin_cal_box}"
+        pose="{bin_calibrated_pose}"
+        object_id="calibrated_bin"
+        collision_object="{bin_cal_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{bin_cal_collision}"
+        graspable_object="{bin_cal_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{bin_cal_graspable}"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bin_calibrated_pose.yaml"
+        overwrite="true"
+        message="{bin_calibrated_pose}"
+      />
+
+      <!--=== PLACE CALIBRATED POLE ===-->
+      <!--Pole center = opening_center + (0, -0.2305, 0.1651) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{pole_calibrated_pose}"
+        translation_xyz="0;-0.2305;0.1651"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.06;0.06;0.7112"
+        solid_primitive="{pole_cal_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{pole_cal_box}"
+        pose="{pole_calibrated_pose}"
+        object_id="calibrated_pole"
+        collision_object="{pole_cal_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{pole_cal_collision}"
+        graspable_object="{pole_cal_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{pole_cal_graspable}"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/pole_calibrated_pose.yaml"
+        overwrite="true"
+        message="{pole_calibrated_pose}"
+      />
+
+      <!--=== PLACE CALIBRATED CAMERA ===-->
+      <!--Camera mount = opening_center + (0, -0.2005, 0.5207) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{camera_calibrated_pose}"
+        translation_xyz="0;-0.2005;0.5207"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="0.10;0.10;0.05"
+        solid_primitive="{camera_cal_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{camera_cal_box}"
+        pose="{camera_calibrated_pose}"
+        object_id="calibrated_camera"
+        collision_object="{camera_cal_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{camera_cal_collision}"
+        graspable_object="{camera_cal_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{camera_cal_graspable}"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/camera_calibrated_pose.yaml"
+        overwrite="true"
+        message="{camera_calibrated_pose}"
+      />
+
+      <!--=== PLACE CALIBRATED TABLE ===-->
+      <!--Table directly under the bin, bin centered on table top.
+          Table top = bottom of bin = bin_opening_center + (0, 0, -tote_z) = (0, 0, -0.1905)
+          Table bottom = floor = z=-0.805
+          Table height ≈ 0.74m, table center Z offset from bin_opening_center = -0.561
+          Table dims: 1.8288 x 0.46 x 0.74 (original table dimensions) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{table_calibrated_pose}"
+        translation_xyz="0;0;-0.561"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.8288;0.46;0.74"
+        solid_primitive="{table_cal_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{table_cal_box}"
+        pose="{table_calibrated_pose}"
+        object_id="calibrated_table"
+        collision_object="{table_cal_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{table_cal_collision}"
+        graspable_object="{table_cal_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{table_cal_graspable}"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/table_calibrated_pose.yaml"
+        overwrite="true"
+        message="{table_calibrated_pose}"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Bin calibration complete. Table, bin, pole, and camera placed and poses saved."
+      />
+    </Control>
+  </BehaviorTree>
+
+  <TreeNodesModel>
+    <SubTree ID="Calibrate Bin">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

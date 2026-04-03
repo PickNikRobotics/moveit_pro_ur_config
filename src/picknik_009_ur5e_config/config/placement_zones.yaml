@@ -1,0 +1,24 @@
+# Placement zone configuration for shelf stocking.
+# Each shelf has 6 evenly spaced slots numbered left-to-right (1-6).
+# Products are assigned to slots by name.
+# The shelf_only STL is 1.27m wide. 6 slots = 0.2117m per slot.
+# Slot centers in shelf X: -0.529, -0.317, -0.106, 0.106, 0.317, 0.529
+# Placement Y offset from shelf pose: -0.20 (center of shelf depth in shelf frame)
+# Placement Z offset from shelf pose: 0.0 (on the shelf surface)
+# HEY: This is right to left (slot 1 is the right-most slot) 
+
+top_shelf:
+  slot_1: "pringles"
+  slot_2: "mustard"
+  slot_3: "pudding"
+  slot_4: "jello"
+  slot_5: "lemon"
+  slot_6: "orange"
+
+bottom_shelf:
+  slot_1: "crackers"
+  slot_2: "sugar"
+  slot_3: "coffee"
+  slot_4: "tuna"
+  slot_5: "spam"
+  slot_6: "soup"

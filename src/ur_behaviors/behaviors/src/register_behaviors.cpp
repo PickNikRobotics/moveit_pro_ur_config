@@ -4,6 +4,8 @@
 
 #include <ur_behaviors/create_pose_stamped_grid.hpp>
 #include <ur_behaviors/visualize_camera_frustum.hpp>
+#include <ur_behaviors/visualize_placement_zones.hpp>
+#include <ur_behaviors/get_highest_confidence_mask.hpp>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -21,6 +23,10 @@ public:
       factory, "CreatePoseStampedGrid", shared_resources);
     moveit_pro::behaviors::registerBehavior<VisualizeCameraFrustum>(
       factory, "VisualizeCameraFrustum", shared_resources);
+    moveit_pro::behaviors::registerBehavior<VisualizePlacementZones>(
+      factory, "VisualizePlacementZones", shared_resources);
+    moveit_pro::behaviors::registerBehavior<GetHighestConfidenceMask>(
+      factory, "GetHighestConfidenceMask", shared_resources);
   }
 };
 
