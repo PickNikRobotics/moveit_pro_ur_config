@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Test Shelf Placement">
+  <BehaviorTree
+    ID="Test Shelf Placement"
+    _description="Visualizes key reference points on the shelf from the environment XACRO: the shelf link origin, the STL bounding box center, and the STL corners. Use this to understand the shelf coordinate system for AprilTag calibration."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--Shelf link origin from environment.xacro: xyz=0.0 0.66 -0.805 rpy=0 0 pi-->
+      <!--This is where the shelf frame sits in world-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{shelf_origin_pose}"
+        position_xyz="0;0;0"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{shelf_origin_pose}"
+        output_pose="{shelf_origin_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="shelf_link_origin"
+        marker_size="0.150000"
+        pose="{shelf_origin_world}"
+        marker_text="Shelf Link Origin"
+      />
+      <!--STL bounding box center in shelf frame: (0.0, -0.24, 0.908)-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{shelf_center_pose}"
+        position_xyz="0;-0.24;0.908"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_center_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="shelf_stl_center"
+        marker_size="0.100000"
+        pose="{shelf_center_world}"
+        marker_text="STL Center"
+      />
+      <!--Top of shelf in shelf frame: Z=1.816-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{shelf_top_pose}"
+        position_xyz="0;-0.24;1.816"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{shelf_top_pose}"
+        output_pose="{shelf_top_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="shelf_top"
+        marker_size="0.100000"
+        pose="{shelf_top_world}"
+        marker_text="Top"
+      />
+      <!--Bottom of shelf in shelf frame: Z≈0-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{shelf_bottom_pose}"
+        position_xyz="0;-0.24;0.0"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{shelf_bottom_pose}"
+        output_pose="{shelf_bottom_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="shelf_bottom"
+        marker_size="0.100000"
+        pose="{shelf_bottom_world}"
+        marker_text="Bottom"
+      />
+      <!--Four corners of the shelf at the top surface: left/right front/back-->
+      <!--STL X: -0.635 to 0.635, Y: -0.48 to 0, Z top: 1.816-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{corner_fl}"
+        position_xyz="-0.635;0;1.816"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{corner_fl}"
+        output_pose="{corner_fl_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="corner_front_left"
+        marker_size="0.050000"
+        pose="{corner_fl_world}"
+        marker_text="Top FL"
+      />
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{corner_fr}"
+        position_xyz="0.635;0;1.816"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{corner_fr}"
+        output_pose="{corner_fr_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="corner_front_right"
+        marker_size="0.050000"
+        pose="{corner_fr_world}"
+        marker_text="Top FR"
+      />
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{corner_bl}"
+        position_xyz="-0.635;-0.48;1.816"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{corner_bl}"
+        output_pose="{corner_bl_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="corner_back_left"
+        marker_size="0.050000"
+        pose="{corner_bl_world}"
+        marker_text="Top BL"
+      />
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{corner_br}"
+        position_xyz="0.635;-0.48;1.816"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{corner_br}"
+        output_pose="{corner_br_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="corner_back_right"
+        marker_size="0.050000"
+        pose="{corner_br_world}"
+        marker_text="Top BR"
+      />
+      <!--=== Expected AprilTag center positions in shelf frame ===-->
+      <!--Tag 0 (top left): (-0.5825, -0.0525, 1.420)-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{tag0_ref}"
+        position_xyz="-0.5825;-0.0525;1.420"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag0_ref}"
+        output_pose="{tag0_ref_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag0_expected"
+        marker_size="0.105000"
+        pose="{tag0_ref_world}"
+        marker_text="Tag 0 Expected (Top Left)"
+      />
+      <!--Tag 1 (top right): (0.5825, -0.0525, 1.420)-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{tag1_ref}"
+        position_xyz="0.5825;-0.0525;1.420"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag1_ref}"
+        output_pose="{tag1_ref_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag1_expected"
+        marker_size="0.105000"
+        pose="{tag1_ref_world}"
+        marker_text="Tag 1 Expected (Top Right)"
+      />
+      <!--Tag 2 (bottom left): (-0.5825, -0.0525, 0.588)-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{tag2_ref}"
+        position_xyz="-0.5825;-0.0525;0.588"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag2_ref}"
+        output_pose="{tag2_ref_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag2_expected"
+        marker_size="0.105000"
+        pose="{tag2_ref_world}"
+        marker_text="Tag 2 Expected (Bottom Left)"
+      />
+      <!--Tag 3 (bottom right): (0.5825, -0.0525, 0.588)-->
+      <Action
+        ID="CreateStampedPose"
+        reference_frame="shelf"
+        stamped_pose="{tag3_ref}"
+        position_xyz="0.5825;-0.0525;0.588"
+        orientation_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag3_ref}"
+        output_pose="{tag3_ref_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag3_expected"
+        marker_size="0.105000"
+        pose="{tag3_ref_world}"
+        marker_text="Tag 3 Expected (Bottom Right)"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf reference points and expected AprilTag positions visualized. Verify tag markers align with physical tag centers on the shelf."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Test Shelf Placement">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

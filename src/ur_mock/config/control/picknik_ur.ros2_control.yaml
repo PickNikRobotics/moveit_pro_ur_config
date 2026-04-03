@@ -117,6 +117,7 @@ joint_trajectory_admittance_controller:
     sensor_frame: tool0
     ee_frame: grasp_link
     ft_sensor_name: tcp_fts_sensor
+    default_path_tolerance: 0.0873
     # Joint accelerations chosen to match MoveIt configs.
     stop_accelerations:
       - 30.0

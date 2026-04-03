@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Calibrate Qualcomm Setup">
+  <BehaviorTree
+    ID="Calibrate Qualcomm Setup"
+    _description="Estimates the pose of 4 AprilTags on the shelves by navigating to 4 waypoints per tag, detecting the tag at each, and averaging the pose estimates. Then computes the shelf pose and adds the shelf as a collision object. Tags 0-1 are on the top shelf, tags 2-3 on the bottom shelf."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--Clean up any previous shelf collision object-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_shelf" />
+      </Decorator>
+      <!--=== TAG 0: Top Left (tag36h11_0000) ===-->
+      <Action ID="ResetPoseStampedVector" vector="{tag0_poses}" />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 1"
+        target_id="0"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag0_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 2"
+        target_id="0"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag0_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 3"
+        target_id="0"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag0_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag0_poses}"
+        average_pose_stamped="{tag0_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag0_top_left"
+        marker_size="0.050000"
+        pose="{tag0_avg_pose}"
+        marker_text="Tag 0 (Top Left)"
+      />
+      <!--=== TAG 1: Top Right (tag36h11_0001) ===-->
+      <Action ID="ResetPoseStampedVector" vector="{tag1_poses}" />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 1"
+        target_id="1"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag1_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 2"
+        target_id="1"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag1_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 3"
+        target_id="1"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag1_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag1_poses}"
+        average_pose_stamped="{tag1_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag1_top_right"
+        marker_size="0.050000"
+        pose="{tag1_avg_pose}"
+        marker_text="Tag 1 (Top Right)"
+      />
+      <!--=== TAG 3: Bottom Right (tag36h11_0003) ===-->
+      <Action ID="ResetPoseStampedVector" vector="{tag3_poses}" />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Right Tag 1"
+        target_id="3"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag3_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Right Tag 2"
+        target_id="3"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag3_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Right Tag 3"
+        target_id="3"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag3_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag3_poses}"
+        average_pose_stamped="{tag3_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag3_bottom_right"
+        marker_size="0.050000"
+        pose="{tag3_avg_pose}"
+        marker_text="Tag 3 (Bottom Right)"
+      />
+      <!--=== TAG 2: Bottom Left (tag36h11_0002) ===-->
+      <Action ID="ResetPoseStampedVector" vector="{tag2_poses}" />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 1"
+        target_id="2"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag2_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 2"
+        target_id="2"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag2_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 3"
+        target_id="2"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag2_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag2_poses}"
+        average_pose_stamped="{tag2_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag2_bottom_left"
+        marker_size="0.050000"
+        pose="{tag2_avg_pose}"
+        marker_text="Tag 2 (Bottom Left)"
+      />
+      <!--=== REVIEW TAG DETECTIONS ===-->
+      <!--Pause to let the user inspect the 4 visualised tag poses in RViz
+          before committing to the shelf placement.  Abort the objective
+          during this window if the markers look wrong.-->
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="All 4 tags detected and visualized. Review markers in RViz. Shelf will be placed in 15 seconds..."
+      />
+      <Action ID="WaitForDuration" delay_duration="15.0" />
+      <!--=== COMPUTE SHELF POSE ===-->
+      <!--Use the midpoint of all 4 detected tags as the shelf center estimate.
+          Known tag offsets in shelf frame (from STL center at 0, -0.24, 0.908):
+            Tag 0 (top left):     (-0.5825, -0.0525, 1.420)
+            Tag 1 (top right):    ( 0.5825, -0.0525, 1.420)
+            Tag 2 (bottom left):  (-0.5825, -0.0525, 0.588)
+            Tag 3 (bottom right): ( 0.5825, -0.0525, 0.588)
+          The average of these 4 offsets is (0, -0.0525, 1.004).
+          So: shelf_origin = avg_of_4_tags - offset_rotated_to_world
+
+          We use the average of left pair and right pair to estimate shelf orientation,
+          then compute the shelf link origin from the known geometry.
+          For now, use tag0 and tag1 (top pair) to get the shelf X-axis direction,
+          and assume shelf is vertical (no tilt). -->
+      <Action
+        ID="ResetPoseStampedVector"
+        vector="{all_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag0_avg_pose}"
+        vector="{all_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag1_avg_pose}"
+        vector="{all_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag2_avg_pose}"
+        vector="{all_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag3_avg_pose}"
+        vector="{all_tag_poses}"
+      />
+      <!--Average of all 4 tags gives the centroid of the tag pattern in world frame-->
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{all_tag_poses}"
+        average_pose_stamped="{tag_centroid_world}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag_centroid"
+        marker_size="0.080000"
+        pose="{tag_centroid_world}"
+        marker_text="Tag Centroid"
+      />
+      <!--The tag centroid in the shelf frame is at (0, -0.0525, 1.004).
+          The shelf link origin is offset from this by (0, +0.0525, -1.004) in the shelf frame.
+          Since the shelf is rotated ~pi around Z, in world frame this offset is (0, -0.0525, -1.004).
+          We approximate by translating from the tag centroid to the shelf origin.-->
+      <Action
+        ID="TransformPose"
+        input_pose="{tag_centroid_world}"
+        output_pose="{shelf_link_pose}"
+        translation_xyz="0;-0.0525;-1.004"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <!--The shelf STL faces -Y in world (toward robot), so shelf frame is rotated pi around Z.
+          Override orientation to face away from robot.-->
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_link_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{shelf_link_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="computed_shelf_origin"
+        marker_size="0.150000"
+        pose="{shelf_link_pose}"
+        marker_text="Computed Shelf Origin"
+      />
+      <!--=== ADD SHELF AS COLLISION OBJECT ===-->
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_shelf"
+        urdf_pose="{shelf_link_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Calibration complete. Shelf collision object added. Taking verification snapshots..."
+      />
+      <!--=== VERIFICATION: snapshot at each tag waypoint to compare with URDF ===-->
+      <SubTree
+        ID="Snapshot at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 1"
+      />
+      <SubTree
+        ID="Snapshot at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 1"
+      />
+      <SubTree
+        ID="Snapshot at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Right Tag 1"
+      />
+      <SubTree
+        ID="Snapshot at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 1"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Verification snapshots complete. Compare octomap against shelf URDF in RViz."
+      />
+    </Control>
+  </BehaviorTree>
+  <!--=== SUBTREE: Detect Tag at Waypoint ===-->
+  <BehaviorTree
+    ID="Detect Tag at Waypoint"
+    _description="Moves to a waypoint, captures wrist camera image, detects an AprilTag by ID, transforms to world frame, and adds to a pose vector."
+  >
+    <Control ID="Sequence">
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="{waypoint_name}"
+        execution_pipeline="jtc"
+        controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
+        controller_names="joint_trajectory_controller"
+      />
+      <Action ID="WaitForDuration" delay_duration="1.0" />
+      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+      <Decorator ID="RetryUntilSuccessful" num_attempts="3">
+        <Control ID="Sequence">
+          <Action
+            ID="DetectAprilTags"
+            image="{wrist_camera_image}"
+            camera_info="{wrist_camera_info}"
+            detections="{detections}"
+            apriltag_family_name="36h11"
+            tag_size="0.105"
+            max_hamming="0"
+            n_threads="1"
+            quad_decimate="2.0"
+            quad_sigma="0.0"
+            refine_edges="true"
+          />
+          <Action
+            ID="GetDetectionPose"
+            detections="{detections}"
+            target_id="{target_id}"
+            detection_pose="{tag_pose}"
+          />
+        </Control>
+      </Decorator>
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag_pose}"
+        output_pose="{tag_pose}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag_pose}"
+        vector="{tag_poses_vector}"
+      />
+      <!--Snapshot wrist-camera point cloud and add to planning scene so the
+          planner sees real geometry before moving to the next waypoint.-->
+      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
+      <Action
+        ID="TransformPointCloudFrame"
+        input_cloud="{wrist_camera_point_cloud}"
+        target_frame="world"
+        output_cloud="{snapshot_cloud}"
+      />
+      <Action
+        ID="UpdatePlanningSceneService"
+        point_cloud="{snapshot_cloud}"
+        point_cloud_service="/point_cloud_service"
+      />
+    </Control>
+  </BehaviorTree>
+  <!--=== SUBTREE: Snapshot at Waypoint ===-->
+  <BehaviorTree
+    ID="Snapshot at Waypoint"
+    _description="Moves to a waypoint and captures a wrist camera point cloud snapshot into the planning scene for visual comparison."
+  >
+    <Control ID="Sequence">
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="{waypoint_name}"
+        execution_pipeline="jtc"
+        controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
+        controller_names="joint_trajectory_controller"
+      />
+      <Action ID="WaitForDuration" delay_duration="1.0" />
+      <Action
+        ID="GetPointCloud"
+        topic_name="/camera/wrist_mounted_camera/depth/color/points"
+        message_timeout_sec="15"
+      />
+      <Action ID="SendPointCloudToUI" />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Calibrate Qualcomm Setup">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+    <SubTree ID="Detect Tag at Waypoint">
+      <MetadataFields>
+        <Metadata runnable="false" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+      <input_port name="waypoint_name" default="{waypoint_name}">Waypoint to move to.</input_port>
+      <input_port name="target_id" default="-1">AprilTag ID to detect.</input_port>
+      <inout_port name="tag_pose" default="{tag_pose}">Detected tag pose (working variable).</inout_port>
+      <inout_port name="tag_poses_vector" default="{tag_poses_vector}">Vector to accumulate poses into.</inout_port>
+    </SubTree>
+    <SubTree ID="Snapshot at Waypoint">
+      <MetadataFields>
+        <Metadata runnable="false" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+      <input_port name="waypoint_name" default="{waypoint_name}">Waypoint to move to and snapshot from.</input_port>
+    </SubTree>
+  </TreeNodesModel>
+</root>

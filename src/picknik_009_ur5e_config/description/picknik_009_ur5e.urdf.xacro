@@ -156,9 +156,18 @@
     <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <!-- Environment: table, walls, scene camera -->
+  <!-- Environment: table, tote, scene camera pole -->
   <xacro:include filename="$(find picknik_009_ur5e_config)/description/environment.xacro"/>
-  <xacro:environment parent="world" xyz="0.0 -0.78 -0.435" rpy="0.0 0.0 0.0"/>
+  <xacro:environment parent="world" xyz="0.0 -0.74 -0.435" rpy="0.0 0.0 0.0"/>
+
+  <!-- Scene camera (D415) on pole above bin, facing down at 75 degrees -->
+  <xacro:realsense_d415
+    parent="scene_camera_mount"
+    name="scene_camera"
+    use_mesh="true"
+  >
+    <origin xyz="0 0 0" rpy="${pi} ${75 * pi / 180} ${pi / 2}" />
+  </xacro:realsense_d415>
 
   <link name="ur_stand">
     <visual>
@@ -184,28 +193,7 @@
     <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <link name="shelf">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://picknik_009_ur5e_config/description/shelf.stl" />
-      </geometry>
-      <material name="workcell_material">
-        <color rgba="0.792 0.820 0.933 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://picknik_009_ur5e_config/description/shelf.stl" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="world_to_shelf" type="fixed">
-    <parent link="world"/>
-    <child link="shelf"/>
-    <origin xyz="0.0 0.66 -0.805" rpy="0.0 0.0 3.14159"/>
-  </joint>
+  <!-- Shelf is placed dynamically by the "Calibrate Qualcomm Setup" objective
+       using AprilTag-based calibration.  Do not add a static shelf here. -->
 
 </robot>
