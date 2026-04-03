@@ -5,6 +5,9 @@
       <geometry>
         <mesh filename="package://picknik_009_ur5e_config/description/chunky_shelf.stl"/>
       </geometry>
+      <material name="chunky_shelf_material">
+        <color rgba="0.8 0.2 0.2 0.4"/>
+      </material>
     </visual>
     <collision>
       <geometry>

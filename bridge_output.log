@@ -1,0 +1,239 @@
+[INFO] [launch]: All log files can be found below /home/ur5e-009-agent/.ros/log/2026-04-03-19-53-34-260135-ur5e-009-agent-20098
+[INFO] [launch]: Default logging verbosity is set to INFO
+
+********************************************************************
+*
+*     Starting Robot:  picknik_009_ur5e_config
+*          Simulated:  False
+*
+********************************************************************
+
+[INFO] [launch.user]: Starting MoveIt Pro LLM server...
+[INFO] [move_group-1]: process started with pid [20109]
+[INFO] [parameter_manager_node-2]: process started with pid [20111]
+[INFO] [waypoint_manager_node-3]: process started with pid [20113]
+[INFO] [move_joint_resampler_node-4]: process started with pid [20115]
+[INFO] [move_end_effector_resampler_node-5]: process started with pid [20117]
+[INFO] [objective_server_node_main-6]: process started with pid [20119]
+[INFO] [component_container_mt-7]: process started with pid [20121]
+[INFO] [rosapi_node-9]: process started with pid [20125]
+[INFO] [rosbridge_websocket-10]: process started with pid [20127]
+[INFO] [tf2_web_republisher_node-11]: process started with pid [20129]
+[INFO] [web_video_server-12]: process started with pid [20131]
+[INFO] [web_server_node-13]: process started with pid [20133]
+[INFO] [moveit_pro_llm_server-14]: process started with pid [20135]
+[INFO] [execute_objective_bridge-8]: process started with pid [20123]
+[web_video_server-12] [0m[INFO] [1775246015.616143093] [web_video_server]: Loading streamer plugin: web_video_server/stream/h264[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/robot_state_publisher' in container '/moveit_studio_container'
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/srdf_publisher' in container '/moveit_studio_container'
+[web_video_server-12] [0m[INFO] [1775246015.877482587] [web_video_server]: Loading streamer plugin: web_video_server/stream/mjpeg[0m
+[web_video_server-12] [0m[INFO] [1775246015.878739103] [web_video_server]: Loading streamer plugin: web_video_server/stream/png[0m
+[web_video_server-12] [0m[INFO] [1775246015.878797300] [web_video_server]: Loading streamer plugin: web_video_server/stream/ros_compressed[0m
+[web_video_server-12] [0m[INFO] [1775246015.878835079] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp8[0m
+[web_video_server-12] [0m[INFO] [1775246015.879152487] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp9[0m
+[web_video_server-12] [0m[INFO] [1775246015.879290398] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/jpeg[0m
+[web_video_server-12] [0m[INFO] [1775246015.880163135] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/png[0m
+[web_video_server-12] [0m[INFO] [1775246015.881647039] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/ros_compressed[0m
+[web_video_server-12] [0m[INFO] [1775246015.881892599] [web_video_server]: Waiting For connections on 0.0.0.0:3202[0m
+[rosbridge_websocket-10] registered capabilities (classes):
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.advertise.Advertise'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.publish.Publish'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.subscribe.Subscribe'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.defragmentation.Defragment'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.advertise_service.AdvertiseService'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.call_service.CallService'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.service_response.ServiceResponse'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.unadvertise_service.UnadvertiseService'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.advertise_action.AdvertiseAction'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.action_feedback.ActionFeedback'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.action_result.ActionResult'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.send_action_goal.SendActionGoal'>
+[rosbridge_websocket-10]  - <class 'rosbridge_library.capabilities.unadvertise_action.UnadvertiseAction'>
+[moveit_pro_llm_server-14] ROSLib uses utf8 encoding by default. It would be more efficient to use ascii (if possible).
+[moveit_pro_llm_server-14] Attempting to connect to ROS at ws://localhost:3201
+[moveit_pro_llm_server-14] ROSLib uses utf8 encoding by default. It would be more efficient to use ascii (if possible).
+[rosbridge_websocket-10] [33m[WARN] [1775246016.255654921] [rosbridge_websocket]: The 'default_call_service_timeout' parameter is currently set to 0.0, which means service calls will block indefinitely if no response is received. Please note that in the Jazzy and later releases, the default value for this parameter will be updated to 5.0 seconds.[0m
+[moveit_pro_llm_server-14] 
+[moveit_pro_llm_server-14] Initiating ROS connection...
+[rosbridge_websocket-10] [0m[INFO] [1775246016.257649762] [rosbridge_websocket]: Rosbridge WebSocket server started on port 3201[0m
+[moveit_pro_llm_server-14] LLM Server running on port 3203
+[rosbridge_websocket-10] [0m[INFO] [1775246016.271712870] [rosbridge_websocket]: Calling services in new thread[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246016.272663341] [rosbridge_websocket]: Sending action goals in new thread[0m
+[moveit_pro_llm_server-14] ROS connected: ws://localhost:3201
+[rosbridge_websocket-10] [0m[INFO] [1775246016.273964888] [rosbridge_websocket]: Client connected. 1 clients total.[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246016.275134194] [rosbridge_websocket]: Calling services in new thread[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246016.275720926] [rosbridge_websocket]: Sending action goals in new thread[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246016.276688531] [rosbridge_websocket]: Client connected. 2 clients total.[0m
+[moveit_pro_llm_server-14] ✓ LLM Server to ROS connection established successfully
+[parameter_manager_node-2] [2026-04-03 19:53:36.393] [[32minfo[m] Started parameter manager node.
+[waypoint_manager_node-3] [2026-04-03 19:53:36.587] [[32minfo[m] Started waypoint manager node.
+[web_server_node-13] [32mINFO[0m:     Started server process [[36m20133[0m]
+[web_server_node-13] [32mINFO[0m:     Waiting for application startup.
+[web_server_node-13] [32mINFO[0m:     Started monitoring folder: /home/ur5e-009-agent/.config/moveit_pro/picknik_009_ur5e_config/objectives
+[web_server_node-13] [32mINFO[0m:     Application startup complete.
+[web_server_node-13] [32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:3200[0m (Press CTRL+C to quit)
+[objective_server_node_main-6] [2026-04-03 19:53:37.417] [[32minfo[m] 
+[objective_server_node_main-6] *************************************************
+[objective_server_node_main-6] *             MoveIt Pro License
+[objective_server_node_main-6] * License is Valid!
+[objective_server_node_main-6] * The license key you provided is active (this license does not have an expiration date)
+[objective_server_node_main-6] *
+[objective_server_node_main-6] *************************************************
+[objective_server_node_main-6] 
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/mtc_task_manager_node' in container '/moveit_studio_container'
+[move_group-1] [33m[WARN] [1775246017.614268597] [move_group.moveit.plugins.ros_control_interface]: Failed to read controllers from /controller_manager/list_controllers within 1 seconds[0m
+[objective_server_node_main-6] Warning: class_loader.ClassLoader: SEVERE WARNING!!! Attempting to unload library while objects created by this loader exist in the heap! You should delete your objects before attempting to unload the library or destroying the ClassLoader. The library will NOT be unloaded.
+[objective_server_node_main-6]          at line 127 in ./src/class_loader.cpp
+[objective_server_node_main-6] [31m[ERROR] [1775246017.645138727] [pluginlib.ClassLoader]: Skipped loading plugin with error: XML Document '/home/ur5e-009-agent/user_ws/install/save_depth_image/share/save_depth_image/save_depth_image_plugin_description.xml' has no Root Element. This likely means the XML is malformed or missing..[0m
+[objective_server_node_main-6] [2026-04-03 19:53:37.651] [[32minfo[m] Loading 10 behavior loader plugin(s):
+[objective_server_node_main-6]   ur_behaviors::UrBehaviorsLoader
+[objective_server_node_main-6]   epick_moveit_studio::BehaviorLoader
+[objective_server_node_main-6]   moveit_pro::behaviors::VisionBehaviorsLoader
+[objective_server_node_main-6]   filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader
+[objective_server_node_main-6]   moveit_pro::behaviors::CoreBehaviorsLoader
+[objective_server_node_main-6]   get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader
+[objective_server_node_main-6]   compute_place_orientation::ComputePlaceOrientationBehaviorsLoader
+[objective_server_node_main-6]   moveit_pro::behaviors::MTCCoreBehaviorsLoader
+[objective_server_node_main-6]   moveit_pro::behaviors::ConverterBehaviorsLoader
+[objective_server_node_main-6]   generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader
+[move_group-1] [96mLoading 'move_group/ApplyPlanningSceneService'...[0m
+[component_container_mt-7] [33m[WARN] [1775246017.713784277] [rcl.logging_rosout]: Publisher already registered for provided node name. If this is due to multiple nodes with the same name then all logs for that logger name will go out over the existing publisher. As soon as any node with that name is destructed it will unregister the publisher, preventing any further logs for that name from being published on the rosout topic.[0m
+[move_group-1] [96mLoading 'move_group/ClearOctomapService'...[0m
+[move_group-1] [96mLoading 'move_group/ExecuteTaskSolutionCapability'...[0m
+[move_group-1] [96mLoading 'move_group/GetUrdfService'...[0m
+[move_group-1] [96mLoading 'move_group/LoadGeometryFromFileService'...[0m
+[move_group-1] [96mLoading 'move_group/MoveGroupGetPlanningSceneService'...[0m
+[move_group-1] [96mLoading 'move_group/MoveGroupKinematicsService'...[0m
+[move_group-1] [96mLoading 'move_group/SaveGeometryToFileService'...[0m
+[move_group-1] [96mLoading 'moveit_studio_plugins/move_group/GetPlanningGroups'...[0m
+[move_group-1] [96mLoading 'moveit_studio_plugins/move_group/SetActiveControllerService'...[0m
+[move_group-1] [96mLoading 'moveit_studio_plugins/move_group/URDFPlanningSceneCapability'...[0m
+[move_group-1] 
+[move_group-1] [92mYou can start planning now![0m
+[move_group-1] 
+[objective_server_node_main-6] Warning: class_loader.impl: SEVERE WARNING!!! A namespace collision has occurred with plugin factory for class mock_components::GenericSystem. New factory will OVERWRITE existing one. This situation occurs when libraries containing plugins are directly linked against an executable (the one running right now generating this message). Please separate plugins out into their own library or just don't link against the library and use either class_loader::ClassLoader/MultiLibraryClassLoader to open.
+[objective_server_node_main-6]          at line 253 in /opt/ros/humble/include/class_loader/class_loader/class_loader_core.hpp
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planning_scene_listener_node' in container '/moveit_studio_container'
+[objective_server_node_main-6] [2026-04-03 19:53:38.994] [[32minfo[m] Writing tree nodes model to: /home/ur5e-009-agent/.config/moveit_pro/picknik_009_ur5e_config/auto_created/generated_tree_nodes_model.xml
+[rosbridge_websocket-10] [0m[INFO] [1775246021.568275412] [rosbridge_websocket]: Calling services in new thread[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246021.568733576] [rosbridge_websocket]: Sending action goals in new thread[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246021.569595355] [rosbridge_websocket]: Client connected. 3 clients total.[0m
+[move_group-1] [2026-04-03 19:53:42.053] [[33m[1mwarning[m] No kinematics plugin defined for group 'gripper'. Determining base and tip frames with the joint model group!
+[rosbridge_websocket-10] [0m[INFO] [1775246022.160456935] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /objective_server_heartbeat[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246022.654474852] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /objective_server_heartbeat[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246022.699807615] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /robot_description[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246022.714925352] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /robot_description[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.392319117] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /failure_reason_collector[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.394389950] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /protective_stop_manager_node/robot_fault_status[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.396826381] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /moveit_pro_ui/motion_ended[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.435963066] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.498573597] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /multi_dof_joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.532668964] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /visual_markers[0m
+[web_video_server-12] [0m[INFO] [1775246023.575603399] [web_video_server]: Handling Request: /stream?topic=/camera/wrist_mounted_camera/color/image_raw&qos_profile=auto[0m
+[web_video_server-12] [0m[INFO] [1775246023.576327411] [web_video_server.mjpeg_streamer]: Attempting to auto-detect QoS for topic: /camera/wrist_mounted_camera/color/image_raw[0m
+[web_video_server-12] [0m[INFO] [1775246023.576422588] [web_video_server.mjpeg_streamer]: Detected QoS - Reliability: BEST_EFFORT, Durability: VOLATILE, History depth: 5[0m
+[web_video_server-12] [0m[INFO] [1775246023.576430603] [web_video_server.mjpeg_streamer]: Using auto-detected QoS profile for topic /camera/wrist_mounted_camera/color/image_raw[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.678205181] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.700994156] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /pcd_pointcloud_captures[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.713889129] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /agent_event[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.720732956] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /breakpoint_encountered[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.727017033] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /breakpoint_resumed[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.749066322] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /preview_solution[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.752469561] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /objective_server_heartbeat[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.759207553] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /moveit_pro_ui/switch_primary_view[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.769577113] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised action /do_teleoperate[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.790940760] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised service /wait_for_user_path_approval[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.792480922] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised service /adjust_pose[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.793810950] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised service /get_pose_from_user[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.795150318] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised service /request_clicked_points[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.797704230] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised service /switch_primary_view[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.800002925] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Advertised service /request_text_from_prompts[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.803549680] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.806061665] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.808912376] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.811362520] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.813150264] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /multi_dof_joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246023.816380444] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[web_server_node-13] [32mINFO[0m:     New SSE client subscribed. Total clients: 1
+[rosbridge_websocket-10] [0m[INFO] [1775246027.454552780] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246027.473887037] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[objective_server_node_main-6] [2026-04-03 19:53:47.751] [objective_server_node] [[32minfo[m] Objective `Load Calibrated Scene` starting at time: 1775246027.75157690 seconds.
+[move_group-1] [2026-04-03 19:53:47.789] [[32minfo[m] Successfully added tool 'calibrated_top_shelf' to scene.
+[move_group-1] [2026-04-03 19:53:47.797] [[32minfo[m] Successfully added tool 'calibrated_bottom_shelf' to scene.
+[objective_server_node_main-6] [2026-04-03 19:53:47.842] [objective_server_node] [[32minfo[m] LogMessage Info: Calibrated scene loaded: top shelf, bottom shelf, back, and base.
+[objective_server_node_main-6] [2026-04-03 19:53:47.842] [objective_server_node] [[32minfo[m] Objective `Load Calibrated Scene` succeeded at time: 1775246027.84216475 seconds
+[rosbridge_websocket-10] [0m[INFO] [1775246028.774006019] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246028.776045931] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246028.777903496] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246030.412140966] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246030.415623050] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246030.419224738] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246035.411993056] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246035.414156602] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246035.415765084] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246037.412355651] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246037.414815406] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246037.417029002] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246042.410971002] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246042.412601206] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246042.414032544] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246046.413348806] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246046.415995059] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246046.418354068] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246051.412173445] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /map[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246051.466727891] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /global_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246051.499361974] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /local_costmap/costmap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246056.204260291] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246056.205626078] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246058.982844650] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246058.983304898] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246060.615919767] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246060.619150865] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[objective_server_node_main-6] [2026-04-03 19:54:20.729] [objective_server_node] [[32minfo[m] Objective `Load Calibrated Scene` starting at time: 1775246060.72913671 seconds.
+[move_group-1] [2026-04-03 19:54:20.730] [[32minfo[m] Successfully removed tool 'calibrated_top_shelf' from scene.
+[move_group-1] [2026-04-03 19:54:20.750] [[32minfo[m] Successfully removed tool 'calibrated_bottom_shelf' from scene.
+[move_group-1] [2026-04-03 19:54:20.764] [[32minfo[m] Successfully added tool 'calibrated_top_shelf' to scene.
+[move_group-1] [2026-04-03 19:54:20.773] [[32minfo[m] Successfully added tool 'calibrated_bottom_shelf' to scene.
+[objective_server_node_main-6] [2026-04-03 19:54:20.829] [objective_server_node] [[32minfo[m] LogMessage Info: Calibrated scene loaded: top shelf, bottom shelf, back, and base.
+[objective_server_node_main-6] [2026-04-03 19:54:20.829] [objective_server_node] [[32minfo[m] Objective `Load Calibrated Scene` succeeded at time: 1775246060.82928467 seconds
+[rosbridge_websocket-10] [0m[INFO] [1775246441.689876008] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /transient_monitored_planning_scene_without_octomap[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246441.711636671] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /transient_monitored_planning_scene_without_octomap[0m
+[objective_server_node_main-6] [2026-04-03 20:00:42.186] [objective_server_node] [[32minfo[m] Objective `Teleoperate` starting at time: 1775246442.18614912 seconds.
+[parameter_manager_node-2] [2026-04-03 20:00:42.197] [parameter_manager_node] [[32minfo[m] Retrieving joint state from parameter manager.
+[rosbridge_websocket-10] [0m[INFO] [1775246442.758542433] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /behavior_tree_status[0m
+[move_group-1] [2026-04-03 20:00:42.974] [[33m[1mwarning[m] No kinematics plugin defined for group 'gripper'. Determining base and tip frames with the joint model group!
+[rosbridge_websocket-10] [0m[INFO] [1775246443.034202149] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /behavior_tree_status[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246443.316364238] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /behavior_tree_status[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246443.453036537] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /behavior_tree_status[0m
+[parameter_manager_node-2] [2026-04-03 20:00:44.617] [parameter_manager_node] [[32minfo[m] Clearing stored parameters in parameter manager.
+[rosbridge_websocket-10] [0m[INFO] [1775246444.673296513] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246444.674500476] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /multi_dof_joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246444.676759307] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775246444.678457491] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Subscribed to /multi_dof_joint_states[0m
+[objective_server_node_main-6] [2026-04-03 20:00:44.704] [objective_server_node] [[32minfo[m] The following controllers are in conflict with the ones to activate. Since automatic deactivation is set, they will be deactivated: joint_trajectory_controller
+[objective_server_node_main-6] [2026-04-03 20:00:54.468] [objective_server_node] [[33m[1mwarning[m] Joint Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:00:54.569] [objective_server_node] [[33m[1mwarning[m] Joint Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:00:54.669] [objective_server_node] [[33m[1mwarning[m] Joint Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:00:54.771] [objective_server_node] [[33m[1mwarning[m] Joint Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:15.965] [objective_server_node] [[32minfo[m] The following controllers are in conflict with the ones to activate. Since automatic deactivation is set, they will be deactivated: joint_velocity_controller
+[rosbridge_websocket-10] [0m[INFO] [1775247496.030993647] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775247496.032482940] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /multi_dof_joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775247496.033485335] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /joint_states[0m
+[rosbridge_websocket-10] [0m[INFO] [1775247496.034279651] [rosbridge_websocket]: [Client 538e6279-65b2-42d9-9841-7e22b0026107] Unsubscribed from /multi_dof_joint_states[0m
+[move_group-1] [2026-04-03 20:18:16.042] [[33m[1mwarning[m] No kinematics plugin defined for group 'gripper'. Determining base and tip frames with the joint model group!
+[parameter_manager_node-2] [2026-04-03 20:18:16.048] [parameter_manager_node] [[32minfo[m] Clearing stored parameters in parameter manager.
+[move_group-1] [2026-04-03 20:18:16.815] [[32minfo[m] 
+[move_group-1] *************************************************
+[move_group-1] *             MoveIt Pro License
+[move_group-1] * License is Valid!
+[move_group-1] * The license key you provided is active (this license does not have an expiration date)
+[move_group-1] *
+[move_group-1] *************************************************
+[move_group-1] 
+[objective_server_node_main-6] [2026-04-03 20:18:22.148] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:22.247] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:22.347] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:22.449] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:22.549] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:22.651] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link
+[objective_server_node_main-6] [2026-04-03 20:18:22.752] [objective_server_node] [[33m[1mwarning[m] Pose Jog Warning: Stopping robot because it's predicted to collide. Colliding links: forearm_link - wrist_mounted_camera_link

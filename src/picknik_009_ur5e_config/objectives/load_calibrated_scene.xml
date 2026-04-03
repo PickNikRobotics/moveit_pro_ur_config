@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Load Calibrated Scene">
+  <BehaviorTree
+    ID="Load Calibrated Scene"
+    _description="Loads the calibrated shelf scene from saved pose files. Places top and bottom shelf_only URDFs, shelf back box, and shelf base box into the planning scene."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--=== CLEANUP any previous calibration objects ===-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_top_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_bottom_shelf" />
+      </Decorator>
+
+      <!--=== LOAD CALIBRATED SHELF POSES ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/top_shelf_pose.yaml"
+        output="{top_shelf_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bottom_shelf_pose.yaml"
+        output="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/shelf_back_pose.yaml"
+        output="{shelf_back_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/shelf_base_pose.yaml"
+        output="{shelf_base_pose}"
+      />
+
+      <!--=== PLACE TOP SHELF ===-->
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_top_shelf"
+        urdf_pose="{top_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_shelf_center"
+        marker_size="0.100000"
+        pose="{top_shelf_pose}"
+        marker_text="Top Shelf"
+      />
+
+      <!--=== PLACE BOTTOM SHELF ===-->
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_bottom_shelf"
+        urdf_pose="{bottom_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_shelf_center"
+        marker_size="0.100000"
+        pose="{bottom_shelf_pose}"
+        marker_text="Bottom Shelf"
+      />
+
+      <!--=== PLACE SHELF BACK BOX ===-->
+      <!--1.27m wide, 0.08m deep, 72" (1.8288m) tall-->
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.08;1.8288"
+        solid_primitive="{shelf_back_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_back_box}"
+        pose="{shelf_back_pose}"
+        object_id="shelf_back"
+        collision_object="{shelf_back_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_back_collision}"
+        graspable_object="{shelf_back_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_back_graspable}"
+      />
+
+      <!--=== PLACE SHELF BASE BOX ===-->
+      <!--1.27m wide, 0.48m deep, 0.20m tall-->
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.48;0.20"
+        solid_primitive="{shelf_base_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_base_box}"
+        pose="{shelf_base_pose}"
+        object_id="shelf_base"
+        collision_object="{shelf_base_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_base_collision}"
+        graspable_object="{shelf_base_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_base_graspable}"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Calibrated scene loaded: top shelf, bottom shelf, back, and base."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Load Calibrated Scene">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

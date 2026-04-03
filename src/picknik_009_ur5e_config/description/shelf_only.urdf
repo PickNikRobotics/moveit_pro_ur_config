@@ -5,6 +5,9 @@
       <geometry>
         <mesh filename="package://picknik_009_ur5e_config/description/shelf_only.stl"/>
       </geometry>
+      <material name="calibrated_shelf_material">
+        <color rgba="0.2 0.8 0.2 0.7"/>
+      </material>
     </visual>
     <collision>
       <geometry>

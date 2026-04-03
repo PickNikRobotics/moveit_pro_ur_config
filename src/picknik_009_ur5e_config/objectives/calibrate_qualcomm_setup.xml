@@ -2,14 +2,42 @@
 <root BTCPP_format="4" main_tree_to_execute="Calibrate Qualcomm Setup">
   <BehaviorTree
     ID="Calibrate Qualcomm Setup"
-    _description="Estimates the pose of 4 AprilTags on the shelves by navigating to 4 waypoints per tag, detecting the tag at each, and averaging the pose estimates. Then computes the shelf pose and adds the shelf as a collision object. Tags 0-1 are on the top shelf, tags 2-3 on the bottom shelf."
+    _description="Calibrates the shelf location using AprilTags. Places chunky_shelf for collision avoidance, detects 4 tags across top and bottom shelves, places individual shelf_only URDFs for each shelf level, adds back and base collision boxes, saves all calibrated poses, and takes verification snapshots."
     _favorite="true"
   >
     <Control ID="Sequence" name="TopLevelSequence">
-      <!--Clean up any previous shelf collision object-->
+      <!--=== CLEANUP previous calibration objects ===-->
       <Decorator ID="ForceSuccess">
-        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_shelf" />
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_top_shelf" />
       </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_bottom_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
+      </Decorator>
+
+      <!--=== PLACE CHUNKY SHELF for collision avoidance during calibration ===-->
+      <Action
+        ID="CreateStampedPose"
+        position_xyz="0.0;0.66;-0.805"
+        orientation_xyzw="0;0;1;0"
+        reference_frame="world"
+        stamped_pose="{chunky_shelf_pose}"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="chunky_shelf_approx"
+        urdf_pose="{chunky_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/chunky_shelf.urdf"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Chunky shelf placed for collision avoidance. Starting tag detection..."
+      />
+
       <!--=== TAG 0: Top Left (tag36h11_0000) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag0_poses}" />
       <SubTree
@@ -49,6 +77,7 @@
         pose="{tag0_avg_pose}"
         marker_text="Tag 0 (Top Left)"
       />
+
       <!--=== TAG 1: Top Right (tag36h11_0001) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag1_poses}" />
       <SubTree
@@ -88,6 +117,64 @@
         pose="{tag1_avg_pose}"
         marker_text="Tag 1 (Top Right)"
       />
+
+      <!--=== PLACE TOP SHELF ===-->
+      <!--Average of tag 0 and tag 1 gives the top shelf center-->
+      <Action ID="ResetPoseStampedVector" vector="{top_tag_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag0_avg_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag1_avg_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{top_tag_poses}"
+        average_pose_stamped="{top_shelf_pose}"
+      />
+      <!--Override orientation: shelf faces -Y (toward robot), so rotated pi around Z-->
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{top_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{top_shelf_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_shelf_center"
+        marker_size="0.100000"
+        pose="{top_shelf_pose}"
+        marker_text="Top Shelf Center"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_top_shelf"
+        urdf_pose="{top_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{top_shelf_pose}"
+        file_name="calibration/top_shelf_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/top_shelf_pose.yaml"
+        overwrite="true"
+        message="{top_shelf_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Top shelf placed and pose saved."
+      />
+
       <!--=== TAG 3: Bottom Right (tag36h11_0003) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag3_poses}" />
       <SubTree
@@ -127,6 +214,7 @@
         pose="{tag3_avg_pose}"
         marker_text="Tag 3 (Bottom Right)"
       />
+
       <!--=== TAG 2: Bottom Left (tag36h11_0002) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag2_poses}" />
       <SubTree
@@ -166,140 +254,210 @@
         pose="{tag2_avg_pose}"
         marker_text="Tag 2 (Bottom Left)"
       />
-      <!--=== REVIEW TAG DETECTIONS ===-->
-      <!--Pause to let the user inspect the 4 visualised tag poses in RViz
-          before committing to the shelf placement.  Abort the objective
-          during this window if the markers look wrong.-->
-      <Action
-        ID="LogMessage"
-        log_level="info"
-        message="All 4 tags detected and visualized. Review markers in RViz. Shelf will be placed in 15 seconds..."
-      />
-      <Action ID="WaitForDuration" delay_duration="15.0" />
-      <!--=== COMPUTE SHELF POSE ===-->
-      <!--Use the midpoint of all 4 detected tags as the shelf center estimate.
-          Known tag offsets in shelf frame (from STL center at 0, -0.24, 0.908):
-            Tag 0 (top left):     (-0.5825, -0.0525, 1.420)
-            Tag 1 (top right):    ( 0.5825, -0.0525, 1.420)
-            Tag 2 (bottom left):  (-0.5825, -0.0525, 0.588)
-            Tag 3 (bottom right): ( 0.5825, -0.0525, 0.588)
-          The average of these 4 offsets is (0, -0.0525, 1.004).
-          So: shelf_origin = avg_of_4_tags - offset_rotated_to_world
 
-          We use the average of left pair and right pair to estimate shelf orientation,
-          then compute the shelf link origin from the known geometry.
-          For now, use tag0 and tag1 (top pair) to get the shelf X-axis direction,
-          and assume shelf is vertical (no tilt). -->
-      <Action
-        ID="ResetPoseStampedVector"
-        vector="{all_tag_poses}"
-      />
-      <Action
-        ID="AddPoseStampedToVector"
-        input="{tag0_avg_pose}"
-        vector="{all_tag_poses}"
-      />
-      <Action
-        ID="AddPoseStampedToVector"
-        input="{tag1_avg_pose}"
-        vector="{all_tag_poses}"
-      />
+      <!--=== PLACE BOTTOM SHELF ===-->
+      <!--Average of tag 2 and tag 3 gives the bottom shelf center-->
+      <Action ID="ResetPoseStampedVector" vector="{bottom_tag_poses}" />
       <Action
         ID="AddPoseStampedToVector"
         input="{tag2_avg_pose}"
-        vector="{all_tag_poses}"
+        vector="{bottom_tag_poses}"
       />
       <Action
         ID="AddPoseStampedToVector"
         input="{tag3_avg_pose}"
-        vector="{all_tag_poses}"
+        vector="{bottom_tag_poses}"
       />
-      <!--Average of all 4 tags gives the centroid of the tag pattern in world frame-->
       <Action
         ID="AveragePoseStampedVector"
-        pose_stamped_vector="{all_tag_poses}"
-        average_pose_stamped="{tag_centroid_world}"
+        pose_stamped_vector="{bottom_tag_poses}"
+        average_pose_stamped="{bottom_shelf_pose}"
       />
-      <Action
-        ID="VisualizePose"
-        marker_lifetime="0.000000"
-        marker_name="tag_centroid"
-        marker_size="0.080000"
-        pose="{tag_centroid_world}"
-        marker_text="Tag Centroid"
-      />
-      <!--The tag centroid in the shelf frame is at (0, -0.0525, 1.004).
-          The shelf link origin is offset from this by (0, +0.0525, -1.004) in the shelf frame.
-          Since the shelf is rotated ~pi around Z, in world frame this offset is (0, -0.0525, -1.004).
-          We approximate by translating from the tag centroid to the shelf origin.-->
-      <Action
-        ID="TransformPose"
-        input_pose="{tag_centroid_world}"
-        output_pose="{shelf_link_pose}"
-        translation_xyz="0;-0.0525;-1.004"
-        quaternion_xyzw="0;0;0;1"
-      />
-      <!--The shelf STL faces -Y in world (toward robot), so shelf frame is rotated pi around Z.
-          Override orientation to face away from robot.-->
       <Action
         ID="OverridePoseOrientation"
-        input_pose="{shelf_link_pose}"
+        input_pose="{bottom_shelf_pose}"
         orientation_xyzw="0;0;1;0"
-        output_pose="{shelf_link_pose}"
+        output_pose="{bottom_shelf_pose}"
       />
       <Action
         ID="VisualizePose"
         marker_lifetime="0.000000"
-        marker_name="computed_shelf_origin"
-        marker_size="0.150000"
-        pose="{shelf_link_pose}"
-        marker_text="Computed Shelf Origin"
+        marker_name="bottom_shelf_center"
+        marker_size="0.100000"
+        pose="{bottom_shelf_pose}"
+        marker_text="Bottom Shelf Center"
       />
-      <!--=== ADD SHELF AS COLLISION OBJECT ===-->
       <Action
         ID="AddURDF"
-        urdf_name="calibrated_shelf"
-        urdf_pose="{shelf_link_pose}"
+        urdf_name="calibrated_bottom_shelf"
+        urdf_pose="{bottom_shelf_pose}"
         package_name="picknik_009_ur5e_config"
         urdf_file_path="description/shelf_only.urdf"
       />
       <Action
-        ID="LogMessage"
-        log_level="info"
-        message="Calibration complete. Shelf collision object added. Taking verification snapshots..."
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{bottom_shelf_pose}"
+        file_name="calibration/bottom_shelf_calibrated_pose.yaml"
       />
-      <!--=== VERIFICATION: snapshot at each tag waypoint to compare with URDF ===-->
-      <SubTree
-        ID="Snapshot at Waypoint"
-        _collapsed="true"
-        waypoint_name="Top Left Tag 1"
-      />
-      <SubTree
-        ID="Snapshot at Waypoint"
-        _collapsed="true"
-        waypoint_name="Top Right Tag 1"
-      />
-      <SubTree
-        ID="Snapshot at Waypoint"
-        _collapsed="true"
-        waypoint_name="Bottom Right Tag 1"
-      />
-      <SubTree
-        ID="Snapshot at Waypoint"
-        _collapsed="true"
-        waypoint_name="Bottom Left Tag 1"
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bottom_shelf_pose.yaml"
+        overwrite="true"
+        message="{bottom_shelf_pose}"
       />
       <Action
         ID="LogMessage"
         log_level="info"
-        message="Verification snapshots complete. Compare octomap against shelf URDF in RViz."
+        message="Bottom shelf placed and pose saved."
+      />
+
+      <!--=== COMPUTE SHELF CENTER from calibrated shelf poses ===-->
+      <!--Average the two calibrated shelf poses to get the X center and Y reference-->
+      <Action ID="ResetPoseStampedVector" vector="{calibrated_shelf_poses}" />
+      <Action ID="AddPoseStampedToVector" input="{top_shelf_pose}" vector="{calibrated_shelf_poses}" />
+      <Action ID="AddPoseStampedToVector" input="{bottom_shelf_pose}" vector="{calibrated_shelf_poses}" />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{calibrated_shelf_poses}"
+        average_pose_stamped="{shelf_center_pose}"
+      />
+
+      <!--=== ADD SHELF BACK COLLISION BOX ===-->
+      <!--Back panel: 1.27m wide, 0.08m deep, 72" (1.8288m) tall.
+          Shelf back edge in world = shelf_pose_Y + 0.40 (STL Y=-0.40, rotated pi).
+          Back box center Y = shelf_pose_Y + 0.40 + 0.04 = shelf_pose_Y + 0.44.
+          Back box center Z = floor + half height = -0.805 + 0.9144 = 0.1094.
+          Z offset from shelf_center Z to 0.1094 depends on shelf heights. -->
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_back_pose}"
+        translation_xyz="0;-0.44;-0.09"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_back_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_back_pose}"
+      />
+      <!--Shelf back box: 1.27 x 0.08 x 1.8288 -->
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.08;1.8288"
+        solid_primitive="{shelf_back_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_back_box}"
+        pose="{shelf_back_pose}"
+        object_id="shelf_back"
+        collision_object="{shelf_back_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_back_collision}"
+        graspable_object="{shelf_back_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_back_graspable}"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{shelf_back_pose}"
+        file_name="calibration/shelf_back_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_back_pose.yaml"
+        overwrite="true"
+        message="{shelf_back_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf back collision box placed and pose saved."
+      />
+
+      <!--=== ADD SHELF BASE COLLISION BOX ===-->
+      <!--Base: 1.27m wide, 0.48m deep, 0.20m tall.
+          Front flush with calibrated shelf pose Y (shelf front in world).
+          Base extends backward (+Y in world, away from robot) by 0.48m.
+          Base center Y = shelf_pose_Y + 0.24 (half of 0.48 depth).
+          Bottom level with robot stand bottom (z=-0.805), center Z = -0.805 + 0.10 = -0.705.
+          Z offset from shelf_center Z to -0.705 depends on shelf heights. -->
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_base_pose}"
+        translation_xyz="0;-0.20;-0.904"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_base_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_base_pose}"
+      />
+      <!--Shelf base box: 1.27 x 0.48 x 0.20 -->
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.48;0.20"
+        solid_primitive="{shelf_base_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_base_box}"
+        pose="{shelf_base_pose}"
+        object_id="shelf_base"
+        collision_object="{shelf_base_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_base_collision}"
+        graspable_object="{shelf_base_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_base_graspable}"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{shelf_base_pose}"
+        file_name="calibration/shelf_base_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_base_pose.yaml"
+        overwrite="true"
+        message="{shelf_base_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf base collision box placed and pose saved."
+      />
+
+      <!--=== REMOVE CHUNKY SHELF (replaced by calibrated objects) ===-->
+      <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Calibration complete. All shelf objects placed and poses saved."
       />
     </Control>
   </BehaviorTree>
+
   <!--=== SUBTREE: Detect Tag at Waypoint ===-->
   <BehaviorTree
     ID="Detect Tag at Waypoint"
-    _description="Moves to a waypoint, captures wrist camera image, detects an AprilTag by ID, transforms to world frame, and adds to a pose vector."
+    _description="Moves to a waypoint, captures wrist camera image, detects an AprilTag by ID, transforms to world frame, adds to a pose vector, then takes a point cloud snapshot for planning scene collision avoidance."
   >
     <Control ID="Sequence">
       <SubTree
@@ -346,45 +504,24 @@
         input="{tag_pose}"
         vector="{tag_poses_vector}"
       />
-      <!--Snapshot wrist-camera point cloud and add to planning scene so the
-          planner sees real geometry before moving to the next waypoint.-->
-      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
-      <Action
-        ID="TransformPointCloudFrame"
-        input_cloud="{wrist_camera_point_cloud}"
-        target_frame="world"
-        output_cloud="{snapshot_cloud}"
-      />
-      <Action
-        ID="UpdatePlanningSceneService"
-        point_cloud="{snapshot_cloud}"
-        point_cloud_service="/point_cloud_service"
-      />
-    </Control>
-  </BehaviorTree>
-  <!--=== SUBTREE: Snapshot at Waypoint ===-->
-  <BehaviorTree
-    ID="Snapshot at Waypoint"
-    _description="Moves to a waypoint and captures a wrist camera point cloud snapshot into the planning scene for visual comparison."
-  >
-    <Control ID="Sequence">
-      <SubTree
-        ID="Move to Waypoint"
-        _collapsed="true"
-        waypoint_name="{waypoint_name}"
-        execution_pipeline="jtc"
-        controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
-        controller_names="joint_trajectory_controller"
-      />
-      <Action ID="WaitForDuration" delay_duration="1.0" />
+      <!--Snapshot wrist-camera point cloud for visualization only.
+          UpdatePlanningSceneService is disabled — unfiltered snapshots cause
+          octomap collisions with the robot's own links (noise near wrist). -->
       <Action
         ID="GetPointCloud"
         topic_name="/camera/wrist_mounted_camera/depth/color/points"
         message_timeout_sec="15"
+        message_out="{point_cloud}"
       />
-      <Action ID="SendPointCloudToUI" />
+      <Action ID="SendPointCloudToUI" point_cloud="{point_cloud}" />
+      <!--<Action
+        ID="UpdatePlanningSceneService"
+        point_cloud="{point_cloud}"
+        point_cloud_service="/point_cloud_service"
+      />-->
     </Control>
   </BehaviorTree>
+
   <TreeNodesModel>
     <SubTree ID="Calibrate Qualcomm Setup">
       <MetadataFields>
@@ -401,13 +538,6 @@
       <input_port name="target_id" default="-1">AprilTag ID to detect.</input_port>
       <inout_port name="tag_pose" default="{tag_pose}">Detected tag pose (working variable).</inout_port>
       <inout_port name="tag_poses_vector" default="{tag_poses_vector}">Vector to accumulate poses into.</inout_port>
-    </SubTree>
-    <SubTree ID="Snapshot at Waypoint">
-      <MetadataFields>
-        <Metadata runnable="false" />
-        <Metadata subcategory="Application - Grocery" />
-      </MetadataFields>
-      <input_port name="waypoint_name" default="{waypoint_name}">Waypoint to move to and snapshot from.</input_port>
     </SubTree>
   </TreeNodesModel>
 </root>
