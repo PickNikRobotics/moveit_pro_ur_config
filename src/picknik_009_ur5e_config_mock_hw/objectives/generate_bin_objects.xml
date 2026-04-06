@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Generate Bin Objects">
+  <BehaviorTree ID="Generate Bin Objects" _description="" _favorite="false">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Control ID="Sequence" name="hardcode primitive data here in vectors">
+        <Action ID="ResetVector" vector="{primitive_names}" />
+        <SubTree
+          ID="AddToVector"
+          _collapsed="true"
+          input_vector="{primitive_names}"
+          output_vector="{primitive_names}"
+          element="cube1"
+        />
+        <SubTree
+          ID="AddToVector"
+          _collapsed="true"
+          input_vector="{primitive_names}"
+          output_vector="{primitive_names}"
+          element="sphere1"
+        />
+        <SubTree
+          ID="AddToVector"
+          _collapsed="true"
+          input_vector="{primitive_names}"
+          output_vector="{primitive_names}"
+          element="cylinder1"
+        />
+        <Control ID="Sequence" name="dims for each">
+          <Action ID="ResetVector" vector="{dimensions}" />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="0.1;0.1;0.1"
+            input_vector="{dimensions}"
+            output_vector="{dimensions}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="0.1;0.1;0.1"
+            input_vector="{dimensions}"
+            output_vector="{dimensions}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="0.1;0.1;0.1"
+            input_vector="{dimensions}"
+            output_vector="{dimensions}"
+          />
+        </Control>
+        <Control ID="Sequence" name="positions for each">
+          <Action ID="ResetVector" vector="{positions}" />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="1.0;0.0;0.0"
+            input_vector="{positions}"
+            output_vector="{positions}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="1.0;0.0;0.0"
+            input_vector="{positions}"
+            output_vector="{positions}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="1.0;0.0;0.0"
+            input_vector="{positions}"
+            output_vector="{positions}"
+          />
+        </Control>
+        <Control ID="Sequence" name="orientations for each">
+          <Action ID="ResetVector" vector="{orientations}" />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="0.0;0.0;0.0;1.0"
+            input_vector="{orientations}"
+            output_vector="{orientations}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="0.0;0.0;0.0;1.0"
+            input_vector="{orientations}"
+            output_vector="{orientations}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="0.0;0.0;0.0;1.0"
+            input_vector="{orientations}"
+            output_vector="{orientations}"
+          />
+        </Control>
+        <Control ID="Sequence" name="type for each">
+          <Action ID="ResetVector" vector="{types}" />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            input_vector="{types}"
+            output_vector="{types}"
+            element="cube"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            input_vector="{types}"
+            output_vector="{types}"
+            element="sphere"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            input_vector="{types}"
+            output_vector="{types}"
+            element="cylinder"
+          />
+        </Control>
+      </Control>
+      <Action ID="ResetVector" vector="{primitives}" />
+      <Decorator
+        ID="ForEach"
+        out="{primitive_name}"
+        vector_in="{primitive_names}"
+      >
+        <Control ID="Sequence">
+          <Action
+            ID="GetElementOfVector"
+            element="{orient}"
+            vector_in="{orientations}"
+          />
+          <Action
+            ID="GetElementOfVector"
+            element="{pos}"
+            vector_in="{positions}"
+          />
+          <Action
+            ID="CreateStampedPose"
+            position_xyz="{pos}"
+            orientation_xyzw="{orient}"
+            stamped_pose="{pose}"
+          />
+          <Action
+            ID="GetElementOfVector"
+            element="{type}"
+            vector_in="{types}"
+          />
+          <Action
+            ID="GetElementOfVector"
+            element="{dims}"
+            vector_in="{dimensions}"
+            index="{index}"
+          />
+          <Action
+            ID="CreateSolidPrimitiveFromShape"
+            pose_stamped="{pose}"
+            shape_type="{type}"
+            solid_primitive="{primitive}"
+            dimensions="{dims}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="{primitive}"
+            input_vector="{primitives}"
+            output_vector="{primitives}"
+          />
+          <Control ID="Sequence" name="publish a marker">
+            <Action ID="ResetVector" vector="{poses}" />
+            <SubTree
+              ID="AddToVector"
+              _collapsed="true"
+              input_vector="{poses}"
+              element="{pose}"
+              output_vector="{poses}"
+            />
+            <Action
+              ID="PublishMarkers"
+              marker_poses="{poses}"
+              marker_namespace="{primitive_name}"
+              marker_scale_xyz="{dims}"
+              marker_type="{type}"
+            />
+          </Control>
+        </Control>
+      </Decorator>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Generate Bin Objects">
+      <output_port name="primitive_names" default="{primitive_names}" />
+      <output_port name="primitives" default="{primitives}" />
+    </SubTree>
+  </TreeNodesModel>
+</root>

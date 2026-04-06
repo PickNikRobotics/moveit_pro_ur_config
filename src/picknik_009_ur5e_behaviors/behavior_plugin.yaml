@@ -1,0 +1,4 @@
+objectives:
+  behavior_loader_plugins:
+    picknik_009_ur5e_behaviors:
+      - "picknik_009_ur5e_behaviors::Picknik009Ur5eBehaviorsLoader"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<library path="picknik_009_ur5e_behaviors">
+  <class
+    type="picknik_009_ur5e_behaviors::Picknik009Ur5eBehaviorsLoader"
+    base_class_type="moveit_pro::behaviors::SharedResourcesNodeLoaderBase"
+  />
+</library>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package format="3">
+  <name>picknik_009_ur5e_behaviors</name>
+  <version>0.0.0</version>
+  <description>Custom behavior package scaffold for the PickNik 009 UR5e configuration.</description>
+
+  <maintainer email="support@picknik.ai">
+    MoveIt Pro User
+  </maintainer>
+  <author email="support@picknik.ai">
+    MoveIt Pro User
+  </author>
+
+  <license>TODO</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <build_depend>moveit_pro_package</build_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>moveit_pro_behavior_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>shape_msgs</depend>
+  <depend>spdlog</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+  <buildtool_depend>python3-colcon-common-extensions</buildtool_depend>
+</package>
