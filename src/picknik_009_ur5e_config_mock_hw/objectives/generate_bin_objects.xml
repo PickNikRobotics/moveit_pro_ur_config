@@ -2,126 +2,14 @@
 <root BTCPP_format="4" main_tree_to_execute="Generate Bin Objects">
   <BehaviorTree ID="Generate Bin Objects" _description="" _favorite="false">
     <Control ID="Sequence" name="TopLevelSequence">
-      <Control ID="Sequence" name="hardcode primitive data here in vectors">
-        <Action ID="ResetVector" vector="{primitive_names}" />
-        <SubTree
-          ID="AddToVector"
-          _collapsed="true"
-          input_vector="{primitive_names}"
-          output_vector="{primitive_names}"
-          element="cube1"
-        />
-        <SubTree
-          ID="AddToVector"
-          _collapsed="true"
-          input_vector="{primitive_names}"
-          output_vector="{primitive_names}"
-          element="sphere1"
-        />
-        <SubTree
-          ID="AddToVector"
-          _collapsed="true"
-          input_vector="{primitive_names}"
-          output_vector="{primitive_names}"
-          element="cylinder1"
-        />
-        <Control ID="Sequence" name="dims for each">
-          <Action ID="ResetVector" vector="{dimensions}" />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="0.1;0.1;0.1"
-            input_vector="{dimensions}"
-            output_vector="{dimensions}"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="0.1;0.1;0.1"
-            input_vector="{dimensions}"
-            output_vector="{dimensions}"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="0.1;0.1;0.1"
-            input_vector="{dimensions}"
-            output_vector="{dimensions}"
-          />
-        </Control>
-        <Control ID="Sequence" name="positions for each">
-          <Action ID="ResetVector" vector="{positions}" />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="1.0;0.5;0.0"
-            input_vector="{positions}"
-            output_vector="{positions}"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="1.0;0.0;0.0"
-            input_vector="{positions}"
-            output_vector="{positions}"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="1.0;-0.5;0.0"
-            input_vector="{positions}"
-            output_vector="{positions}"
-          />
-        </Control>
-        <Control ID="Sequence" name="orientations for each">
-          <Action ID="ResetVector" vector="{orientations}" />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="0.0;0.0;0.0;1.0"
-            input_vector="{orientations}"
-            output_vector="{orientations}"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="0.0;0.0;0.0;1.0"
-            input_vector="{orientations}"
-            output_vector="{orientations}"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            element="0.0;0.0;0.0;1.0"
-            input_vector="{orientations}"
-            output_vector="{orientations}"
-          />
-        </Control>
-        <Control ID="Sequence" name="type for each">
-          <Action ID="ResetVector" vector="{types}" />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            input_vector="{types}"
-            output_vector="{types}"
-            element="cube"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            input_vector="{types}"
-            output_vector="{types}"
-            element="sphere"
-          />
-          <SubTree
-            ID="AddToVector"
-            _collapsed="true"
-            input_vector="{types}"
-            output_vector="{types}"
-            element="cylinder"
-          />
-        </Control>
-      </Control>
+      <Action
+        ID="ReadYamlList"
+        package_name="picknik_009_ur5e_config_mock_hw"
+        relative_file_path="config/bin_layouts.yaml"
+        key1="{bin_layout_name}"
+        key2="primitive_names"
+        value_list="{primitive_names}"
+      />
       <Action ID="ResetVector" vector="{primitives}" />
       <Action ID="ResetVector" vector="{primitive_poses}" />
       <Decorator
@@ -131,14 +19,22 @@
       >
         <Control ID="Sequence">
           <Action
-            ID="GetElementOfVector"
-            element="{orient}"
-            vector_in="{orientations}"
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="orientation"
+            value="{orient}"
           />
           <Action
-            ID="GetElementOfVector"
-            element="{pos}"
-            vector_in="{positions}"
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="position"
+            value="{pos}"
           />
           <Action
             ID="CreateStampedPose"
@@ -147,15 +43,22 @@
             stamped_pose="{pose}"
           />
           <Action
-            ID="GetElementOfVector"
-            element="{type}"
-            vector_in="{types}"
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="type"
+            value="{type}"
           />
           <Action
-            ID="GetElementOfVector"
-            element="{dims}"
-            vector_in="{dimensions}"
-            index="{index}"
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="dimensions"
+            value="{dims}"
           />
           <Action
             ID="CreateSolidPrimitiveFromShape"
@@ -201,6 +104,7 @@
   </BehaviorTree>
   <TreeNodesModel>
     <SubTree ID="Generate Bin Objects">
+      <input_port name="bin_layout_name" default="layout_1" />
       <output_port name="primitive_names" default="{primitive_names}" />
       <output_port name="primitives" default="{primitives}" />
       <output_port name="primitive_poses" default="{primitive_poses}" />

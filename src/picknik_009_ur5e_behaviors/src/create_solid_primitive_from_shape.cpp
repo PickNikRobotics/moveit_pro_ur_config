@@ -25,8 +25,8 @@ inline constexpr auto kDescription = R"(
         Supported shape types:
         <ul>
         <li><b>cube</b>: [x, y, z]</li>
-            <li><b>sphere</b>: [radius]</li>
-            <li><b>cylinder</b>: [radius, height]</li>
+          <li><b>sphere</b>: [radius, radius, radius]</li>
+          <li><b>cylinder</b>: [radius, radius, height]</li>
         </ul>
     </p>
 )";
@@ -62,8 +62,8 @@ BT::PortsList CreateSolidPrimitiveFromShape::providedPorts()
                                "Shape type to create: 'cube', 'sphere', or 'cylinder'."),
     BT::InputPort<std::vector<double>>(kPortIDDimensions, "{dimensions}",
                                        "Dimensions in meters. Expects a 3-element vector. "
-                                       "Cube uses [x;y;z], sphere uses the first element as [radius], "
-                                       "and cylinder uses the first two elements as [radius;height]."),
+                                       "Cube uses [x;y;z], sphere uses [radius;radius;radius], "
+                                       "and cylinder uses [radius;radius;height]."),
     BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPoseStamped, "{pose_stamped}",
                                                    "Pose associated with the primitive."),
     BT::OutputPort<shape_msgs::msg::SolidPrimitive>(kPortIDSolidPrimitive, "{solid_primitive}",
@@ -108,29 +108,42 @@ BT::NodeStatus CreateSolidPrimitiveFromShape::tick()
     return BT::NodeStatus::FAILURE;
   }
 
-  if (!allPositive(dimensions))
-  {
-    spdlog::error("CreateSolidPrimitiveFromShape: all dimensions must be positive.");
-    return BT::NodeStatus::FAILURE;
-  }
-
   shape_msgs::msg::SolidPrimitive primitive;
 
   if (shape_type == "cube")
   {
+    if (!allPositive(dimensions))
+    {
+      spdlog::error("CreateSolidPrimitiveFromShape: cube dimensions [x, y, z] must all be positive.");
+      return BT::NodeStatus::FAILURE;
+    }
+
     primitive.type = shape_msgs::msg::SolidPrimitive::BOX;
     primitive.dimensions.assign(dimensions.begin(), dimensions.end());
   }
   else if (shape_type == "sphere")
   {
+    if (!allPositive(dimensions))
+    {
+      spdlog::error("CreateSolidPrimitiveFromShape: sphere dimensions [radius, radius, radius] must all be positive.");
+      return BT::NodeStatus::FAILURE;
+    }
+
     primitive.type = shape_msgs::msg::SolidPrimitive::SPHERE;
     primitive.dimensions = { dimensions[0] };
   }
   else if (shape_type == "cylinder")
   {
+    if (!allPositive(dimensions))
+    {
+      spdlog::error(
+          "CreateSolidPrimitiveFromShape: cylinder dimensions [radius, radius, height] must all be positive.");
+      return BT::NodeStatus::FAILURE;
+    }
+
     primitive.type = shape_msgs::msg::SolidPrimitive::CYLINDER;
     primitive.dimensions.resize(2);
-    primitive.dimensions[shape_msgs::msg::SolidPrimitive::CYLINDER_HEIGHT] = dimensions[1];
+    primitive.dimensions[shape_msgs::msg::SolidPrimitive::CYLINDER_HEIGHT] = dimensions[2];
     primitive.dimensions[shape_msgs::msg::SolidPrimitive::CYLINDER_RADIUS] = dimensions[0];
   }
   else

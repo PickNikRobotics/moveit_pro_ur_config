@@ -4,6 +4,8 @@
 
 #include <picknik_009_ur5e_behaviors/create_solid_primitive_from_shape.hpp>
 #include <picknik_009_ur5e_behaviors/generate_surface_poses_from_solid_primitive.hpp>
+#include <picknik_009_ur5e_behaviors/read_yaml_list.hpp>
+#include <picknik_009_ur5e_behaviors/read_yaml_value.hpp>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -19,6 +21,10 @@ public:
     moveit_pro::behaviors::registerBehavior<CreateSolidPrimitiveFromShape>(factory, "CreateSolidPrimitiveFromShape");
     moveit_pro::behaviors::registerBehavior<GenerateSurfacePosesFromSolidPrimitive>(
         factory, "GenerateSurfacePosesFromSolidPrimitive");
+    moveit_pro::behaviors::registerBehavior<picknik_009_ur5e_behaviors::ReadYamlList>(factory, "ReadYamlList",
+                                                                                        shared_resources);
+    moveit_pro::behaviors::registerBehavior<picknik_009_ur5e_behaviors::ReadYamlValue>(factory, "ReadYamlValue",
+                                                                                         shared_resources);
   }
 };
 }  // namespace picknik_009_ur5e_behaviors

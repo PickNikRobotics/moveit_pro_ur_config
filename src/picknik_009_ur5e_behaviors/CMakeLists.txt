@@ -4,18 +4,28 @@ project(picknik_009_ur5e_behaviors CXX)
 find_package(moveit_pro_package REQUIRED)
 moveit_pro_package()
 
-set(THIS_PACKAGE_INCLUDE_DEPENDS geometry_msgs moveit_pro_behavior_interface pluginlib shape_msgs tf2_eigen)
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+    ament_index_cpp
+    geometry_msgs
+    moveit_pro_behavior_interface
+    pluginlib
+    rclcpp
+    shape_msgs
+    tf2_eigen)
 foreach(package IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${package} REQUIRED)
 endforeach()
 
 find_package(spdlog REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 add_library(
   picknik_009_ur5e_behaviors
   SHARED
   src/create_solid_primitive_from_shape.cpp
   src/generate_surface_poses_from_solid_primitive.cpp
+  src/read_yaml_list.cpp
+  src/read_yaml_value.cpp
   src/register_behaviors.cpp)
 target_include_directories(
   picknik_009_ur5e_behaviors
@@ -23,7 +33,7 @@ target_include_directories(
          $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(picknik_009_ur5e_behaviors
                           ${THIS_PACKAGE_INCLUDE_DEPENDS})
-target_link_libraries(picknik_009_ur5e_behaviors spdlog::spdlog)
+target_link_libraries(picknik_009_ur5e_behaviors spdlog::spdlog yaml-cpp)
 
 install(
   TARGETS picknik_009_ur5e_behaviors
