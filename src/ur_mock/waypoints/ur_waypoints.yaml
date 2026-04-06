@@ -738,6 +738,44 @@
     - wrist_2_joint
     - wrist_3_joint
     position:
+    - -1.6167424000477637
+    - -1.2838220343248221
+    - 0.7615735082620555
+    - -1.1656026212928123
+    - -1.5707963024881353
+    - 2.420200807736816e-07
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Look at Tote
+- description: ''
+  favorite: false
+  joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
     - 4.953617572784424
     - -1.7825623951353968
     - -2.142378330230713

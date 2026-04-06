@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Pick and Place Demo">
+  <!--//////////-->
+  <BehaviorTree
+    ID="Pick and Place Demo"
+    _description="A simple demo of pick &amp; place"
+    _favorite="false"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree ID="Load Calibrated Scene" _collapsed="true" />
+      <Control ID="Sequence">
+        <!--Add Tomato Can collision object-->
+        <Action
+          ID="CreateStampedPose"
+          orientation_xyzw="0.000; 1.000; 0.000; 0.000"
+          reference_frame="tomato_soup_can_1_tf"
+          stamped_pose="{tomato_can_pose}"
+          position_xyz="0;0;0.01"
+        />
+        <Action ID="CreateSolidPrimitiveBox" dimensions="0.06;0.06;0.09" />
+        <Action
+          ID="CreateCollisionObjectFromSolidPrimitive"
+          object_id="tomato_can"
+          solid_primitive="{solid_primitive}"
+          pose="{tomato_can_pose}"
+        />
+        <SubTree
+          ID="Convert CollisionObject To GraspableObject"
+          _collapsed="true"
+        />
+        <Action ID="ModifyObjectInPlanningScene" object="{graspable_object}" />
+      </Control>
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        waypoint_name="Look at Tote"
+      />
+      <Control ID="Sequence">
+        <!--Pick up motion-->
+        <Action
+          ID="CreateStampedPose"
+          orientation_xyzw="0.000; 1.000; 0.000; 0.000"
+          reference_frame="tomato_soup_can_1_tf"
+          stamped_pose="{pick_pose}"
+          position_xyz="0;0;0.07"
+        />
+        <Action
+          ID="CreateStampedPose"
+          orientation_xyzw="0.000; 1.000; 0.000; 0.000"
+          reference_frame="tomato_soup_can_1_tf"
+          stamped_pose="{pre_pick_pose}"
+          position_xyz="0;0;0.11"
+        />
+        <Action
+          ID="AddPoseStampedToVector"
+          input="{pre_pick_pose}"
+          vector="{pick_path}"
+        />
+        <Action
+          ID="AddPoseStampedToVector"
+          input="{pick_pose}"
+          vector="{pick_path}"
+        />
+        <Action
+          ID="PlanCartesianPath"
+          position_only="false"
+          tip_links="epick_tip"
+          path="{pick_path}"
+          blending_radius="0.010000"
+          debug_solution="{debug_solution}"
+        />
+        <Action ID="GetCurrentPlanningScene" />
+        <Action
+          ID="RemoveCollisionObjectFromPlanningScene"
+          object_id="virtual_calibrated_bin"
+        />
+        <Action ID="GetCurrentPlanningScene" />
+        <Action
+          ID="ValidateTrajectory"
+          joint_trajectory_msg="{joint_trajectory_msg}"
+          planning_scene_msg="{planning_scene}"
+        />
+        <Action
+          ID="ExecuteTrajectory"
+          controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        />
+      </Control>
+      <Control ID="Sequence">
+        <!--Retract after pick up-->
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0;0;-0.15"
+          reference_frame="epick_tip"
+          stamped_pose="{retract_pose}"
+        />
+        <Action
+          ID="AddPoseStampedToVector"
+          input="{retract_pose}"
+          vector="{retract_path}"
+        />
+        <Action
+          ID="PlanCartesianPath"
+          position_only="false"
+          tip_links="epick_tip"
+          path="{retract_path}"
+          blending_radius="0.010000"
+          debug_solution="{debug_solution}"
+        />
+        <Action
+          ID="ExecuteTrajectory"
+          controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        />
+      </Control>
+      <Control ID="Sequence">
+        <!--Place motion-->
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0;-0.1;0.12"
+          reference_frame="calibrated_bottom_shelf_tf"
+          stamped_pose="{place_pose}"
+          orientation_xyzw="0.000; 1.000; 0.000; 0.000"
+        />
+        <Action
+          ID="CreateStampedPose"
+          position_xyz="0;-0.1;0.15"
+          reference_frame="calibrated_bottom_shelf_tf"
+          stamped_pose="{pre_place_pose}"
+          orientation_xyzw="0.000; 1.000; 0.000; 0.000"
+        />
+        <Action
+          ID="CreateStampedPose"
+          orientation_xyzw="-0.707; 0.707; -0.000; 0.000"
+          position_xyz="0.5;0.0;0.3"
+          reference_frame="base_link"
+          stamped_pose="{intermediate}"
+        />
+        <Action
+          ID="AddPoseStampedToVector"
+          input="{intermediate}"
+          vector="{place_path}"
+        />
+        <Action
+          ID="AddPoseStampedToVector"
+          input="{pre_place_pose}"
+          vector="{place_path}"
+        />
+        <Action
+          ID="AddPoseStampedToVector"
+          input="{place_pose}"
+          vector="{place_path}"
+        />
+        <Control ID="Fallback">
+          <Action
+            ID="PlanCartesianPath"
+            position_only="false"
+            tip_links="epick_tip"
+            path="{place_path}"
+            blending_radius="0.010000"
+            debug_solution="{debug_solution}"
+          />
+          <SubTree
+            ID="Wait for Trajectory Approval if User Available"
+            _collapsed="true"
+            cartesian_path_links="epick_tip"
+            solution="{debug_solution}"
+          />
+        </Control>
+        <Action
+          ID="ExecuteTrajectory"
+          controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        />
+      </Control>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Pick and Place Demo">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Basic Examples" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>
