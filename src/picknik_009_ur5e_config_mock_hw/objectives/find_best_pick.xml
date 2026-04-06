@@ -96,12 +96,7 @@
                         element="{best_pick_primitive_name}"
                         index="{index1}"
                       />
-                      <Action
-                        ID="GetElementOfVector"
-                        vector_in="{primitives}"
-                        element="{best_pick_primitive}"
-                        index="{index1}"
-                      />
+                      <Action ID="Script" code="best_pick_primitive_index := index1" />
                       <Action
                         ID="GetElementOfVector"
                         vector_in="{surface_poses}"
@@ -144,7 +139,10 @@
   <TreeNodesModel>
     <SubTree ID="Find Best Pick">
       <output_port name="best_pick_pose" default="{best_pick_pose}" />
-      <output_port name="best_pick_primitive" default="{best_pick_primitive}" />
+      <output_port
+        name="best_pick_primitive_index"
+        default="{best_pick_primitive_index}"
+      />
       <output_port
         name="best_pick_primitive_name"
         default="{best_pick_primitive_name}"
