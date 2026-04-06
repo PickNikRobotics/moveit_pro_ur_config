@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Find Best Pick">
+  <!--//////////-->
+  <BehaviorTree
+    ID="Find Best Pick"
+    _description="Simplified objective to select one solid primitive from a list that would be the best pick"
+    _favorite="false"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree
+        ID="Generate Bin Objects"
+        _collapsed="true"
+        primitives="{primitives}"
+        primitive_poses="{primitive_poses}"
+      />
+      <Action ID="ResetVector" vector="{surface_poses_vector}" />
+      <Decorator
+        ID="ForEach"
+        name="Generate poses and add to a vector"
+        vector_in="{primitives}"
+        out="{primitive}"
+        index="{index}"
+      >
+        <Control ID="Sequence">
+          <Action
+            ID="GetElementOfVector"
+            element="{primitive_pose}"
+            vector_in="{primitive_poses}"
+            index="{index}"
+          />
+          <Action
+            ID="GenerateSurfacePosesFromSolidPrimitive"
+            solid_primitive="{primitive}"
+            primitive_pose="{primitive_pose}"
+            angular_face_resolution="45.0"
+            z_offset="0.05"
+            poses="{surface_poses}"
+          />
+          <Action
+            ID="VisualizePath"
+            path="{surface_poses}"
+            show_poses="true"
+            name="repurpose to display poses"
+          />
+          <Decorator ID="ForEach" vector_in="{surface_poses}" out="{surface_pose}">
+            <Action
+              ID="PushBackVector"
+              element="{surface_pose}"
+              input_vector="{surface_poses_vector}"
+              output_vector="{surface_poses_vector}"
+            />
+          </Decorator>
+          <Action ID="BreakpointSubscriber" />
+        </Control>
+      </Decorator>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Find Best Pick">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Grasping" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

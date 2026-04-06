@@ -22,6 +22,7 @@
   <depend>pluginlib</depend>
   <depend>shape_msgs</depend>
   <depend>spdlog</depend>
+  <depend>tf2_eigen</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

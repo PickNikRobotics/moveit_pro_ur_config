@@ -3,6 +3,7 @@
 #include <moveit_pro_behavior_interface/shared_resources_node_loader.hpp>
 
 #include <picknik_009_ur5e_behaviors/create_solid_primitive_from_shape.hpp>
+#include <picknik_009_ur5e_behaviors/generate_surface_poses_from_solid_primitive.hpp>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -16,6 +17,8 @@ public:
       [[maybe_unused]] const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
   {
     moveit_pro::behaviors::registerBehavior<CreateSolidPrimitiveFromShape>(factory, "CreateSolidPrimitiveFromShape");
+    moveit_pro::behaviors::registerBehavior<GenerateSurfacePosesFromSolidPrimitive>(
+        factory, "GenerateSurfacePosesFromSolidPrimitive");
   }
 };
 }  // namespace picknik_009_ur5e_behaviors

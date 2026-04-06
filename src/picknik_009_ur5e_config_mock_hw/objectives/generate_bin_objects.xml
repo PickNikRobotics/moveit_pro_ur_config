@@ -54,7 +54,7 @@
           <SubTree
             ID="AddToVector"
             _collapsed="true"
-            element="1.0;0.0;0.0"
+            element="1.0;0.5;0.0"
             input_vector="{positions}"
             output_vector="{positions}"
           />
@@ -68,7 +68,7 @@
           <SubTree
             ID="AddToVector"
             _collapsed="true"
-            element="1.0;0.0;0.0"
+            element="1.0;-0.5;0.0"
             input_vector="{positions}"
             output_vector="{positions}"
           />
@@ -123,6 +123,7 @@
         </Control>
       </Control>
       <Action ID="ResetVector" vector="{primitives}" />
+      <Action ID="ResetVector" vector="{primitive_poses}" />
       <Decorator
         ID="ForEach"
         out="{primitive_name}"
@@ -170,6 +171,13 @@
             input_vector="{primitives}"
             output_vector="{primitives}"
           />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="{pose}"
+            input_vector="{primitive_poses}"
+            output_vector="{primitive_poses}"
+          />
           <Control ID="Sequence" name="publish a marker">
             <Action ID="ResetVector" vector="{poses}" />
             <SubTree
@@ -195,6 +203,7 @@
     <SubTree ID="Generate Bin Objects">
       <output_port name="primitive_names" default="{primitive_names}" />
       <output_port name="primitives" default="{primitives}" />
+      <output_port name="primitive_poses" default="{primitive_poses}" />
     </SubTree>
   </TreeNodesModel>
 </root>

@@ -4,7 +4,7 @@ project(picknik_009_ur5e_behaviors CXX)
 find_package(moveit_pro_package REQUIRED)
 moveit_pro_package()
 
-set(THIS_PACKAGE_INCLUDE_DEPENDS geometry_msgs moveit_pro_behavior_interface pluginlib shape_msgs)
+set(THIS_PACKAGE_INCLUDE_DEPENDS geometry_msgs moveit_pro_behavior_interface pluginlib shape_msgs tf2_eigen)
 foreach(package IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${package} REQUIRED)
 endforeach()
@@ -15,6 +15,7 @@ add_library(
   picknik_009_ur5e_behaviors
   SHARED
   src/create_solid_primitive_from_shape.cpp
+  src/generate_surface_poses_from_solid_primitive.cpp
   src/register_behaviors.cpp)
 target_include_directories(
   picknik_009_ur5e_behaviors
