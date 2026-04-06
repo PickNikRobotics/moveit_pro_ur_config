@@ -1,92 +1,330 @@
 <sim_additions>
-	<asset>
-		<material name="rack_material" rgba="0.65 0.68 0.72 1" />
-		<mesh name="example_rack_1_mesh" file="racks/example_rack_1.stl" />
+  <asset>
+    <material name="rack_material" rgba="0.65 0.68 0.72 1" />
+    <material name="shelf_material" rgba="0.2 0.8 0.2 0.7" />
+    <material name="table_material" rgba="0.6 0.4 0.2 1" />
+    <material name="bin_material" rgba="0.4 0.4 0.4 1" />
+    <material name="pole_material" rgba="0.3 0.3 0.3 1" />
+    <mesh name="example_rack_1_mesh" file="racks/example_rack_1.stl" />
+    <mesh name="shelf_only_mesh" file="shelf_only.stl" />
 
-		<mesh
-			name="tomato_soup_can_visual_mesh"
-			file="ycb_dataset/ycb/tomato_soup_can/textured.obj"
-		/>
-		<mesh
-			name="tomato_soup_can_collision_mesh_0"
-			file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_0.stl"
-		/>
-		<mesh
-			name="tomato_soup_can_collision_mesh_1"
-			file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_1.stl"
-		/>
-		<mesh
-			name="tomato_soup_can_collision_mesh_2"
-			file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_2.stl"
-		/>
-		<mesh
-			name="tomato_soup_can_collision_mesh_3"
-			file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_3.stl"
-		/>
-		<mesh
-			name="tomato_soup_can_collision_mesh_4"
-			file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_4.stl"
-		/>
-		<texture
-			name="tomato_soup_can_texture"
-			type="2d"
-			file="ycb_dataset/ycb/tomato_soup_can/texture_map.png"
-		/>
-		<material
-			name="tomato_soup_can_material"
-			texture="tomato_soup_can_texture"
-		/>
-	</asset>
+    <mesh
+      name="tomato_soup_can_visual_mesh"
+      file="ycb_dataset/ycb/tomato_soup_can/textured.obj"
+    />
+    <mesh
+      name="tomato_soup_can_collision_mesh_0"
+      file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_0.stl"
+    />
+    <mesh
+      name="tomato_soup_can_collision_mesh_1"
+      file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_1.stl"
+    />
+    <mesh
+      name="tomato_soup_can_collision_mesh_2"
+      file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_2.stl"
+    />
+    <mesh
+      name="tomato_soup_can_collision_mesh_3"
+      file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_3.stl"
+    />
+    <mesh
+      name="tomato_soup_can_collision_mesh_4"
+      file="ycb_dataset/ycb/tomato_soup_can/textured_coacd_4.stl"
+    />
+    <texture
+      name="tomato_soup_can_texture"
+      type="2d"
+      file="ycb_dataset/ycb/tomato_soup_can/texture_map.png"
+    />
+    <material
+      name="tomato_soup_can_material"
+      texture="tomato_soup_can_texture"
+    />
+  </asset>
 
-	<worldbody>
-        <body
-            name="example_rack_1"
-            pos="0.0 -0.75 -0.9220147132873535"
-            quat="1 0 0 0"
-            gravcomp="1"
-        >
-            <geom
-                name="example_rack_1_visual"
-                type="mesh"
-                mesh="example_rack_1_mesh"
-                material="rack_material"
-                contype="0"
-                conaffinity="0"
-                group="1"
-            />
-            <geom
-                name="example_rack_1_collision"
-                type="mesh"
-                mesh="example_rack_1_mesh"
-                group="3"
-            />
-            <site name="example_rack_1_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
-        </body>
+  <worldbody>
+    <!-- Freejoint bodies must be direct worldbody children -->
+    <body name="tomato_soup_can_1" pos="0.046 -0.784 0.0" euler="0 0 0">
+      <site
+        name="tomato_soup_can_1_tf"
+        pos="0 0 0"
+        size="0.008"
+        rgba="1 0 0 0.35"
+      />
+      <freejoint name="tomato_soup_can_joint" />
+      <geom
+        name="tomato_soup_can_visual_geom"
+        type="mesh"
+        mesh="tomato_soup_can_visual_mesh"
+        material="tomato_soup_can_material"
+        pos="-0.0 0.0 0.0"
+        euler="0 0 0"
+        contype="0"
+        conaffinity="0"
+        group="0"
+      />
+      <geom
+        name="tomato_soup_can_collision_geom_0"
+        type="mesh"
+        mesh="tomato_soup_can_collision_mesh_0"
+        pos="-0.0 0.0 0.0"
+        euler="0 0 0"
+        contype="1"
+        conaffinity="1"
+        group="3"
+      />
+      <geom
+        name="tomato_soup_can_collision_geom_1"
+        type="mesh"
+        mesh="tomato_soup_can_collision_mesh_1"
+        pos="-0.0 0.0 0.0"
+        euler="0 0 0"
+        contype="1"
+        conaffinity="1"
+        group="3"
+      />
+      <geom
+        name="tomato_soup_can_collision_geom_2"
+        type="mesh"
+        mesh="tomato_soup_can_collision_mesh_2"
+        pos="-0.0 0.0 0.0"
+        euler="0 0 0"
+        contype="1"
+        conaffinity="1"
+        group="3"
+      />
+      <geom
+        name="tomato_soup_can_collision_geom_3"
+        type="mesh"
+        mesh="tomato_soup_can_collision_mesh_3"
+        pos="-0.0 0.0 0.0"
+        euler="0 0 0"
+        contype="1"
+        conaffinity="1"
+        group="3"
+      />
+      <geom
+        name="tomato_soup_can_collision_geom_4"
+        type="mesh"
+        mesh="tomato_soup_can_collision_mesh_4"
+        pos="-0.0 0.0 0.0"
+        euler="0 0 0"
+        contype="1"
+        conaffinity="1"
+        group="3"
+      />
+      <inertial
+        pos="0 0 0"
+        euler="0 0 0"
+        mass="0.349"
+        diaginertia="0.001 0.001 0.001"
+      />
+    </body>
 
-		<!-- Freejoint bodies must be direct worldbody children -->
-		<body name="tomato_soup_can_1" pos="-0.25 0.5 0.025" euler="0 0 0">
-			<site name="tomato_soup_can_1_tf" pos="0 0 0" size="0.008" rgba="1 0 0 0.35" />
-            <freejoint name="tomato_soup_can_joint" />
-            <geom name="tomato_soup_can_visual_geom" type="mesh" mesh="tomato_soup_can_visual_mesh" material="tomato_soup_can_material" pos="-0.0 0.0 0.0" euler="0 0 0" contype="0" conaffinity="0" group="0" />
-            <geom name="tomato_soup_can_collision_geom_0" type="mesh" mesh="tomato_soup_can_collision_mesh_0" pos="-0.0 0.0 0.0" euler="0 0 0" contype="1" conaffinity="1" group="3" />
-            <geom name="tomato_soup_can_collision_geom_1" type="mesh" mesh="tomato_soup_can_collision_mesh_1" pos="-0.0 0.0 0.0" euler="0 0 0" contype="1" conaffinity="1" group="3" />
-            <geom name="tomato_soup_can_collision_geom_2" type="mesh" mesh="tomato_soup_can_collision_mesh_2" pos="-0.0 0.0 0.0" euler="0 0 0" contype="1" conaffinity="1" group="3" />
-            <geom name="tomato_soup_can_collision_geom_3" type="mesh" mesh="tomato_soup_can_collision_mesh_3" pos="-0.0 0.0 0.0" euler="0 0 0" contype="1" conaffinity="1" group="3" />
-            <geom name="tomato_soup_can_collision_geom_4" type="mesh" mesh="tomato_soup_can_collision_mesh_4" pos="-0.0 0.0 0.0" euler="0 0 0" contype="1" conaffinity="1" group="3" />
-            <inertial pos="0 0 0" euler="0 0 0" mass="0.349" diaginertia="0.001 0.001 0.001" />
-		</body>
+    <!-- Calibrated Scene Objects (matching Load Calibrated Scene objective) -->
 
-		<!-- scene cameras -->
+    <!-- Table: 1.8288m x 0.46m x 0.74m -->
+    <body
+      name="calibrated_table"
+      pos="0.0460 -0.7836 -0.5192"
+      euler="0 0 0"
+      gravcomp="1"
+    >
+      <geom
+        name="calibrated_table_geom"
+        type="box"
+        size="0.9144 0.23 0.37"
+        rgba="0.6 0.4 0.2 1"
+      />
+      <site
+        name="calibrated_table_tf"
+        pos="0 0 0"
+        size="0.01"
+        rgba="1 0 0 0.35"
+      />
+    </body>
 
-		<body name="tote_camera" pos="0.4 0.538 0.469" quat="0.3050092 -0.6377455 -0.6382535 0.3047664">
-			<camera name="tote_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" quat="0.0 -1.0 0.0 0.0"/>
-			<site name="tote_camera_optical_frame" pos="0 0 0" quat="1.0 0.0 0.0 0.0"/>
-		</body>
+    <!-- Bin: 0.6096m x 0.381m x 0.1905m (24" x 15" x 7.5" industrial tote) -->
+    <body
+      name="calibrated_bin"
+      pos="0.0460 -0.7836 -0.0532"
+      euler="0 0 0"
+      gravcomp="1"
+    >
+      <!-- Bottom -->
+      <geom
+        name="calibrated_bin_bottom"
+        type="box"
+        size="0.3048 0.1905 0.0025"
+        pos="0 0 -0.093"
+        rgba="0.4 0.4 0.4 1"
+      />
+      <!-- Back wall (Y-) -->
+      <geom
+        name="calibrated_bin_back"
+        type="box"
+        size="0.3048 0.0125 0.09525"
+        pos="0 -0.178 0"
+        rgba="0.4 0.4 0.4 1"
+      />
+      <!-- Front wall (Y+) -->
+      <geom
+        name="calibrated_bin_front"
+        type="box"
+        size="0.3048 0.0125 0.09525"
+        pos="0 0.178 0"
+        rgba="0.4 0.4 0.4 1"
+      />
+      <!-- Right wall (X+) -->
+      <geom
+        name="calibrated_bin_right"
+        type="box"
+        size="0.0125 0.1905 0.09525"
+        pos="0.2923 0 0"
+        rgba="0.4 0.4 0.4 1"
+      />
+      <!-- Left wall (X-) -->
+      <geom
+        name="calibrated_bin_left"
+        type="box"
+        size="0.0125 0.1905 0.09525"
+        pos="-0.2923 0 0"
+        rgba="0.4 0.4 0.4 1"
+      />
+      <site
+        name="calibrated_bin_tf"
+        pos="0 0 0"
+        size="0.01"
+        rgba="1 0 0 0.35"
+      />
+    </body>
 
-		<body name="rack_camera" pos="0.0 -0.175 -0.05" euler="1.57 0 1.57">
-			<camera name="rack_camera" pos="0 0 0" fovy="58" mode="fixed" resolution="640 480" quat="0.0 -1.0 0.0 0.0"/>
-			<site name="rack_camera_optical_frame" pos="0 0 0" quat="1.0 0.0 0.0 0.0"/>
-		</body>
+    <!-- Pole: 0.06m x 0.06m x 0.7112m -->
+    <body
+      name="calibrated_pole"
+      pos="0.0460 -1.0141 0.2069"
+      euler="0 0 0"
+      gravcomp="1"
+    >
+      <geom
+        name="calibrated_pole_geom"
+        type="box"
+        size="0.03 0.03 0.3556"
+        rgba="0.3 0.3 0.3 1"
+      />
+      <site
+        name="calibrated_pole_tf"
+        pos="0 0 0"
+        size="0.01"
+        rgba="1 0 0 0.35"
+      />
+    </body>
 
-	</worldbody>
+    <!-- Top Shelf -->
+    <body
+      name="calibrated_top_shelf"
+      pos="-0.0376 0.6948 0.5723"
+      euler="0 0 3.14159"
+      gravcomp="1"
+    >
+      <geom
+        name="calibrated_top_shelf_visual"
+        type="mesh"
+        mesh="shelf_only_mesh"
+        material="shelf_material"
+        contype="0"
+        conaffinity="0"
+        group="1"
+      />
+      <geom
+        name="calibrated_top_shelf_collision"
+        type="mesh"
+        mesh="shelf_only_mesh"
+        group="3"
+      />
+      <site
+        name="calibrated_top_shelf_tf"
+        pos="0 0 0"
+        size="0.01"
+        rgba="0 1 0 0.35"
+      />
+    </body>
+
+    <!-- Bottom Shelf -->
+    <body
+      name="calibrated_bottom_shelf"
+      pos="-0.0351 0.6389 -0.3156"
+      euler="0 0 3.14159"
+      gravcomp="1"
+    >
+      <geom
+        name="calibrated_bottom_shelf_visual"
+        type="mesh"
+        mesh="shelf_only_mesh"
+        material="shelf_material"
+        contype="0"
+        conaffinity="0"
+        group="1"
+      />
+      <geom
+        name="calibrated_bottom_shelf_collision"
+        type="mesh"
+        mesh="shelf_only_mesh"
+        group="3"
+      />
+      <site
+        name="calibrated_bottom_shelf_tf"
+        pos="0 0 0"
+        size="0.01"
+        rgba="0 1 0 0.35"
+      />
+    </body>
+
+    <!-- Shelf Back Box: 1.27m x 0.08m x 1.8288m -->
+    <body
+      name="shelf_back"
+      pos="-0.0364 1.1069 0.0383"
+      euler="0 0 0"
+      gravcomp="1"
+    >
+      <geom
+        name="shelf_back_geom"
+        type="box"
+        size="0.635 0.04 0.9144"
+        rgba="0.2 0.8 0.2 0.7"
+      />
+      <site name="shelf_back_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
+    </body>
+
+    <!-- Shelf Base Box: 1.27m x 0.48m x 0.20m -->
+    <body
+      name="shelf_base"
+      pos="-0.0364 0.9069 -0.7757"
+      euler="0 0 0"
+      gravcomp="1"
+    >
+      <geom
+        name="shelf_base_geom"
+        type="box"
+        size="0.635 0.24 0.10"
+        rgba="0.2 0.8 0.2 0.7"
+      />
+      <site name="shelf_base_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
+    </body>
+
+    <site
+      name="tote_camera_optical_frame"
+      pos="0.046 -0.7836 0.5"
+      euler="0 3.1415 0"
+    />
+    <camera
+      name="tote_camera"
+      pos="0.046 -0.7836 0.5"
+      fovy="58"
+      mode="fixed"
+      resolution="640 480"
+      euler="0 0 0"
+    />
+  </worldbody>
 </sim_additions>

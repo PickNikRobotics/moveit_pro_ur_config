@@ -94,6 +94,7 @@ joint_trajectory_admittance_controller:
     sensor_frame: tool0
     ee_frame: grasp_link
     ft_sensor_name: tcp_fts_sensor
+    path_tolerance: 0.1
     stop_accelerations:
       - 30.0
       - 30.0

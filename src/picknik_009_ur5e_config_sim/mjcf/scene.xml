@@ -5,12 +5,11 @@
   <!-- welds for suction -->
   <equality>
     <weld
-    name="epick_vacuum_state-tomato_soup_can_1"
-    body1="tomato_soup_can_1"
-    body2="epick_vacuum_state"
-    active="false"
-    torquescale="5"
+      name="epick_vacuum_state-tomato_soup_can_1"
+      body1="tomato_soup_can_1"
+      body2="epick_vacuum_state"
+      active="false"
+      torquescale="5"
     />
   </equality>
-
 </mujoco>

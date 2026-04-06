@@ -13,10 +13,9 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  
   <exec_depend>realsense2_camera</exec_depend>
   <exec_depend>picknik_accessories</exec_depend>
-  
+
   <depend>picknik_009_ur5e_config</depend>
   <depend>ur_hw</depend>
 
