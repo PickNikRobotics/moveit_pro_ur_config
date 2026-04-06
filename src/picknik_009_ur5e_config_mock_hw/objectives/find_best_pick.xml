@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <root BTCPP_format="4" main_tree_to_execute="Find Best Pick">
-  <!--//////////-->
   <BehaviorTree
     ID="Find Best Pick"
     _description="Simplified objective to select one solid primitive from a list that would be the best pick"
     _favorite="false"
   >
     <Control ID="Sequence" name="TopLevelSequence">
-      <SubTree
-        ID="Generate Bin Objects"
-        _collapsed="true"
-        primitives="{primitives}"
-        primitive_poses="{primitive_poses}"
-      />
-      <Action ID="ResetVector" vector="{surface_poses_vector}" />
+      <Action ID="Script" code="highest_pose_index:=-1" />
+      <Action ID="Script" code="highest_z_coord:=-100" />
       <Decorator
         ID="ForEach"
         name="Generate poses and add to a vector"
         vector_in="{primitives}"
         out="{primitive}"
-        index="{index}"
+        index="{index1}"
       >
         <Control ID="Sequence">
           <Action
             ID="GetElementOfVector"
             element="{primitive_pose}"
             vector_in="{primitive_poses}"
-            index="{index}"
+            index="{index1}"
           />
           <Action
             ID="GenerateSurfacePosesFromSolidPrimitive"
@@ -37,30 +31,127 @@
             poses="{surface_poses}"
           />
           <Action
+            ID="SolveIKQueries"
+            check_collisions="true"
+            joint_group_name="manipulator"
+            target_poses="{surface_poses}"
+            timeout="0.01"
+            ik_query_results="{ik_query_results}"
+          />
+          <Action ID="ResetVector" vector="{reachable_poses}" />
+          <Decorator
+            ID="ForEach"
+            out="{pose}"
+            vector_in="{surface_poses}"
+            index="{index2}"
+          >
+            <Control ID="Sequence">
+              <Action
+                ID="GetElementOfVector"
+                index="{index2}"
+                vector_in="{ik_query_results}"
+                element="{result}"
+              />
+              <Decorator ID="Precondition" else="SUCCESS" if="result">
+                <Control ID="Sequence">
+                  <SubTree
+                    ID="AddToVector"
+                    _collapsed="true"
+                    element="{pose}"
+                    input_vector="{reachable_poses}"
+                    output_vector="{reachable_poses}"
+                  />
+                  <Control ID="Sequence" name="find the z coord of the pose">
+                    <Action
+                      ID="UnpackPoseStampedMessage"
+                      header="{_header}"
+                      pose="{_pose}"
+                      pose_stamped="{pose}"
+                    />
+                    <Action
+                      ID="UnpackPoseMessage"
+                      orientation="{_orientation}"
+                      pose="{_pose}"
+                      position="{_position}"
+                    />
+                    <Action
+                      ID="UnpackPointMessage"
+                      point="{_position}"
+                      x="{_x}"
+                      y="{_y}"
+                      z="{z}"
+                    />
+                  </Control>
+                  <Decorator
+                    ID="Precondition"
+                    else="SUCCESS"
+                    if="highest_z_coord &lt; z"
+                  >
+                    <Control ID="Sequence">
+                      <Action ID="Script" code="highest_pose_index := index2" />
+                      <Action ID="Script" code="highest_z_coord := z" />
+                      <Action
+                        ID="GetElementOfVector"
+                        vector_in="{primitive_names}"
+                        element="{best_pick_primitive_name}"
+                        index="{index1}"
+                      />
+                      <Action
+                        ID="GetElementOfVector"
+                        vector_in="{primitives}"
+                        element="{best_pick_primitive}"
+                        index="{index1}"
+                      />
+                      <Action
+                        ID="GetElementOfVector"
+                        vector_in="{surface_poses}"
+                        element="{best_pick_pose}"
+                        index="{index2}"
+                      />
+                      <Action
+                        ID="GetElementOfVector"
+                        vector_in="{surface_poses}"
+                        element="{best_pick_pose}"
+                        index="{index2}"
+                      />
+                    </Control>
+                  </Decorator>
+                </Control>
+              </Decorator>
+            </Control>
+          </Decorator>
+          <Action
             ID="VisualizePath"
-            path="{surface_poses}"
+            path="{reachable_poses}"
             show_poses="true"
             name="repurpose to display poses"
+            marker_lifetime="0.0"
+            _skipIf="true"
           />
-          <Decorator ID="ForEach" vector_in="{surface_poses}" out="{surface_pose}">
-            <Action
-              ID="PushBackVector"
-              element="{surface_pose}"
-              input_vector="{surface_poses_vector}"
-              output_vector="{surface_poses_vector}"
-            />
-          </Decorator>
-          <Action ID="BreakpointSubscriber" />
         </Control>
+      </Decorator>
+      <Decorator ID="Precondition" if="highest_pose_index != -1">
+        <Action
+          ID="VisualizePose"
+          marker_name="best_pick_pose"
+          marker_size="0.25"
+          marker_text="best_pick_pose"
+          pose="{best_pick_pose}"
+        />
       </Decorator>
     </Control>
   </BehaviorTree>
   <TreeNodesModel>
     <SubTree ID="Find Best Pick">
-      <MetadataFields>
-        <Metadata runnable="true" />
-        <Metadata subcategory="Grasping" />
-      </MetadataFields>
+      <output_port name="best_pick_pose" default="{best_pick_pose}" />
+      <output_port name="best_pick_primitive" default="{best_pick_primitive}" />
+      <output_port
+        name="best_pick_primitive_name"
+        default="{best_pick_primitive_name}"
+      />
+      <input_port name="primitive_names" default="{primitive_names}" />
+      <input_port name="primitive_poses" default="{primitive_poses}" />
+      <input_port name="primitives" default="{primitives}" />
     </SubTree>
   </TreeNodesModel>
 </root>
