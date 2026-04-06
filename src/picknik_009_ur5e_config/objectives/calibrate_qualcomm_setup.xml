@@ -16,7 +16,6 @@
       <Decorator ID="ForceSuccess">
         <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
       </Decorator>
-
       <!--=== PLACE CHUNKY SHELF for collision avoidance during calibration ===-->
       <Action
         ID="CreateStampedPose"
@@ -37,125 +36,464 @@
         log_level="info"
         message="Chunky shelf placed for collision avoidance. Starting tag detection..."
       />
-
       <!--=== TAG 0: Top Left (tag36h11_0000) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag0_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Top Left Tag 1" target_id="0" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag0_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Top Left Tag 2" target_id="0" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag0_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Top Left Tag 3" target_id="0" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag0_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{tag0_poses}" average_pose_stamped="{tag0_avg_pose}" />
-      <Action ID="VisualizePose" marker_lifetime="0.000000" marker_name="tag0_top_left" marker_size="0.050000" pose="{tag0_avg_pose}" marker_text="Tag 0 (Top Left)" />
-
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 1"
+        target_id="0"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag0_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 2"
+        target_id="0"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag0_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Left Tag 3"
+        target_id="0"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag0_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag0_poses}"
+        average_pose_stamped="{tag0_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag0_top_left"
+        marker_size="0.050000"
+        pose="{tag0_avg_pose}"
+        marker_text="Tag 0 (Top Left)"
+      />
       <!--=== TAG 1: Top Right (tag36h11_0001) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag1_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Top Right Tag 1" target_id="1" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag1_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Top Right Tag 2" target_id="1" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag1_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Top Right Tag 3" target_id="1" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag1_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{tag1_poses}" average_pose_stamped="{tag1_avg_pose}" />
-      <Action ID="VisualizePose" marker_lifetime="0.000000" marker_name="tag1_top_right" marker_size="0.050000" pose="{tag1_avg_pose}" marker_text="Tag 1 (Top Right)" />
-
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 1"
+        target_id="1"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag1_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 2"
+        target_id="1"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag1_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Top Right Tag 3"
+        target_id="1"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag1_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag1_poses}"
+        average_pose_stamped="{tag1_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag1_top_right"
+        marker_size="0.050000"
+        pose="{tag1_avg_pose}"
+        marker_text="Tag 1 (Top Right)"
+      />
       <!--=== PLACE TOP SHELF ===-->
       <Action ID="ResetPoseStampedVector" vector="{top_tag_poses}" />
-      <Action ID="AddPoseStampedToVector" input="{tag0_avg_pose}" vector="{top_tag_poses}" />
-      <Action ID="AddPoseStampedToVector" input="{tag1_avg_pose}" vector="{top_tag_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{top_tag_poses}" average_pose_stamped="{top_shelf_pose}" />
-      <Action ID="OverridePoseOrientation" input_pose="{top_shelf_pose}" orientation_xyzw="0;0;1;0" output_pose="{top_shelf_pose}" />
-      <Action ID="VisualizePose" marker_lifetime="0.000000" marker_name="top_shelf_center" marker_size="0.100000" pose="{top_shelf_pose}" marker_text="Top Shelf Center" />
-      <Action ID="AddURDF" urdf_name="calibrated_top_shelf" urdf_pose="{top_shelf_pose}" package_name="picknik_009_ur5e_config" urdf_file_path="description/shelf_only.urdf" />
-      <Action ID="SavePoseForUrdf" calibration_pose_stamped="{top_shelf_pose}" file_name="calibration/top_shelf_calibrated_pose.yaml" />
-      <Action ID="SavePoseStampedToYaml" yaml_filename="calibration/top_shelf_pose.yaml" overwrite="true" message="{top_shelf_pose}" />
-      <Action ID="LogMessage" log_level="info" message="Top shelf placed and pose saved." />
-
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag0_avg_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag1_avg_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{top_tag_poses}"
+        average_pose_stamped="{top_shelf_pose}"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{top_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{top_shelf_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_shelf_center"
+        marker_size="0.100000"
+        pose="{top_shelf_pose}"
+        marker_text="Top Shelf Center"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_top_shelf"
+        urdf_pose="{top_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{top_shelf_pose}"
+        file_name="calibration/top_shelf_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/top_shelf_pose.yaml"
+        overwrite="true"
+        message="{top_shelf_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Top shelf placed and pose saved."
+      />
       <!--=== TAG 3: Bottom Right (tag36h11_0003) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag3_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Bottom Right Tag 1" target_id="3" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag3_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Bottom Right Tag 2" target_id="3" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag3_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Bottom Right Tag 3" target_id="3" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag3_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{tag3_poses}" average_pose_stamped="{tag3_avg_pose}" />
-      <Action ID="VisualizePose" marker_lifetime="0.000000" marker_name="tag3_bottom_right" marker_size="0.050000" pose="{tag3_avg_pose}" marker_text="Tag 3 (Bottom Right)" />
-
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="false"
+        waypoint_name="Bottom Right Tag 1"
+        target_id="3"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag3_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Right Tag 2"
+        target_id="3"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag3_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Right Tag 3"
+        target_id="3"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag3_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag3_poses}"
+        average_pose_stamped="{tag3_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag3_bottom_right"
+        marker_size="0.050000"
+        pose="{tag3_avg_pose}"
+        marker_text="Tag 3 (Bottom Right)"
+      />
       <!--=== TAG 2: Bottom Left (tag36h11_0002) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag2_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Bottom Left Tag 1" target_id="2" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag2_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Bottom Left Tag 2" target_id="2" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag2_poses}" />
-      <SubTree ID="Detect Tag at Waypoint" _collapsed="true" waypoint_name="Bottom Left Tag 3" target_id="2" tag_pose="{tag_pose_tmp}" tag_poses_vector="{tag2_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{tag2_poses}" average_pose_stamped="{tag2_avg_pose}" />
-      <Action ID="VisualizePose" marker_lifetime="0.000000" marker_name="tag2_bottom_left" marker_size="0.050000" pose="{tag2_avg_pose}" marker_text="Tag 2 (Bottom Left)" />
-
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 1"
+        target_id="2"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag2_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 2"
+        target_id="2"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag2_poses}"
+      />
+      <SubTree
+        ID="Detect Tag at Waypoint"
+        _collapsed="true"
+        waypoint_name="Bottom Left Tag 3"
+        target_id="2"
+        tag_pose="{tag_pose_tmp}"
+        tag_poses_vector="{tag2_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{tag2_poses}"
+        average_pose_stamped="{tag2_avg_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag2_bottom_left"
+        marker_size="0.050000"
+        pose="{tag2_avg_pose}"
+        marker_text="Tag 2 (Bottom Left)"
+      />
       <!--=== PLACE BOTTOM SHELF ===-->
       <Action ID="ResetPoseStampedVector" vector="{bottom_tag_poses}" />
-      <Action ID="AddPoseStampedToVector" input="{tag2_avg_pose}" vector="{bottom_tag_poses}" />
-      <Action ID="AddPoseStampedToVector" input="{tag3_avg_pose}" vector="{bottom_tag_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{bottom_tag_poses}" average_pose_stamped="{bottom_shelf_pose}" />
-      <Action ID="OverridePoseOrientation" input_pose="{bottom_shelf_pose}" orientation_xyzw="0;0;1;0" output_pose="{bottom_shelf_pose}" />
-      <Action ID="VisualizePose" marker_lifetime="0.000000" marker_name="bottom_shelf_center" marker_size="0.100000" pose="{bottom_shelf_pose}" marker_text="Bottom Shelf Center" />
-      <Action ID="AddURDF" urdf_name="calibrated_bottom_shelf" urdf_pose="{bottom_shelf_pose}" package_name="picknik_009_ur5e_config" urdf_file_path="description/shelf_only.urdf" />
-      <Action ID="SavePoseForUrdf" calibration_pose_stamped="{bottom_shelf_pose}" file_name="calibration/bottom_shelf_calibrated_pose.yaml" />
-      <Action ID="SavePoseStampedToYaml" yaml_filename="calibration/bottom_shelf_pose.yaml" overwrite="true" message="{bottom_shelf_pose}" />
-      <Action ID="LogMessage" log_level="info" message="Bottom shelf placed and pose saved." />
-
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag2_avg_pose}"
+        vector="{bottom_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag3_avg_pose}"
+        vector="{bottom_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{bottom_tag_poses}"
+        average_pose_stamped="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{bottom_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_shelf_center"
+        marker_size="0.100000"
+        pose="{bottom_shelf_pose}"
+        marker_text="Bottom Shelf Center"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_bottom_shelf"
+        urdf_pose="{bottom_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{bottom_shelf_pose}"
+        file_name="calibration/bottom_shelf_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bottom_shelf_pose.yaml"
+        overwrite="true"
+        message="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Bottom shelf placed and pose saved."
+      />
       <!--=== COMPUTE SHELF CENTER from calibrated shelf poses ===-->
       <Action ID="ResetPoseStampedVector" vector="{calibrated_shelf_poses}" />
-      <Action ID="AddPoseStampedToVector" input="{top_shelf_pose}" vector="{calibrated_shelf_poses}" />
-      <Action ID="AddPoseStampedToVector" input="{bottom_shelf_pose}" vector="{calibrated_shelf_poses}" />
-      <Action ID="AveragePoseStampedVector" pose_stamped_vector="{calibrated_shelf_poses}" average_pose_stamped="{shelf_center_pose}" />
-
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_shelf_pose}"
+        vector="{calibrated_shelf_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_shelf_pose}"
+        vector="{calibrated_shelf_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{calibrated_shelf_poses}"
+        average_pose_stamped="{shelf_center_pose}"
+      />
       <!--=== ADD SHELF BACK COLLISION BOX ===-->
-      <!--1.27m wide, 0.08m deep, 72" (1.8288m) tall. Y offset -0.44 from shelf center (behind shelves). -->
-      <Action ID="TransformPose" input_pose="{shelf_center_pose}" output_pose="{shelf_back_pose}" translation_xyz="0;-0.44;-0.09" quaternion_xyzw="0;0;0;1" />
-      <Action ID="OverridePoseOrientation" input_pose="{shelf_back_pose}" orientation_xyzw="0;0;0;1" output_pose="{shelf_back_pose}" />
-      <Action ID="CreateSolidPrimitiveBox" dimensions="1.27;0.08;1.8288" solid_primitive="{shelf_back_box}" />
-      <Action ID="CreateCollisionObjectFromSolidPrimitive" solid_primitive="{shelf_back_box}" pose="{shelf_back_pose}" object_id="shelf_back" collision_object="{shelf_back_collision}" />
-      <SubTree ID="Convert CollisionObject To GraspableObject" _collapsed="true" collision_object="{shelf_back_collision}" graspable_object="{shelf_back_graspable}" />
+      <!--1.27m wide, 0.08m deep, 72" (1.8288m) tall. Y offset -0.44 from shelf center (behind shelves).-->
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_back_pose}"
+        translation_xyz="0;-0.44;-0.09"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_back_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_back_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.08;1.8288"
+        solid_primitive="{shelf_back_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_back_box}"
+        pose="{shelf_back_pose}"
+        object_id="shelf_back"
+        collision_object="{shelf_back_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_back_collision}"
+        graspable_object="{shelf_back_graspable}"
+      />
       <Action ID="GetCurrentPlanningScene" />
-      <Action ID="AddVirtualObjectToPlanningScene" object="{shelf_back_graspable}" />
-      <Action ID="SavePoseForUrdf" calibration_pose_stamped="{shelf_back_pose}" file_name="calibration/shelf_back_calibrated_pose.yaml" />
-      <Action ID="SavePoseStampedToYaml" yaml_filename="calibration/shelf_back_pose.yaml" overwrite="true" message="{shelf_back_pose}" />
-      <Action ID="LogMessage" log_level="info" message="Shelf back collision box placed and pose saved." />
-
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_back_graspable}"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{shelf_back_pose}"
+        file_name="calibration/shelf_back_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_back_pose.yaml"
+        overwrite="true"
+        message="{shelf_back_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf back collision box placed and pose saved."
+      />
       <!--=== ADD SHELF BASE COLLISION BOX ===-->
-      <!--1.27m wide, 0.48m deep, 0.20m tall. Y offset -0.24 from shelf center. -->
-      <Action ID="TransformPose" input_pose="{shelf_center_pose}" output_pose="{shelf_base_pose}" translation_xyz="0;-0.24;-0.904" quaternion_xyzw="0;0;0;1" />
-      <Action ID="OverridePoseOrientation" input_pose="{shelf_base_pose}" orientation_xyzw="0;0;0;1" output_pose="{shelf_base_pose}" />
-      <Action ID="CreateSolidPrimitiveBox" dimensions="1.27;0.48;0.20" solid_primitive="{shelf_base_box}" />
-      <Action ID="CreateCollisionObjectFromSolidPrimitive" solid_primitive="{shelf_base_box}" pose="{shelf_base_pose}" object_id="shelf_base" collision_object="{shelf_base_collision}" />
-      <SubTree ID="Convert CollisionObject To GraspableObject" _collapsed="true" collision_object="{shelf_base_collision}" graspable_object="{shelf_base_graspable}" />
+      <!--1.27m wide, 0.48m deep, 0.20m tall. Y offset -0.24 from shelf center.-->
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_base_pose}"
+        translation_xyz="0;-0.24;-0.904"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_base_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_base_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.48;0.20"
+        solid_primitive="{shelf_base_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_base_box}"
+        pose="{shelf_base_pose}"
+        object_id="shelf_base"
+        collision_object="{shelf_base_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_base_collision}"
+        graspable_object="{shelf_base_graspable}"
+      />
       <Action ID="GetCurrentPlanningScene" />
-      <Action ID="AddVirtualObjectToPlanningScene" object="{shelf_base_graspable}" />
-      <Action ID="SavePoseForUrdf" calibration_pose_stamped="{shelf_base_pose}" file_name="calibration/shelf_base_calibrated_pose.yaml" />
-      <Action ID="SavePoseStampedToYaml" yaml_filename="calibration/shelf_base_pose.yaml" overwrite="true" message="{shelf_base_pose}" />
-      <Action ID="LogMessage" log_level="info" message="Shelf base collision box placed and pose saved." />
-
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_base_graspable}"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{shelf_base_pose}"
+        file_name="calibration/shelf_base_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_base_pose.yaml"
+        overwrite="true"
+        message="{shelf_base_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf base collision box placed and pose saved."
+      />
       <!--=== REMOVE CHUNKY SHELF (replaced by calibrated objects) ===-->
       <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
-
-      <Action ID="LogMessage" log_level="info" message="Shelf calibration complete. All shelf objects placed and poses saved." />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf calibration complete. All shelf objects placed and poses saved."
+      />
     </Control>
   </BehaviorTree>
-
   <!--=== SUBTREE: Detect Tag at Waypoint ===-->
   <BehaviorTree
     ID="Detect Tag at Waypoint"
     _description="Moves to a waypoint, captures wrist camera image, detects an AprilTag by ID, transforms to world frame, adds to a pose vector, then takes a point cloud snapshot."
   >
     <Control ID="Sequence">
-      <SubTree ID="Move to Waypoint" _collapsed="true" waypoint_name="{waypoint_name}" execution_pipeline="jtc" controller_action_server="/joint_trajectory_controller/follow_joint_trajectory" controller_names="joint_trajectory_controller" />
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="{waypoint_name}"
+        execution_pipeline="jtc"
+        controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
+        controller_names="joint_trajectory_controller"
+      />
       <Action ID="WaitForDuration" delay_duration="1.0" />
       <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
       <Decorator ID="RetryUntilSuccessful" num_attempts="3">
         <Control ID="Sequence">
-          <Action ID="DetectAprilTags" image="{wrist_camera_image}" camera_info="{wrist_camera_info}" detections="{detections}" apriltag_family_name="36h11" tag_size="0.105" max_hamming="0" n_threads="1" quad_decimate="2.0" quad_sigma="0.0" refine_edges="true" />
-          <Action ID="GetDetectionPose" detections="{detections}" target_id="{target_id}" detection_pose="{tag_pose}" />
+          <Action
+            ID="DetectAprilTags"
+            image="{wrist_camera_image}"
+            camera_info="{wrist_camera_info}"
+            detections="{detections}"
+            apriltag_family_name="36h11"
+            tag_size="0.105"
+            max_hamming="0"
+            n_threads="1"
+            quad_decimate="2.0"
+            quad_sigma="0.0"
+            refine_edges="true"
+          />
+          <Action
+            ID="GetDetectionPose"
+            detections="{detections}"
+            target_id="{target_id}"
+            detection_pose="{tag_pose}"
+          />
         </Control>
       </Decorator>
-      <Action ID="TransformPoseFrame" input_pose="{tag_pose}" output_pose="{tag_pose}" target_frame_id="world" />
-      <Action ID="AddPoseStampedToVector" input="{tag_pose}" vector="{tag_poses_vector}" />
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag_pose}"
+        output_pose="{tag_pose}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{tag_pose}"
+        vector="{tag_poses_vector}"
+      />
       <!--Snapshot wrist-camera point cloud for visualization only-->
-      <Action ID="GetPointCloud" topic_name="/camera/wrist_mounted_camera/depth/color/points" message_timeout_sec="15" message_out="{point_cloud}" />
+      <Action
+        ID="GetPointCloud"
+        topic_name="/camera/wrist_mounted_camera/depth/color/points"
+        message_timeout_sec="15"
+        message_out="{point_cloud}"
+      />
       <Action ID="SendPointCloudToUI" point_cloud="{point_cloud}" />
     </Control>
   </BehaviorTree>
-
   <TreeNodesModel>
     <SubTree ID="Calibrate Qualcomm Shelves">
       <MetadataFields>
@@ -168,10 +506,18 @@
         <Metadata runnable="false" />
         <Metadata subcategory="Application - Grocery" />
       </MetadataFields>
-      <input_port name="waypoint_name" default="{waypoint_name}">Waypoint to move to.</input_port>
-      <input_port name="target_id" default="-1">AprilTag ID to detect.</input_port>
-      <inout_port name="tag_pose" default="{tag_pose}">Detected tag pose (working variable).</inout_port>
-      <inout_port name="tag_poses_vector" default="{tag_poses_vector}">Vector to accumulate poses into.</inout_port>
+      <input_port name="waypoint_name" default="{waypoint_name}">
+        Waypoint to move to.
+      </input_port>
+      <input_port name="target_id" default="-1">
+        AprilTag ID to detect.
+      </input_port>
+      <inout_port name="tag_pose" default="{tag_pose}">
+        Detected tag pose (working variable).
+      </inout_port>
+      <inout_port name="tag_poses_vector" default="{tag_poses_vector}">
+        Vector to accumulate poses into.
+      </inout_port>
     </SubTree>
   </TreeNodesModel>
 </root>

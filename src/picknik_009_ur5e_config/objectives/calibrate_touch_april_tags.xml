@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Calibrate Touch April Tags">
+  <BehaviorTree
+    ID="Calibrate Touch April Tags"
+    _description="Calibrates the shelf location using saved touch-based AprilTag poses. Loads 4 tag poses from YAML, averages top and bottom pairs to get shelf positions, uses the orientation from the existing calibrated shelf, places shelf_only URDFs, adds collision boxes, and saves all poses."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--=== CLEANUP previous calibration objects ===-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_top_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_bottom_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
+      </Decorator>
+
+      <!--=== LOAD TAG POSES from saved YAML files ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/top_left_tag.yaml"
+        output="{top_left_tag_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/top_right_tag.yaml"
+        output="{top_right_tag_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bottom_left_tag.yaml"
+        output="{bottom_left_tag_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bottom_right_tag.yaml"
+        output="{bottom_right_tag_pose}"
+      />
+
+      <!--Visualize all tag poses-->
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_left_tag"
+        marker_size="0.050000"
+        pose="{top_left_tag_pose}"
+        marker_text="Top Left Tag"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_right_tag"
+        marker_size="0.050000"
+        pose="{top_right_tag_pose}"
+        marker_text="Top Right Tag"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_left_tag"
+        marker_size="0.050000"
+        pose="{bottom_left_tag_pose}"
+        marker_text="Bottom Left Tag"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_right_tag"
+        marker_size="0.050000"
+        pose="{bottom_right_tag_pose}"
+        marker_text="Bottom Right Tag"
+      />
+      <!--=== OFFSET TAG POSES: tags are 5.25cm behind shelf edge (further from robot) ===-->
+      <!--Shift each tag pose +Y (toward robot) to align with shelf front edge-->
+      <Action
+        ID="TransformPose"
+        input_pose="{top_left_tag_pose}"
+        output_pose="{top_left_tag_pose}"
+        translation_xyz="0;0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{top_right_tag_pose}"
+        output_pose="{top_right_tag_pose}"
+        translation_xyz="0;0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{bottom_left_tag_pose}"
+        output_pose="{bottom_left_tag_pose}"
+        translation_xyz="0;0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{bottom_right_tag_pose}"
+        output_pose="{bottom_right_tag_pose}"
+        translation_xyz="0;0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Loaded 4 tag poses and applied 5.25cm edge offset. Computing shelf positions..."
+      />
+
+      <!--=== COMPUTE TOP SHELF POSE (average of top left + top right tag positions) ===-->
+      <Action ID="ResetPoseStampedVector" vector="{top_tag_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_left_tag_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_right_tag_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{top_tag_poses}"
+        average_pose_stamped="{top_shelf_pose}"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{top_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{top_shelf_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_shelf_center"
+        marker_size="0.100000"
+        pose="{top_shelf_pose}"
+        marker_text="Top Shelf Center"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_top_shelf"
+        urdf_pose="{top_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{top_shelf_pose}"
+        file_name="calibration/top_shelf_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/top_shelf_pose.yaml"
+        overwrite="true"
+        message="{top_shelf_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Top shelf placed and pose saved."
+      />
+
+      <!--=== COMPUTE BOTTOM SHELF POSE (average of bottom left + bottom right tag positions) ===-->
+      <Action ID="ResetPoseStampedVector" vector="{bottom_tag_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_left_tag_pose}"
+        vector="{bottom_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_right_tag_pose}"
+        vector="{bottom_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{bottom_tag_poses}"
+        average_pose_stamped="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{bottom_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_shelf_center"
+        marker_size="0.100000"
+        pose="{bottom_shelf_pose}"
+        marker_text="Bottom Shelf Center"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_bottom_shelf"
+        urdf_pose="{bottom_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{bottom_shelf_pose}"
+        file_name="calibration/bottom_shelf_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bottom_shelf_pose.yaml"
+        overwrite="true"
+        message="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Bottom shelf placed and pose saved."
+      />
+
+      <!--=== COMPUTE SHELF CENTER from calibrated shelf poses ===-->
+      <Action ID="ResetPoseStampedVector" vector="{calibrated_shelf_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_shelf_pose}"
+        vector="{calibrated_shelf_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_shelf_pose}"
+        vector="{calibrated_shelf_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{calibrated_shelf_poses}"
+        average_pose_stamped="{shelf_center_pose}"
+      />
+
+      <!--=== ADD SHELF BACK COLLISION BOX ===-->
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_back_pose}"
+        translation_xyz="0;-0.44;-0.09"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_back_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_back_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.08;1.8288"
+        solid_primitive="{shelf_back_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_back_box}"
+        pose="{shelf_back_pose}"
+        object_id="shelf_back"
+        collision_object="{shelf_back_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_back_collision}"
+        graspable_object="{shelf_back_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_back_graspable}"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{shelf_back_pose}"
+        file_name="calibration/shelf_back_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_back_pose.yaml"
+        overwrite="true"
+        message="{shelf_back_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf back collision box placed and pose saved."
+      />
+
+      <!--=== ADD SHELF BASE COLLISION BOX ===-->
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_base_pose}"
+        translation_xyz="0;-0.24;-0.904"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_base_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_base_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.48;0.20"
+        solid_primitive="{shelf_base_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_base_box}"
+        pose="{shelf_base_pose}"
+        object_id="shelf_base"
+        collision_object="{shelf_base_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_base_collision}"
+        graspable_object="{shelf_base_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_base_graspable}"
+      />
+      <Action
+        ID="SavePoseForUrdf"
+        calibration_pose_stamped="{shelf_base_pose}"
+        file_name="calibration/shelf_base_calibrated_pose.yaml"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_base_pose.yaml"
+        overwrite="true"
+        message="{shelf_base_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelf base collision box placed and pose saved."
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Touch AprilTag calibration complete. All shelf objects placed and poses saved."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Calibrate Touch April Tags">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

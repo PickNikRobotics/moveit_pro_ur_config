@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Save Current Pose">
+  <BehaviorTree
+    ID="Save Current Pose"
+    _description="Saves the current grasp_link pose in world frame to a yaml file."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action
+        ID="GetLatestTransform"
+        target_frame_id="world"
+        source_frame_id="grasp_link"
+        transform="{current_tf}"
+      />
+      <Action
+        ID="ConvertTransformStampedToPoseStamped"
+        transform_stamped="{current_tf}"
+        pose_stamped="{current_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="saved_pose"
+        marker_size="0.100000"
+        pose="{current_pose}"
+        marker_text="Saved Pose"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/saved_ee_pose.yaml"
+        overwrite="true"
+        message="{current_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Current end effector pose saved to calibration/saved_ee_pose.yaml"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Save Current Pose">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>
