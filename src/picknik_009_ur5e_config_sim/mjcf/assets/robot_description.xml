@@ -25,6 +25,13 @@
 
   <contact>
     <exclude body1="base_link_inertia" body2="shoulder_link" />
+    <exclude body1="floor_body" body2="calibrated_table" />
+    <exclude body1="floor_body" body2="calibrated_bin" />
+    <exclude body1="floor_body" body2="calibrated_pole" />
+    <exclude body1="floor_body" body2="calibrated_top_shelf" />
+    <exclude body1="floor_body" body2="calibrated_bottom_shelf" />
+    <exclude body1="floor_body" body2="shelf_back" />
+    <exclude body1="floor_body" body2="shelf_base" />
   </contact>
 
   <asset>
@@ -57,13 +64,15 @@
 
   <worldbody>
     <light pos="0 0 2.5" dir="0 0 -1" directional="true" />
-    <geom
-      name="floor"
-      pos="0 0 -0.9220147132873535"
-      size="0 0 0.05"
-      type="plane"
-      material="groundplane"
-    />
+    <body name="floor_body" pos="0 0 -0.8120632171630859">
+      <geom
+        name="floor"
+        pos="0 0 0"
+        size="0 0 0.05"
+        type="plane"
+        material="groundplane"
+      />
+    </body>
   </worldbody>
 
   <actuator>
