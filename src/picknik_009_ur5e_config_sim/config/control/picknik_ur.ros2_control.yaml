@@ -94,7 +94,9 @@ joint_trajectory_admittance_controller:
     sensor_frame: tool0
     ee_frame: grasp_link
     ft_sensor_name: tcp_fts_sensor
-    path_tolerance: 0.1
+    path_tolerance: 0.1 # this parameter doesn't seem to do anything.
+    default_goal_tolerance: 0.05 # 0.05 is default
+    default_path_tolerance: 0.1 # 0.0 is default
     stop_accelerations:
       - 30.0
       - 30.0
