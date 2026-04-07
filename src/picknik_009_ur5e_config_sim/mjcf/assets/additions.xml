@@ -1,7 +1,7 @@
 <sim_additions>
   <asset>
-    <material name="rack_material" rgba="0.65 0.68 0.72 1" />
-    <material name="shelf_material" rgba="0.2 0.8 0.2 0.7" />
+    <material name="rack_material" rgba="0.6 0.4 0.2 1" />
+    <material name="shelf_material" rgba="0.6 0.4 0.2 1" />
     <material name="table_material" rgba="0.6 0.4 0.2 1" />
     <material name="bin_material" rgba="0.4 0.4 0.4 1" />
     <material name="pole_material" rgba="0.3 0.3 0.3 1" />
@@ -292,7 +292,7 @@
         name="shelf_back_geom"
         type="box"
         size="0.635 0.04 0.9144"
-        rgba="0.2 0.8 0.2 0.7"
+        material="table_material"
       />
       <site name="shelf_back_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
     </body>
@@ -308,7 +308,7 @@
         name="shelf_base_geom"
         type="box"
         size="0.635 0.24 0.10"
-        rgba="0.2 0.8 0.2 0.7"
+        material="table_material"
       />
       <site name="shelf_base_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
     </body>
