@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Test Plan To Place MTC">
+  <BehaviorTree
+    ID="Test Plan To Place MTC"
+    _description="Loads the saved place target pose and plans to it using MTC. If IK fails, falls back to overriding orientation with saved_ee_pose.yaml orientation."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/place_target_pose.yaml"
+        output="{place_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="place_target"
+        marker_size="0.100000"
+        pose="{place_pose}"
+        marker_text="Place Target (original)"
+      />
+
+      <Control ID="Fallback" name="TryOriginalThenFallback">
+        <!--=== ATTEMPT 1: Original place pose from ComputePlaceOrientation ===-->
+        <Control ID="Sequence" name="OriginalPose">
+          <Action
+            ID="InitializeMTCTask"
+            controller_names="joint_trajectory_controller"
+            task="{mtc_task}"
+            task_id="test_place_original"
+            trajectory_monitoring="false"
+            timeout="-1.000000"
+          />
+          <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item;ur_stand;base_link_inertia;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table;wrist_3_link;tool0;gripper_mount_link;forearm_link"
+          />
+          <Action
+            ID="SetupMTCPlanToPose"
+            acceleration_scale_factor="1.000000"
+            ik_frame="grasp_link"
+            keep_orientation="false"
+            keep_orientation_link_names="grasp_link"
+            keep_orientation_tolerance="0.100000"
+            link_padding="0.005"
+            max_iterations="10000"
+            monitored_stage="current state"
+            planning_group_name="manipulator"
+            target_pose="{place_pose}"
+            task="{mtc_task}"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="0.500000"
+          />
+          <Action
+            ID="PlanMTCTask"
+            solution="{place_solution}"
+            task="{mtc_task}"
+            max_solutions="10"
+          />
+        </Control>
+
+        <!--=== ATTEMPT 2: Override orientation with saved EE pose ===-->
+        <Control ID="Sequence" name="FallbackOrientation">
+          <Action
+            ID="LogMessage"
+            log_level="info"
+            message="Original place pose IK failed. Retrying with saved EE orientation..."
+          />
+          <!--Orientation from saved_ee_pose.yaml: gripper horizontal, facing shelf-->
+          <Action
+            ID="OverridePoseOrientation"
+            input_pose="{place_pose}"
+            orientation_xyzw="-0.6799;-0.0051;0.0222;0.7330"
+            output_pose="{place_pose_fallback}"
+          />
+          <Action
+            ID="VisualizePose"
+            marker_lifetime="0.000000"
+            marker_name="place_target_fallback"
+            marker_size="0.100000"
+            pose="{place_pose_fallback}"
+            marker_text="Place Target (fallback orientation)"
+          />
+          <Action
+            ID="InitializeMTCTask"
+            controller_names="joint_trajectory_controller"
+            task="{mtc_task}"
+            task_id="test_place_fallback"
+            trajectory_monitoring="false"
+            timeout="-1.000000"
+          />
+          <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item;ur_stand;base_link_inertia;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table;wrist_3_link;tool0;gripper_mount_link;forearm_link"
+          />
+          <Action
+            ID="SetupMTCPlanToPose"
+            acceleration_scale_factor="1.000000"
+            ik_frame="grasp_link"
+            keep_orientation="false"
+            keep_orientation_link_names="grasp_link"
+            keep_orientation_tolerance="0.100000"
+            link_padding="0.005"
+            max_iterations="10000"
+            monitored_stage="current state"
+            planning_group_name="manipulator"
+            target_pose="{place_pose_fallback}"
+            task="{mtc_task}"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="0.500000"
+          />
+          <Action
+            ID="PlanMTCTask"
+            solution="{place_solution}"
+            task="{mtc_task}"
+            max_solutions="10"
+          />
+        </Control>
+      </Control>
+
+      <Action ID="WaitForUserTrajectoryApproval" solution="{place_solution}" />
+      <SubTree
+        ID="Execute MTC Solution"
+        solution="{place_solution}"
+        execution_pipeline="jtc"
+        controller_names="joint_trajectory_controller"
+        controller_action_name="/joint_trajectory_controller/follow_joint_trajectory"
+        _collapsed="true"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Test Plan To Place MTC">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

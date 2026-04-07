@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Scene Camera Segment Demo">
+  <BehaviorTree
+    ID="Scene Camera Segment Demo"
+    _description="Captures scene camera image and segments all objects using SAM3 text prompt. Visualizes masks."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action
+        ID="GetImage"
+        topic_name="/camera/scene_camera/color/image_raw"
+        message_out="{scene_camera_image}"
+      />
+      <Action
+        ID="GetMasks2DFromExemplar"
+        model_package="picknik_009_ur5e_config"
+        encoder_model_path="models/sam3_vision_encoder.onnx"
+        decoder_model_path="models/sam3_decoder.onnx"
+        geometry_encoder_model_path="models/sam3_geometry_encoder.onnx"
+        text_encoder_model_path="models/sam3_text_encoder.onnx"
+        confidence_threshold="0.5"
+        confidence_scores_str="{confidence_scores_str}"
+        target_image="{scene_camera_image}"
+        text_prompt="an object"
+        confidence_scores="{confidence_scores}"
+        masks2d="{masks2d}"
+      />
+      <Action
+        ID="PublishMask2D"
+        bounding_box_labels="{confidence_scores_str}"
+        image="{scene_camera_image}"
+        masks="{masks2d}"
+        masks_visualization_topic="/masks_visualization"
+        opacity="0.500000"
+      />
+      <Action
+        ID="GetImage"
+        topic_name="/masks_visualization"
+        message_out="{mask_overlay_image}"
+      />
+      <Action
+        ID="SaveImageToFile"
+        file_path="/home/ur5e-009-agent/user_ws/wrist_snapshots"
+        file_prefix="scene_segment_raw"
+        image="{scene_camera_image}"
+      />
+      <Action
+        ID="SaveImageToFile"
+        file_path="/home/ur5e-009-agent/user_ws/wrist_snapshots"
+        file_prefix="scene_segment_mask"
+        image="{mask_overlay_image}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Scene segmentation complete. Image saved to /home/ur5e-009-agent/user_ws/wrist_snapshots/. Check /masks_visualization."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Scene Camera Segment Demo">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

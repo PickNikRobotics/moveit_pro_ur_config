@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Calibrate Scene Camera">
+  <BehaviorTree
+    ID="Calibrate Scene Camera"
+    _description="Calibrates the scene camera pose using a shared AprilTag visible to both the wrist camera and scene camera simultaneously. Place a tag (ID 0, 85mm, 36h11) inside the bin, move the arm so the wrist camera can see it, then run this objective. It detects the tag from both cameras, computes world->scene_camera_link, places the D415 mesh, publishes the static TF, and saves the pose."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--=== CLEANUP ===-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="scene_camera_vis" />
+      </Decorator>
+
+      <!--=== STEP 1: DETECT TAG FROM WRIST CAMERA ===-->
+      <!--The wrist camera is in the TF tree, so we can transform to world frame. -->
+      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+      <Decorator ID="RetryUntilSuccessful" num_attempts="3">
+        <Control ID="Sequence">
+          <Action
+            ID="DetectAprilTags"
+            image="{wrist_camera_image}"
+            camera_info="{wrist_camera_info}"
+            detections="{wrist_detections}"
+            apriltag_family_name="36h11"
+            tag_size="0.085"
+            max_hamming="0"
+            n_threads="1"
+            quad_decimate="2.0"
+            quad_sigma="0.0"
+            refine_edges="true"
+          />
+          <Action
+            ID="GetDetectionPose"
+            detections="{wrist_detections}"
+            target_id="5"
+            detection_pose="{wrist_tag_pose}"
+          />
+        </Control>
+      </Decorator>
+      <!--Transform wrist camera tag detection to world frame-->
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{wrist_tag_pose}"
+        output_pose="{tag_pose_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag_wrist"
+        marker_size="0.085000"
+        pose="{tag_pose_world}"
+        marker_text="Tag (wrist cam -> world)"
+      />
+
+      <!--=== STEP 2: DETECT TAG FROM SCENE CAMERA ===-->
+      <!--The scene camera is NOT in the TF tree — that's what we're solving for.
+           We keep the detection in the camera's optical frame. -->
+      <Action
+        ID="GetImage"
+        topic_name="/camera/scene_camera/color/image_raw"
+        message_out="{scene_camera_image}"
+      />
+      <Action
+        ID="GetCameraInfo"
+        topic_name="/camera/scene_camera/color/camera_info"
+        message_out="{scene_camera_info}"
+      />
+      <Decorator ID="RetryUntilSuccessful" num_attempts="3">
+        <Control ID="Sequence">
+          <Action
+            ID="DetectAprilTags"
+            image="{scene_camera_image}"
+            camera_info="{scene_camera_info}"
+            detections="{scene_detections}"
+            apriltag_family_name="36h11"
+            tag_size="0.085"
+            max_hamming="0"
+            n_threads="1"
+            quad_decimate="2.0"
+            quad_sigma="0.0"
+            refine_edges="true"
+          />
+          <Action
+            ID="GetDetectionPose"
+            detections="{scene_detections}"
+            target_id="5"
+            detection_pose="{scene_tag_pose}"
+          />
+        </Control>
+      </Decorator>
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Tag detected by both cameras. Computing scene camera pose..."
+      />
+
+      <!--=== STEP 3: COMPUTE SCENE CAMERA OPTICAL FRAME POSE IN WORLD ===-->
+      <!--T_world_camera_optical = T_world_tag * T_camera_optical_tag^{-1} -->
+      <Action
+        ID="ComputeCameraPoseFromTag"
+        tag_pose_world="{tag_pose_world}"
+        tag_pose_camera="{scene_tag_pose}"
+        camera_pose_world="{scene_optical_pose_world}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="scene_camera_optical"
+        marker_size="0.050000"
+        pose="{scene_optical_pose_world}"
+        marker_text="scene_camera_depth_optical_frame"
+      />
+
+      <!--=== STEP 4: CONVERT OPTICAL FRAME TO CAMERA LINK FRAME ===-->
+      <!--The RealSense driver publishes: scene_camera_link -> scene_camera_depth_optical_frame.
+           The optical frame convention is: Z forward, X right, Y down.
+           The link frame convention is: X forward, Y left, Z up.
+           The transform from link to optical is rpy="-pi/2 0 -pi/2":
+             R_optical_from_link = R_z(-90) * R_x(-90)
+           So to go from optical back to link, we apply the inverse rotation.
+           T_world_link = T_world_optical * T_optical_link^{-1}
+                        = T_world_optical * T_link_optical
+           where T_link_optical has rpy="pi/2 0 pi/2" (the inverse). -->
+      <Action
+        ID="TransformPose"
+        input_pose="{scene_optical_pose_world}"
+        output_pose="{scene_link_pose_world}"
+        translation_xyz="0;0;0"
+        quaternion_xyzw="0.5;-0.5;0.5;0.5"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="scene_camera_link"
+        marker_size="0.100000"
+        pose="{scene_link_pose_world}"
+        marker_text="scene_camera_link"
+      />
+
+      <!--=== STEP 5: PLACE D415 MESH AND PUBLISH STATIC TF ===-->
+      <Action
+        ID="AddURDF"
+        urdf_name="scene_camera_vis"
+        urdf_pose="{scene_link_pose_world}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/scene_camera.urdf"
+      />
+      <Action
+        ID="PublishStaticTransform"
+        pose="{scene_link_pose_world}"
+        child_frame_id="scene_camera_link"
+      />
+
+      <!--=== STEP 6: SAVE CALIBRATED POSE ===-->
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/scene_camera_link_pose.yaml"
+        overwrite="true"
+        message="{scene_link_pose_world}"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Scene camera calibrated. D415 mesh placed, static TF published, pose saved to calibration/scene_camera_link_pose.yaml. Take a bin snapshot to verify point cloud alignment."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Calibrate Scene Camera">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

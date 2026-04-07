@@ -18,6 +18,44 @@
     - wrist_2_joint
     - wrist_3_joint
     position:
+    - -1.7928083578692835
+    - -1.3577719789794465
+    - 1.2324722448932093
+    - -1.5896350346007289
+    - -1.4491665999041956
+    - -0.23783857027162725
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Above Grocery Bin
+- description: ''
+  favorite: false
+  joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
     - 1.3497779369354248
     - -0.5855897229960938
     - -2.100832939147949
@@ -322,12 +360,12 @@
     - wrist_2_joint
     - wrist_3_joint
     position:
-    - -2.0140207449542444
-    - -1.8051687679686488
-    - -1.8014308214187622
-    - 5.475182759552755
-    - 1.4936275482177734
-    - -0.3301609198199671
+    - -2.1764424482928675
+    - -1.808061262170309
+    - -1.9063290357589722
+    - 5.643214213639059
+    - 1.639793872833252
+    - -6.150765005742208
     velocity: []
   multi_dof_joint_state:
     header:
@@ -360,12 +398,12 @@
     - wrist_2_joint
     - wrist_3_joint
     position:
-    - -2.4029715696917933
-    - -2.417812486688131
-    - -1.0137996673583984
-    - 4.745035390346803
-    - 2.1589620113372803
-    - -0.8854964415179651
+    - -1.7723348776446741
+    - -1.6616207561888636
+    - -2.0464251041412354
+    - 5.554365145951071
+    - 0.9417046308517456
+    - -5.797733102236883
     velocity: []
   multi_dof_joint_state:
     header:
@@ -416,6 +454,44 @@
     twist: []
     wrench: []
   name: Bottom Shelf Snapshot
+- description: ''
+  favorite: false
+  joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
+    - 1.3742843866348267
+    - -1.7226196728148402
+    - 2.3955710569964808
+    - -2.395479818383688
+    - -1.4586122671710413
+    - -0.17289716402162725
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Bottom Shelf Staging
 - description: ''
   favorite: false
   joint_group_names:
@@ -1206,6 +1282,44 @@
     twist: []
     wrench: []
   name: Top Shelf Snapshot
+- description: ''
+  favorite: false
+  joint_group_names:
+  - gripper
+  - manipulator
+  joint_state:
+    effort: []
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    name:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+    position:
+    - 2.100768804550171
+    - -2.5384103260436
+    - 1.5381735006915491
+    - -2.152428766290182
+    - -2.0430806318866175
+    - -0.006875340138570607
+    velocity: []
+  multi_dof_joint_state:
+    header:
+      frame_id: ''
+      stamp:
+        nanosec: 0
+        sec: 0
+    joint_names: []
+    transforms: []
+    twist: []
+    wrench: []
+  name: Top Shelf Staging
 - description: ''
   favorite: false
   joint_group_names:

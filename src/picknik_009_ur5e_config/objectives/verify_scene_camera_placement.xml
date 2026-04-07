@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Verify Scene Camera Placement">
+  <BehaviorTree
+    ID="Verify Scene Camera Placement"
+    _description="Loads calibrated camera position, applies an orientation estimate, places the D415 mesh, and publishes the static TF for scene_camera_link. Adjust orientation_xyzw until the mesh matches the real camera. Then take a bin snapshot to verify point cloud alignment."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--=== CLEANUP ===-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="scene_camera_vis" />
+      </Decorator>
+
+      <!--=== LOAD CALIBRATED CAMERA POSITION ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/camera_calibrated_pose.yaml"
+        output="{camera_cal_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="camera_cal_position"
+        marker_size="0.050000"
+        pose="{camera_cal_pose}"
+        marker_text="Camera (cal position, no rotation)"
+      />
+
+      <!--=== ADJUST POSITION: +5cm toward robot (+Y), -2cm lower (-Z) ===-->
+      <Action
+        ID="TransformPose"
+        input_pose="{camera_cal_pose}"
+        output_pose="{camera_adjusted_pose}"
+        translation_xyz="0;0.07;-0.02"
+        quaternion_xyzw="0;0;0;1"
+      />
+
+      <!--=== APPLY CAMERA ORIENTATION ===-->
+      <!--scene_camera_link convention: X=lens forward, Y=long side (left), Z=up.
+           Straight down (90 deg): camera X -> (0,0,-1), camera Y -> (-1,0,0), camera Z -> (0,1,0)
+           orientation_xyzw="-0.5;0.5;0.5;0.5"
+
+           75 deg down (previous guess):
+           orientation_xyzw="-0.430;0.430;0.561;0.561"
+
+           ADJUST until the mesh matches the physical camera. -->
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{camera_adjusted_pose}"
+        orientation_xyzw="-0.478;0.478;0.521;0.521"
+        output_pose="{camera_oriented_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="camera_oriented"
+        marker_size="0.100000"
+        pose="{camera_oriented_pose}"
+        marker_text="Scene Camera (oriented)"
+      />
+
+      <!--=== PLACE D415 MESH ===-->
+      <!--The URDF root is scene_camera_bottom_screw_frame, offset 2cm/1.15cm from
+           scene_camera_link. Close enough for visual verification. -->
+      <Action
+        ID="AddURDF"
+        urdf_name="scene_camera_vis"
+        urdf_pose="{camera_oriented_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/scene_camera.urdf"
+      />
+
+      <!--=== PUBLISH STATIC TF: world -> scene_camera_link ===-->
+      <!--This bridges the gap so TransformPointCloudFrame can transform
+           scene_camera_depth_optical_frame -> world via the RealSense driver's
+           internal TF chain (scene_camera_link -> ... -> scene_camera_depth_optical_frame). -->
+      <Action
+        ID="PublishStaticTransform"
+        pose="{camera_oriented_pose}"
+        child_frame_id="scene_camera_link"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Scene camera mesh placed and static TF published (world -> scene_camera_link). Verify visually, then take a bin snapshot to check point cloud alignment."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Verify Scene Camera Placement">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

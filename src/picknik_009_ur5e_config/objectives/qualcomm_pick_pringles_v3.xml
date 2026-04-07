@@ -1,53 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<root BTCPP_format="4" main_tree_to_execute="Qualcomm Pick Pringles v1">
-  <!--//////////-->
+<root BTCPP_format="4" main_tree_to_execute="Qualcomm Pick Pringles v3">
   <BehaviorTree
-    ID="Qualcomm Pick Pringles v1"
-    _description="Detects a Pringles can in the grocery bin, vacuum picks it, then places upright at the saved shelf target. If the can is horizontal when picked, navigates to Top Shelf Gripper Horiz to reorient before placing. Run Save Shelf Target first."
-    _favorite="false"
+    ID="Qualcomm Pick Pringles v3"
+    _description="Scene-camera Pringles pick and place. Detects via SAM3, fits cylinder, vacuum picks from bin, places upright at the designated shelf zone. Run Calibrate Detected April Tags and Calibrate Scene Camera first."
+    _favorite="true"
   >
     <Control ID="Sequence" name="TopLevelSequence">
-      <!--Clean up any leftover collision objects from previous runs-->
+      <!--=== CLEANUP ===-->
       <Decorator ID="ForceSuccess">
         <Action ID="DetachURDF" urdf_name="grocery_item" />
       </Decorator>
       <Decorator ID="ForceSuccess">
         <Action ID="RemoveURDFFromScene" urdf_name="grocery_item" />
       </Decorator>
-      <!--Ensure vacuum is off at start-->
       <SubTree ID="Deactivate Vacuum" _collapsed="true" />
-      <!--=== STEP 1: LOAD SHELF TARGET from YAML ===-->
+
+      <!--=== STEP 1: LOOK UP PRINGLES PLACEMENT ZONE FROM CONFIG ===-->
       <Action
-        ID="LoadTransformStampedFromYaml"
-        file_path="shelf_target.yaml"
-        output="{shelf_target_tf_stamped}"
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/top_shelf_pose.yaml"
+        output="{top_shelf_pose}"
       />
       <Action
-        ID="ConvertTransformStampedToPoseStamped"
-        transform_stamped="{shelf_target_tf_stamped}"
-        pose_stamped="{shelf_target_pose}"
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bottom_shelf_pose.yaml"
+        output="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="GetPlacementPoseForObject"
+        top_shelf_pose="{top_shelf_pose}"
+        bottom_shelf_pose="{bottom_shelf_pose}"
+        object_name="pringles"
+        placement_pose="{pringles_place_pose}"
+        shelf_name="{shelf_name}"
       />
       <Action
         ID="VisualizePose"
         marker_lifetime="0.000000"
-        marker_name="shelf_target"
-        marker_size="0.050000"
-        pose="{shelf_target_pose}"
-        marker_text="shelf target"
+        marker_name="pringles_placement"
+        marker_size="0.100000"
+        pose="{pringles_place_pose}"
+        marker_text="Pringles Placement Zone"
       />
-      <!--=== STEP 2: MOVE TO SCAN POSITION AND PERCEIVE ===-->
+
+      <!--=== STEP 2: MOVE TO BIN AND CAPTURE SCENE CAMERA ===-->
       <SubTree
         ID="Move to Waypoint"
         _collapsed="true"
-        waypoint_name="Look at Grocery Bin"
+        waypoint_name="Above Grocery Bin"
         execution_pipeline="jtc"
         controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
         controller_names="joint_trajectory_controller"
       />
-      <SubTree ID="Clear Snapshot" _collapsed="true" />
-      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
-      <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
-      <!--=== STEP 3: SEGMENTATION — Detect Pringles can with SAM3 ===-->
+      <Action
+        ID="GetImage"
+        topic_name="/camera/scene_camera/color/image_raw"
+        message_out="{scene_camera_image}"
+      />
+      <Action
+        ID="GetCameraInfo"
+        topic_name="/camera/scene_camera/color/camera_info"
+        message_out="{scene_camera_info}"
+      />
+      <Action
+        ID="GetPointCloud"
+        topic_name="/camera/scene_camera/depth/color/points"
+        message_timeout_sec="15"
+        message_out="{scene_camera_point_cloud}"
+      />
+
+      <!--=== STEP 3: SEGMENT PRINGLES USING SAM3 ===-->
+      <Action
+        ID="LoadImageFromFile"
+        file_path="~/user_ws/qualcomm_image_exemplars/pringles.png"
+        frame_id="camera"
+        image="{pringles_exemplar_image}"
+      />
       <Action
         ID="GetMasks2DFromExemplar"
         model_package="picknik_009_ur5e_config"
@@ -57,38 +85,36 @@
         text_encoder_model_path="models/sam3_text_encoder.onnx"
         confidence_threshold="0.5"
         confidence_scores_str="{confidence_scores_str}"
-        target_image="{wrist_camera_image}"
-        text_prompt="a tall red can of Pringles potato chips. There is a white design on the side and the lid of the can.  "
+        target_image="{scene_camera_image}"
+        exemplar_image="{pringles_exemplar_image}"
+        text_prompt="a tall red can of Pringles potato chips. There is a white design on the side and the lid of the can."
         confidence_scores="{confidence_scores}"
         masks2d="{masks2d}"
       />
       <Action
         ID="PublishMask2D"
         bounding_box_labels="{confidence_scores_str}"
-        image="{wrist_camera_image}"
+        image="{scene_camera_image}"
         masks="{masks2d}"
         masks_visualization_topic="/masks_visualization"
         opacity="0.500000"
       />
+
+      <!--=== STEP 4: FIT CYLINDER TO SEGMENTED POINT CLOUD ===-->
       <Action
         ID="TransformPointCloudFrame"
-        input_cloud="{wrist_camera_point_cloud}"
+        input_cloud="{scene_camera_point_cloud}"
         target_frame="world"
         output_cloud="{point_cloud_world}"
       />
-      <Action
-        ID="UpdatePlanningSceneService"
-        point_cloud="{point_cloud_world}"
-        point_cloud_service="/point_cloud_service"
-      />
+      <Action ID="SendPointCloudToUI" point_cloud="{point_cloud_world}" />
       <Action
         ID="GetMasks3DFromMasks2D"
-        camera_info="{wrist_camera_info}"
+        camera_info="{scene_camera_info}"
         masks2d="{masks2d}"
         point_cloud="{point_cloud_world}"
         masks3d="{masks3d}"
       />
-      <!--=== STEP 4: SHAPE FITTING — Get graspable object ===-->
       <Action
         ID="GetGraspableGroceryObjectsFromMasks3D"
         point_cloud="{point_cloud_world}"
@@ -97,8 +123,19 @@
         plane_inlier_threshold="0.020000"
         minimum_face_area="0"
         face_separation_threshold="0.025000"
+        max_objects="1"
+        shape_type="cylinder"
         graspable_objects="{grocery_objects}"
+        segment_cloud="{segment_cloud}"
       />
+      <Action
+        ID="PublishPointCloud"
+        point_cloud="{segment_cloud}"
+        point_cloud_topic="/grocery_segment_cloud"
+      />
+      <Action ID="SendPointCloudToUI" point_cloud="{segment_cloud}" />
+
+      <!--=== STEP 5: EXTRACT OBJECT AND COMPUTE PICK POSE ===-->
       <Action
         ID="GetElementOfVector"
         vector_in="{grocery_objects}"
@@ -116,15 +153,18 @@
         marker_name="detected_object"
         marker_size="0.050000"
         pose="{object_pose}"
-        marker_text="object"
+        marker_text="Pringles (cylinder center)"
       />
       <Action
         ID="ComputeGroceryPlaceHeight"
         graspable_object="{graspable_object}"
         place_height="{place_height}"
+        place_translation_xyz="{place_translation_xyz}"
+        grasp_approach_translation_xyz="{grasp_approach_translation_xyz}"
         shape_type="{shape_type}"
+        depth_offset="{depth_offset}"
       />
-      <!--=== STEP 5: VACUUM PICK — plan to top of object, activate vacuum ===-->
+      <!--Pick pose: gripper pointing down at top of object-->
       <Action
         ID="OverridePoseOrientation"
         input_pose="{object_pose}"
@@ -141,18 +181,21 @@
       <Action
         ID="VisualizePose"
         marker_lifetime="0.000000"
-        marker_name="pick"
+        marker_name="pick_point"
         marker_size="0.050000"
         pose="{pick_pose}"
-        marker_text="pick"
+        marker_text="Pick Point"
       />
-      <!--MTC: plan to pick pose-->
+
+      <!--=== STEP 6: MTC PLAN AND EXECUTE TO PICK POSE ===-->
+      <!--Clear octomap so bin contents don't block pick planning-->
+      <SubTree ID="Clear Snapshot" _collapsed="true" />
       <Action
         ID="InitializeMTCTask"
         task="{mtc_task}"
         trajectory_monitoring="false"
         controller_names="joint_trajectory_controller"
-        task_id="pick_pringles"
+        task_id="pick_pringles_v3"
         timeout="-1.000000"
       />
       <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
@@ -187,49 +230,28 @@
         controller_action_name="/joint_trajectory_controller/follow_joint_trajectory"
         _collapsed="true"
       />
-      <!--Activate vacuum and try to grip, nudging down 1cm at a time if needed-->
+
+      <!--=== STEP 7: ACTIVATE VACUUM AND NUDGE UNTIL GRIP ===-->
       <SubTree ID="Activate Vacuum" _collapsed="true" />
       <Decorator ID="Repeat" num_cycles="3">
         <Control ID="Fallback" name="GripOrNudge">
-          <!--Check if we have a grip-->
           <Control ID="Sequence" name="CheckGrip">
             <Action ID="WaitForDuration" delay_duration="2.0" />
             <Action
               ID="GetEpickObjectDetectionStatus"
+              topic_name="/object_detection_status"
               message_out="{vacuum_status}"
             />
             <Control ID="Fallback">
-              <Action
-                ID="CompareEpickObjectDetectionStatus"
-                value1="{vacuum_status}"
-                value2="OBJECT_DETECTED_AT_MAX_PRESSURE"
-              />
-              <Action
-                ID="CompareEpickObjectDetectionStatus"
-                value1="{vacuum_status}"
-                value2="OBJECT_DETECTED_AT_MIN_PRESSURE"
-              />
+              <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MAX_PRESSURE" />
+              <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MIN_PRESSURE" />
             </Control>
           </Control>
-          <!--No grip yet — nudge down 1cm and retry-->
           <Control ID="Sequence" name="NudgeDown">
-            <Action
-              ID="LogMessage"
-              log_level="info"
-              message="No vacuum grip detected. Nudging down 1cm..."
-            />
-            <Action
-              ID="CreateStampedPose"
-              reference_frame="grasp_link"
-              stamped_pose="{nudge_pose}"
-              position_xyz="0;0;0.01"
-            />
+            <Action ID="LogMessage" log_level="info" message="No vacuum grip detected. Nudging down 1cm..." />
+            <Action ID="CreateStampedPose" reference_frame="grasp_link" stamped_pose="{nudge_pose}" position_xyz="0;0;0.01" />
             <Action ID="ResetPoseStampedVector" vector="{nudge_path}" />
-            <Action
-              ID="AddPoseStampedToVector"
-              input="{nudge_pose}"
-              vector="{nudge_path}"
-            />
+            <Action ID="AddPoseStampedToVector" input="{nudge_pose}" vector="{nudge_path}" />
             <Action
               ID="PlanCartesianPath"
               acceleration_scale_factor="0.500000"
@@ -253,24 +275,18 @@
           </Control>
         </Control>
       </Decorator>
-      <!--Final grip check after all attempts-->
+      <!--Final grip check-->
       <Action
         ID="GetEpickObjectDetectionStatus"
+        topic_name="/object_detection_status"
         message_out="{vacuum_status}"
       />
       <Control ID="Fallback" name="FinalGripCheck">
-        <Action
-          ID="CompareEpickObjectDetectionStatus"
-          value1="{vacuum_status}"
-          value2="OBJECT_DETECTED_AT_MAX_PRESSURE"
-        />
-        <Action
-          ID="CompareEpickObjectDetectionStatus"
-          value1="{vacuum_status}"
-          value2="OBJECT_DETECTED_AT_MIN_PRESSURE"
-        />
+        <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MAX_PRESSURE" />
+        <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MIN_PRESSURE" />
       </Control>
-      <!--Retract straight up out of the bin-->
+
+      <!--=== STEP 8: RETRACT FROM BIN ===-->
       <Action
         ID="CreateStampedPose"
         reference_frame="grasp_link"
@@ -278,11 +294,7 @@
         position_xyz="0;0;-0.20"
       />
       <Action ID="ResetPoseStampedVector" vector="{retract_up_path}" />
-      <Action
-        ID="AddPoseStampedToVector"
-        input="{retract_above_bin}"
-        vector="{retract_up_path}"
-      />
+      <Action ID="AddPoseStampedToVector" input="{retract_above_bin}" vector="{retract_up_path}" />
       <Action
         ID="PlanCartesianPath"
         acceleration_scale_factor="0.500000"
@@ -303,9 +315,12 @@
         execution_pipeline="jtc"
         controller_action_name="/joint_trajectory_controller/follow_joint_trajectory"
       />
-      <!--Clear point cloud obstacles from perception so they don't block place planning-->
+
+      <!--Clear point cloud obstacles so they don't block place planning-->
       <SubTree ID="Clear Snapshot" _collapsed="true" />
-      <!--=== STEP 6: ADD HARDCODED COLLISION OBJECT ===-->
+
+      <!--=== STEP 9: ATTACH COLLISION OBJECT AND RETURN TO ABOVE GROCERY BIN ===-->
+      <!--Attach immediately after retract while arm is stationary, before any waypoint moves-->
       <Action
         ID="GetLatestTransform"
         target_frame_id="world"
@@ -330,71 +345,52 @@
         allowed_collision_links="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
         parent_link_name="grasp_link"
       />
-      <!--=== STEP 7: NAVIGATE TO PLACE POSITION ===-->
-      <!--If horizontal: go to "Top Shelf Gripper Horiz" to reorient upright, then "Above Shelf".
-          If upright: go directly to "Above Shelf" keeping orientation.-->
-      <Control ID="IfThenElse">
-        <Action ID="Script" code="" _failureIf="is_on_side == false" />
-        <!--THEN: horizontal — reorient via "Top Shelf Gripper Horiz", then to "Above Shelf" keeping orientation-->
-        <Control ID="Sequence">
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        waypoint_name="Above Grocery Bin"
+        execution_pipeline="jtc"
+        controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
+        controller_names="joint_trajectory_controller"
+      />
+
+      <!--=== STEP 10: MOVE TO SHELF STAGING WAYPOINT ===-->
+      <!--Top shelf → Top Shelf Staging, bottom shelf → Bottom Shelf Staging-->
+      <Control ID="Fallback" name="SelectStagingWaypoint">
+        <Control ID="Sequence" name="TopShelfPath">
+          <Action ID="Script" code="" _failureIf="shelf_name != 'top_shelf'" />
           <SubTree
             ID="Move to Waypoint"
             _collapsed="true"
-            waypoint_name="Top Shelf Gripper Horiz"
+            waypoint_name="Top Shelf Staging"
             execution_pipeline="jtc"
             controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
             controller_names="joint_trajectory_controller"
-          />
-          <SubTree
-            ID="Move to Waypoint"
-            _collapsed="true"
-            waypoint_name="Above Shelf"
-            execution_pipeline="jtc"
-            controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
-            controller_names="joint_trajectory_controller"
-            keep_orientation="true"
-            keep_orientation_link_names="grasp_link"
-            keep_orientation_tolerance="0.2"
           />
         </Control>
-        <!--ELSE: upright — go to "Above Shelf" keeping orientation-->
-        <Control ID="Fallback">
+        <Control ID="Sequence" name="BottomShelfPath">
           <SubTree
             ID="Move to Waypoint"
             _collapsed="true"
-            waypoint_name="Above Shelf"
+            waypoint_name="Bottom Shelf Staging"
             execution_pipeline="jtc"
             controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
             controller_names="joint_trajectory_controller"
-            keep_orientation="true"
-            keep_orientation_link_names="grasp_link"
-            keep_orientation_tolerance="0.2"
           />
-          <Control ID="Sequence">
-            <Action
-              ID="LogMessage"
-              log_level="warn"
-              message="Orientation-constrained move to Above Shelf failed. Retrying without constraint at reduced speed."
-            />
-            <SubTree
-              ID="Move to Waypoint"
-              _collapsed="true"
-              waypoint_name="Above Shelf"
-              execution_pipeline="jtc"
-              controller_action_server="/joint_trajectory_controller/follow_joint_trajectory"
-              controller_names="joint_trajectory_controller"
-              velocity_scale_factor="0.3"
-            />
-          </Control>
         </Control>
       </Control>
-      <!--=== STEP 8: MTC PLAN TO PLACE POSE ===-->
+
+      <!--=== STEP 11: COMPUTE PLACE POSE AND PLAN ===-->
+      <!--ComputePlaceOrientation determines the correct grasp_link orientation so the
+           object ends up upright on the shelf (long axis normal to shelf surface).
+           It accounts for how the object was picked and computes the height offset. -->
       <Action
         ID="ComputePlaceOrientation"
         object_pose="{object_pose}"
         pick_pose="{pick_pose}"
-        place_position="{shelf_target_pose}"
+        place_position="{pringles_place_pose}"
         height_offset="{place_height}"
+        depth_offset="{depth_offset}"
         place_pose="{place_pose}"
       />
       <Action
@@ -403,13 +399,19 @@
         marker_name="place_target"
         marker_size="0.050000"
         pose="{place_pose}"
-        marker_text="place"
+        marker_text="Place Target"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/place_target_pose.yaml"
+        overwrite="true"
+        message="{place_pose}"
       />
       <Action
         ID="InitializeMTCTask"
         controller_names="joint_trajectory_controller"
         task="{mtc_task}"
-        task_id="place_pringles"
+        task_id="place_pringles_v3"
         trajectory_monitoring="false"
         timeout="-1.000000"
       />
@@ -418,7 +420,7 @@
         ID="SetupMTCIgnoreCollisionsBetweenObjects"
         allow_collision="true"
         task="{mtc_task}"
-        object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item"
+        object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item;ur_stand;base_link_inertia;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table;wrist_3_link;tool0;gripper_mount_link;forearm_link"
       />
       <Action
         ID="SetupMTCPlanToPose"
@@ -451,7 +453,8 @@
         controller_action_name="/joint_trajectory_controller/follow_joint_trajectory"
         _collapsed="true"
       />
-      <!--=== STEP 9: LOWER UNTIL CONTACT using force feedback ===-->
+
+      <!--=== STEP 12: FORCE-LOWER UNTIL CONTACT ===-->
       <Action
         ID="SwitchController"
         activate_controllers="velocity_force_controller"
@@ -469,12 +472,13 @@
         torque_xyz="0;0;0"
         force_xyz="0;0;0"
       />
+      <!--Lower in world -Z (downward) to place object onto shelf surface-->
       <Action
         ID="CreateStampedTwist"
-        reference_frame="grasp_link"
+        reference_frame="world"
         stamped_twist="{desired_twist}"
         angular_velocity_xyz="0;0;0"
-        linear_velocity_xyz="0;0;0.005"
+        linear_velocity_xyz="0;0;-0.005"
       />
       <Action
         ID="CreateStampedPose"
@@ -500,6 +504,7 @@
           wrench_gain="0.01"
           velocity_controlled_axes="0;0;1;0;0;0"
           publish_rate="50"
+          velocity_force_controller_command_topic="/velocity_force_controller/command"
         />
       </Control>
       <SubTree
@@ -513,12 +518,13 @@
         ID="SwitchController"
         activate_controllers="joint_trajectory_controller"
       />
-      <!--=== STEP 10: DEACTIVATE VACUUM, DETACH OBJECT, AND RETRACT ===-->
+
+      <!--=== STEP 13: RELEASE, DETACH, AND RETRACT ===-->
       <SubTree ID="Deactivate Vacuum" _collapsed="true" />
       <Action ID="WaitForDuration" delay_duration="1.0" />
       <Action ID="DetachURDF" urdf_name="grocery_item" />
       <Action ID="RemoveURDFFromScene" urdf_name="grocery_item" />
-      <!--Retract upward after releasing-->
+      <!--Retract upward-->
       <Action
         ID="CreateStampedPose"
         reference_frame="grasp_link"
@@ -526,11 +532,7 @@
         position_xyz="0;0;-0.1"
       />
       <Action ID="ResetPoseStampedVector" vector="{retract_path}" />
-      <Action
-        ID="AddPoseStampedToVector"
-        input="{retract_pose}"
-        vector="{retract_path}"
-      />
+      <Action ID="AddPoseStampedToVector" input="{retract_pose}" vector="{retract_path}" />
       <Action
         ID="PlanCartesianPath"
         acceleration_scale_factor="1.000000"
@@ -551,13 +553,19 @@
         execution_pipeline="jtc"
         controller_action_name="/joint_trajectory_controller/follow_joint_trajectory"
       />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Pringles pick and place complete."
+      />
     </Control>
   </BehaviorTree>
   <TreeNodesModel>
-    <SubTree ID="Qualcomm Pick Pringles v1">
+    <SubTree ID="Qualcomm Pick Pringles v3">
       <MetadataFields>
-        <Metadata runnable="true" />
         <Metadata subcategory="Application - Grocery" />
+        <Metadata runnable="true" />
       </MetadataFields>
     </SubTree>
   </TreeNodesModel>

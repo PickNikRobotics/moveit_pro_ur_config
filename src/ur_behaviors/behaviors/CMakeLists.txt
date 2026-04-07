@@ -2,6 +2,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   moveit_pro_behavior_interface
   pluginlib
   tf2_eigen
+  tf2_ros
   visualization_msgs
   geometry_msgs
   moveit_studio_vision_msgs
@@ -18,6 +19,9 @@ add_library(
         src/create_pose_stamped_grid.cpp
         src/visualize_placement_zones.cpp
         src/get_highest_confidence_mask.cpp
+        src/get_placement_pose_for_object.cpp
+        src/publish_static_transform.cpp
+        src/compute_camera_pose_from_tag.cpp
         src/register_behaviors.cpp)
 target_include_directories(
         ur_behaviors

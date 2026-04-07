@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Test Plan To Place Cartesian">
+  <BehaviorTree
+    ID="Test Plan To Place Cartesian"
+    _description="Loads the saved place target pose and plans a Cartesian path to it. If planning fails, falls back to overriding orientation with saved EE orientation."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/place_target_pose.yaml"
+        output="{place_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="place_target"
+        marker_size="0.100000"
+        pose="{place_pose}"
+        marker_text="Place Target (original)"
+      />
+
+      <Control ID="Fallback" name="TryOriginalThenFallback">
+        <!--=== ATTEMPT 1: Original place pose ===-->
+        <Control ID="Sequence" name="OriginalPose">
+          <Action ID="ResetPoseStampedVector" vector="{place_path}" />
+          <Action ID="AddPoseStampedToVector" input="{place_pose}" vector="{place_path}" />
+          <Action
+            ID="PlanCartesianPath"
+            acceleration_scale_factor="0.500000"
+            blending_radius="0.010000"
+            debug_solution="{debug_solution}"
+            ik_cartesian_space_density="0.010000"
+            ik_joint_space_density="0.100000"
+            joint_trajectory_msg="{joint_trajectory_msg}"
+            path="{place_path}"
+            planning_group_name="manipulator"
+            position_only="false"
+            tip_links="grasp_link"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="0.500000"
+          />
+        </Control>
+
+        <!--=== ATTEMPT 2: Override orientation with saved EE pose ===-->
+        <Control ID="Sequence" name="FallbackOrientation">
+          <Action
+            ID="LogMessage"
+            log_level="info"
+            message="Original place pose Cartesian plan failed. Retrying with saved EE orientation..."
+          />
+          <!--Orientation from saved_ee_pose.yaml: gripper horizontal, facing shelf-->
+          <Action
+            ID="OverridePoseOrientation"
+            input_pose="{place_pose}"
+            orientation_xyzw="-0.6799;-0.0051;0.0222;0.7330"
+            output_pose="{place_pose_fallback}"
+          />
+          <Action
+            ID="VisualizePose"
+            marker_lifetime="0.000000"
+            marker_name="place_target_fallback"
+            marker_size="0.100000"
+            pose="{place_pose_fallback}"
+            marker_text="Place Target (fallback orientation)"
+          />
+          <Action ID="ResetPoseStampedVector" vector="{place_path}" />
+          <Action ID="AddPoseStampedToVector" input="{place_pose_fallback}" vector="{place_path}" />
+          <Action
+            ID="PlanCartesianPath"
+            acceleration_scale_factor="0.500000"
+            blending_radius="0.010000"
+            debug_solution="{debug_solution}"
+            ik_cartesian_space_density="0.010000"
+            ik_joint_space_density="0.100000"
+            joint_trajectory_msg="{joint_trajectory_msg}"
+            path="{place_path}"
+            planning_group_name="manipulator"
+            position_only="false"
+            tip_links="grasp_link"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="0.500000"
+          />
+        </Control>
+      </Control>
+
+      <Action
+        ID="ExecuteTrajectory"
+        execution_pipeline="jtc"
+        controller_action_name="/joint_trajectory_controller/follow_joint_trajectory"
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Test Plan To Place Cartesian">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

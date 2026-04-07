@@ -3,7 +3,7 @@
   <BehaviorTree
     ID="Calibrate Bin"
     _description="Calibrates the bin position using AprilTag 4. Places approximate bin and pole collision objects, detects tag 4 from multiple waypoints, computes calibrated bin opening center, and places calibrated bin, pole, and camera collision objects."
-    _favorite="true"
+    _favorite="false"
   >
     <Control ID="Sequence" name="TopLevelSequence">
       <!--=== PLACE APPROXIMATE BIN + POLE for collision avoidance ===-->
@@ -72,7 +72,6 @@
         log_level="info"
         message="Bin and pole estimates placed. Starting bin tag detection..."
       />
-
       <!--=== DETECT TAG 4 ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag4_poses}" />
       <Decorator ID="ForceSuccess">
@@ -128,7 +127,6 @@
         pose="{tag4_avg_pose}"
         marker_text="Tag 4 (Bin)"
       />
-
       <!--=== COMPUTE CALIBRATED BIN OPENING CENTER ===-->
       <!--The detected tag pose has a rotated orientation (tag Z points toward robot).
           Override to identity first so TransformPose offsets apply in world frame.
@@ -168,7 +166,6 @@
         overwrite="true"
         message="{bin_opening_center}"
       />
-
       <!--=== PLACE CALIBRATED BIN BOX ===-->
       <!--Bin center = opening_center + (0, 0, -tote_z/2) = (0, 0, -0.095) -->
       <Action
@@ -207,7 +204,6 @@
         overwrite="true"
         message="{bin_calibrated_pose}"
       />
-
       <!--=== PLACE CALIBRATED POLE ===-->
       <!--Pole center = opening_center + (0, -0.2305, 0.1651) -->
       <Action
@@ -246,7 +242,6 @@
         overwrite="true"
         message="{pole_calibrated_pose}"
       />
-
       <!--=== PLACE CALIBRATED CAMERA ===-->
       <!--Camera mount = opening_center + (0, -0.2005, 0.5207) -->
       <Action
@@ -285,7 +280,6 @@
         overwrite="true"
         message="{camera_calibrated_pose}"
       />
-
       <!--=== PLACE CALIBRATED TABLE ===-->
       <!--Table directly under the bin, bin centered on table top.
           Table top = bottom of bin = bin_opening_center + (0, 0, -tote_z) = (0, 0, -0.1905)
@@ -328,7 +322,6 @@
         overwrite="true"
         message="{table_calibrated_pose}"
       />
-
       <Action
         ID="LogMessage"
         log_level="info"
@@ -336,7 +329,6 @@
       />
     </Control>
   </BehaviorTree>
-
   <TreeNodesModel>
     <SubTree ID="Calibrate Bin">
       <MetadataFields>

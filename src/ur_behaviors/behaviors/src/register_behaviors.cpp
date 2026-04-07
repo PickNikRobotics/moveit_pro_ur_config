@@ -6,6 +6,9 @@
 #include <ur_behaviors/visualize_camera_frustum.hpp>
 #include <ur_behaviors/visualize_placement_zones.hpp>
 #include <ur_behaviors/get_highest_confidence_mask.hpp>
+#include <ur_behaviors/get_placement_pose_for_object.hpp>
+#include <ur_behaviors/publish_static_transform.hpp>
+#include <ur_behaviors/compute_camera_pose_from_tag.hpp>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -27,6 +30,12 @@ public:
       factory, "VisualizePlacementZones", shared_resources);
     moveit_pro::behaviors::registerBehavior<GetHighestConfidenceMask>(
       factory, "GetHighestConfidenceMask", shared_resources);
+    moveit_pro::behaviors::registerBehavior<GetPlacementPoseForObject>(
+      factory, "GetPlacementPoseForObject", shared_resources);
+    moveit_pro::behaviors::registerBehavior<PublishStaticTransform>(
+      factory, "PublishStaticTransform", shared_resources);
+    moveit_pro::behaviors::registerBehavior<ComputeCameraPoseFromTag>(
+      factory, "ComputeCameraPoseFromTag", shared_resources);
   }
 };
 

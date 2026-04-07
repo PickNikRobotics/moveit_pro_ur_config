@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Detect April Tag Here">
+  <BehaviorTree
+    ID="Detect April Tag Here"
+    _description="Detects an AprilTag from the current pose, visualizes its transform in world frame, and takes a wrist camera point cloud snapshot."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree ID="Take Wrist Camera Image" _collapsed="true" />
+      <Decorator ID="RetryUntilSuccessful" num_attempts="3">
+        <Control ID="Sequence">
+          <Action
+            ID="DetectAprilTags"
+            image="{wrist_camera_image}"
+            camera_info="{wrist_camera_info}"
+            detections="{detections}"
+            apriltag_family_name="36h11"
+            tag_size="0.085"
+            max_hamming="0"
+            n_threads="1"
+            quad_decimate="2.0"
+            quad_sigma="0.0"
+            refine_edges="true"
+          />
+          <Action
+            ID="GetDetectionPose"
+            detections="{detections}"
+            target_id="5"
+            detection_pose="{tag_pose}"
+          />
+        </Control>1
+      </Decorator>
+      <Action
+        ID="TransformPoseFrame"
+        input_pose="{tag_pose}"
+        output_pose="{tag_pose_world}"
+        target_frame_id="world"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="detected_tag"
+        marker_size="0.085000"
+        pose="{tag_pose_world}"
+        marker_text="Tag"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="/home/ur5e-009-agent/user_ws/april_tag_poses/tag_5.yaml"
+        overwrite="true"
+        message="{tag_pose_world}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Detected AprilTag. Pose saved to /home/ur5e-009-agent/user_ws/april_tag_poses/tag_5.yaml. Taking snapshot..."
+      />
+      <Action
+        ID="GetPointCloud"
+        topic_name="/camera/wrist_mounted_camera/depth/color/points"
+        message_timeout_sec="15"
+        message_out="{point_cloud}"
+      />
+      <Action ID="SendPointCloudToUI" point_cloud="{point_cloud}" />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Detect April Tag Here">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+      <input_port name="target_id" default="0">
+        AprilTag ID to detect (0-4).
+      </input_port>
+    </SubTree>
+  </TreeNodesModel>
+</root>

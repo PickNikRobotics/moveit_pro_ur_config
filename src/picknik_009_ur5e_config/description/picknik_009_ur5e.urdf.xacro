@@ -50,7 +50,7 @@
 
   <!-- EPick parameters -->
   <xacro:arg name="epick_extension_radius" default="0.005" />
-  <xacro:arg name="epick_extension_length" default="0.088" />
+  <xacro:arg name="epick_extension_length" default="0.1" />
   <xacro:arg name="epick_suction_cup_radius" default="0.012" />
   <xacro:arg name="epick_suction_cup_height" default="0.015" />
   <xacro:arg name="epick_tcp_stroke_compensation" default="0.005" />
@@ -161,22 +161,7 @@
   <xacro:include filename="$(find picknik_009_ur5e_config)/description/environment.xacro"/>
   <xacro:environment parent="world"/>
 
-  <!-- Scene camera (D415) at calibrated mount position above bin.
-       Position from calibration/camera_calibrated_pose.yaml.
-       Orientation: flipped (roll=pi), pitched 75 deg down, rotated 90 deg yaw. -->
-  <link name="scene_camera_mount" />
-  <joint name="world_to_scene_camera_mount" type="fixed">
-    <parent link="world" />
-    <child link="scene_camera_mount" />
-    <origin xyz="0.046 -0.984 0.563" rpy="0 0 0" />
-  </joint>
-  <xacro:realsense_d415
-    parent="scene_camera_mount"
-    name="scene_camera"
-    use_mesh="true"
-  >
-    <origin xyz="0 0 0" rpy="${pi} ${100 * pi / 180} ${-pi / 2}" />
-  </xacro:realsense_d415>
+  <!-- Scene camera is placed dynamically by calibration objectives. -->
 
   <link name="ur_stand">
     <visual>

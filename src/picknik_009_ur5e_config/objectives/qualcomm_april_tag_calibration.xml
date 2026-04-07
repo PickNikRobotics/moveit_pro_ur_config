@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Qualcomm April Tag Calibration">
+  <BehaviorTree
+    ID="Qualcomm April Tag Calibration"
+    _description="Calibrates the full scene using saved AprilTag poses. Loads shelf tags (0-3) and bin tag (4), computes shelf and bin positions, and places actual URDFs for shelves, shelf back/base, bin tote, table, camera pole, and scene camera."
+    _favorite="true"
+  >
+    <Control ID="Sequence" name="TopLevelSequence">
+      <!--=== CLEANUP previous calibration objects ===-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_top_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_bottom_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_shelf" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_bin" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_table" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_pole" />
+      </Decorator>
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="calibrated_camera" />
+      </Decorator>
+
+      <!--=== LOAD SHELF TAG POSES (tags 0-3) ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="/home/ur5e-009-agent/user_ws/april_tag_poses/tag_0.yaml"
+        output="{top_left_tag_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="/home/ur5e-009-agent/user_ws/april_tag_poses/tag_1.yaml"
+        output="{top_right_tag_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="/home/ur5e-009-agent/user_ws/april_tag_poses/tag_2.yaml"
+        output="{bottom_left_tag_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="/home/ur5e-009-agent/user_ws/april_tag_poses/tag_3.yaml"
+        output="{bottom_right_tag_pose}"
+      />
+
+      <!--Visualize all shelf tag poses-->
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_left_tag"
+        marker_size="0.050000"
+        pose="{top_left_tag_pose}"
+        marker_text="Top Left Tag"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="top_right_tag"
+        marker_size="0.050000"
+        pose="{top_right_tag_pose}"
+        marker_text="Top Right Tag"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_left_tag"
+        marker_size="0.050000"
+        pose="{bottom_left_tag_pose}"
+        marker_text="Bottom Left Tag"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bottom_right_tag"
+        marker_size="0.050000"
+        pose="{bottom_right_tag_pose}"
+        marker_text="Bottom Right Tag"
+      />
+
+      <!--=== OFFSET TAG POSES: tags are 5.25cm behind shelf edge ===-->
+      <Action
+        ID="TransformPose"
+        input_pose="{top_left_tag_pose}"
+        output_pose="{top_left_tag_pose}"
+        translation_xyz="0;-0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{top_right_tag_pose}"
+        output_pose="{top_right_tag_pose}"
+        translation_xyz="0;-0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{bottom_left_tag_pose}"
+        output_pose="{bottom_left_tag_pose}"
+        translation_xyz="0;-0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{bottom_right_tag_pose}"
+        output_pose="{bottom_right_tag_pose}"
+        translation_xyz="0;-0.0525;0"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Loaded shelf tag poses with 5.25cm edge offset. Computing shelf positions..."
+      />
+
+      <!--=== COMPUTE AND PLACE TOP SHELF ===-->
+      <Action ID="ResetPoseStampedVector" vector="{top_tag_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_left_tag_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_right_tag_pose}"
+        vector="{top_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{top_tag_poses}"
+        average_pose_stamped="{top_shelf_pose}"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{top_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{top_shelf_pose}"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_top_shelf"
+        urdf_pose="{top_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/top_shelf_pose.yaml"
+        overwrite="true"
+        message="{top_shelf_pose}"
+      />
+
+      <!--=== COMPUTE AND PLACE BOTTOM SHELF ===-->
+      <Action ID="ResetPoseStampedVector" vector="{bottom_tag_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_left_tag_pose}"
+        vector="{bottom_tag_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_right_tag_pose}"
+        vector="{bottom_tag_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{bottom_tag_poses}"
+        average_pose_stamped="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{bottom_shelf_pose}"
+        orientation_xyzw="0;0;1;0"
+        output_pose="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_bottom_shelf"
+        urdf_pose="{bottom_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bottom_shelf_pose.yaml"
+        overwrite="true"
+        message="{bottom_shelf_pose}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Shelves placed. Computing shelf collision objects..."
+      />
+
+      <!--=== SHELF BACK AND BASE COLLISION BOXES ===-->
+      <!--These remain as primitive boxes since they don't have meshes-->
+      <Action ID="ResetPoseStampedVector" vector="{calibrated_shelf_poses}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{top_shelf_pose}"
+        vector="{calibrated_shelf_poses}"
+      />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{bottom_shelf_pose}"
+        vector="{calibrated_shelf_poses}"
+      />
+      <Action
+        ID="AveragePoseStampedVector"
+        pose_stamped_vector="{calibrated_shelf_poses}"
+        average_pose_stamped="{shelf_center_pose}"
+      />
+
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_back_pose}"
+        translation_xyz="0;-0.44;-0.09"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_back_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_back_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.08;1.8288"
+        solid_primitive="{shelf_back_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_back_box}"
+        pose="{shelf_back_pose}"
+        object_id="shelf_back"
+        collision_object="{shelf_back_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_back_collision}"
+        graspable_object="{shelf_back_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_back_graspable}"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_back_pose.yaml"
+        overwrite="true"
+        message="{shelf_back_pose}"
+      />
+
+      <Action
+        ID="TransformPose"
+        input_pose="{shelf_center_pose}"
+        output_pose="{shelf_base_pose}"
+        translation_xyz="0;-0.24;-0.904"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{shelf_base_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{shelf_base_pose}"
+      />
+      <Action
+        ID="CreateSolidPrimitiveBox"
+        dimensions="1.27;0.48;0.20"
+        solid_primitive="{shelf_base_box}"
+      />
+      <Action
+        ID="CreateCollisionObjectFromSolidPrimitive"
+        solid_primitive="{shelf_base_box}"
+        pose="{shelf_base_pose}"
+        object_id="shelf_base"
+        collision_object="{shelf_base_collision}"
+      />
+      <SubTree
+        ID="Convert CollisionObject To GraspableObject"
+        _collapsed="true"
+        collision_object="{shelf_base_collision}"
+        graspable_object="{shelf_base_graspable}"
+      />
+      <Action ID="GetCurrentPlanningScene" />
+      <Action
+        ID="AddVirtualObjectToPlanningScene"
+        object="{shelf_base_graspable}"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/shelf_base_pose.yaml"
+        overwrite="true"
+        message="{shelf_base_pose}"
+      />
+
+      <!--=== LOAD BIN TAG (tag 4) ===-->
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="/home/ur5e-009-agent/user_ws/april_tag_poses/tag_4.yaml"
+        output="{tag4_pose}"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="tag4_bin"
+        marker_size="0.085000"
+        pose="{tag4_pose}"
+        marker_text="Tag 4 (Bin)"
+      />
+
+      <!--Compute bin opening center from tag 4 pose.
+          X: +0.2525, Y: -0.18125, Z: +0.0525 -->
+      <Action
+        ID="OverridePoseOrientation"
+        input_pose="{tag4_pose}"
+        orientation_xyzw="0;0;0;1"
+        output_pose="{tag4_world_aligned}"
+      />
+      <Action
+        ID="TransformPose"
+        input_pose="{tag4_world_aligned}"
+        output_pose="{bin_opening_center}"
+        translation_xyz="0.2525;-0.18125;0.0525"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="VisualizePose"
+        marker_lifetime="0.000000"
+        marker_name="bin_opening_center"
+        marker_size="0.100000"
+        pose="{bin_opening_center}"
+        marker_text="Bin Opening Center"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bin_opening_center_pose.yaml"
+        overwrite="true"
+        message="{bin_opening_center}"
+      />
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Bin opening center computed. Placing bin, table, pole, and camera URDFs..."
+      />
+
+      <!--=== PLACE BIN TOTE URDF ===-->
+      <!--Bin center = opening_center + (0, 0, -0.095) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{bin_calibrated_pose}"
+        translation_xyz="0;0;-0.095"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_bin"
+        urdf_pose="{bin_calibrated_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/bin_tote.urdf"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/bin_calibrated_pose.yaml"
+        overwrite="true"
+        message="{bin_calibrated_pose}"
+      />
+
+      <!--=== PLACE TABLE URDF ===-->
+      <!--Table center = opening_center + (0, 0, -0.561) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{table_calibrated_pose}"
+        translation_xyz="0;0;-0.561"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_table"
+        urdf_pose="{table_calibrated_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/calibration_table.urdf"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/table_calibrated_pose.yaml"
+        overwrite="true"
+        message="{table_calibrated_pose}"
+      />
+
+      <!--=== PLACE POLE URDF ===-->
+      <!--Pole center = opening_center + (0, -0.2305, 0.1651) -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{pole_calibrated_pose}"
+        translation_xyz="0;-0.2305;0.1651"
+        quaternion_xyzw="0;0;0;1"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_pole"
+        urdf_pose="{pole_calibrated_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/calibration_pole.urdf"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/pole_calibrated_pose.yaml"
+        overwrite="true"
+        message="{pole_calibrated_pose}"
+      />
+
+      <!--=== PLACE SCENE CAMERA URDF ===-->
+      <!--Camera mount = opening_center + (0, -0.2005, 0.5207)
+          Orientation from original xacro: rpy=(pi, 100*pi/180, -pi/2)
+          Converted to quaternion: x=0.6328 y=0.3155 z=-0.6328 w=0.3155 -->
+      <Action
+        ID="TransformPose"
+        input_pose="{bin_opening_center}"
+        output_pose="{camera_calibrated_pose}"
+        translation_xyz="0;-0.2005;0.5207"
+        quaternion_xyzw="0.454519;-0.454519;-0.541675;-0.541675"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="calibrated_camera"
+        urdf_pose="{camera_calibrated_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/scene_camera.urdf"
+      />
+      <Action
+        ID="SavePoseStampedToYaml"
+        yaml_filename="calibration/camera_calibrated_pose.yaml"
+        overwrite="true"
+        message="{camera_calibrated_pose}"
+      />
+
+      <Action
+        ID="LogMessage"
+        log_level="info"
+        message="Qualcomm AprilTag calibration complete. Shelves, bin, table, pole, and camera URDFs placed and poses saved."
+      />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Qualcomm April Tag Calibration">
+      <MetadataFields>
+        <Metadata runnable="true" />
+        <Metadata subcategory="Application - Grocery" />
+      </MetadataFields>
+    </SubTree>
+  </TreeNodesModel>
+</root>

@@ -152,34 +152,18 @@
         object="{table_graspable}"
       />
 
-      <!--=== LOAD CALIBRATED BIN ===-->
+      <!--=== LOAD CALIBRATED BIN (walls-only URDF so robot can reach inside) ===-->
       <Action
         ID="LoadPoseStampedFromYaml"
         file_path="calibration/bin_calibrated_pose.yaml"
         output="{bin_calibrated_pose}"
       />
       <Action
-        ID="CreateSolidPrimitiveBox"
-        dimensions="0.6096;0.381;0.1905"
-        solid_primitive="{bin_box}"
-      />
-      <Action
-        ID="CreateCollisionObjectFromSolidPrimitive"
-        solid_primitive="{bin_box}"
-        pose="{bin_calibrated_pose}"
-        object_id="calibrated_bin"
-        collision_object="{bin_collision}"
-      />
-      <SubTree
-        ID="Convert CollisionObject To GraspableObject"
-        _collapsed="true"
-        collision_object="{bin_collision}"
-        graspable_object="{bin_graspable}"
-      />
-      <Action ID="GetCurrentPlanningScene" />
-      <Action
-        ID="AddVirtualObjectToPlanningScene"
-        object="{bin_graspable}"
+        ID="AddURDF"
+        urdf_name="calibrated_bin"
+        urdf_pose="{bin_calibrated_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/bin_tote.urdf"
       />
 
       <!--=== LOAD CALIBRATED POLE ===-->
@@ -212,34 +196,23 @@
         object="{pole_graspable}"
       />
 
-      <!--=== LOAD CALIBRATED CAMERA ===-->
+      <!--=== LOAD CALIBRATED SCENE CAMERA (from Calibrate Scene Camera objective) ===-->
       <Action
         ID="LoadPoseStampedFromYaml"
-        file_path="calibration/camera_calibrated_pose.yaml"
-        output="{camera_calibrated_pose}"
+        file_path="calibration/scene_camera_link_pose.yaml"
+        output="{scene_camera_link_pose}"
       />
       <Action
-        ID="CreateSolidPrimitiveBox"
-        dimensions="0.10;0.10;0.05"
-        solid_primitive="{camera_box}"
+        ID="AddURDF"
+        urdf_name="calibrated_camera"
+        urdf_pose="{scene_camera_link_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/scene_camera.urdf"
       />
       <Action
-        ID="CreateCollisionObjectFromSolidPrimitive"
-        solid_primitive="{camera_box}"
-        pose="{camera_calibrated_pose}"
-        object_id="calibrated_camera"
-        collision_object="{camera_collision}"
-      />
-      <SubTree
-        ID="Convert CollisionObject To GraspableObject"
-        _collapsed="true"
-        collision_object="{camera_collision}"
-        graspable_object="{camera_graspable}"
-      />
-      <Action ID="GetCurrentPlanningScene" />
-      <Action
-        ID="AddVirtualObjectToPlanningScene"
-        object="{camera_graspable}"
+        ID="PublishStaticTransform"
+        pose="{scene_camera_link_pose}"
+        child_frame_id="scene_camera_link"
       />
 
       <Action

@@ -26,6 +26,7 @@ constexpr auto kPortIDCollisionDimensions = "collision_dimensions";
 constexpr auto kPortIDCollisionRPY = "collision_rpy";
 constexpr auto kPortIDPickPose = "pick_pose";
 constexpr auto kPortIDIsOnSide = "is_on_side";
+constexpr auto kPortIDDepthOffset = "depth_offset";
 constexpr double kGraspApproachClearance = 0.0;  // directly at top surface
 constexpr double kOnSideThreshold = 0.5;  // axis_z < this means object is on its side
 }  // namespace
@@ -65,6 +66,8 @@ BT::PortsList ComputeGroceryPlaceHeight::providedPorts()
                                                     "Grasp_link pose at pick time, used to compute relative orientation."),
     BT::OutputPort<bool>(kPortIDIsOnSide, "{is_on_side}",
                           "True if the object's longest axis is roughly horizontal (on its side)."),
+    BT::OutputPort<double>(kPortIDDepthOffset, "{depth_offset}",
+                           "Forward offset for placement: cylinder/sphere radius, or box half-depth."),
   };
 }
 
@@ -235,7 +238,37 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
     spdlog::info("ComputeGroceryPlaceHeight: box longest_axis_z={:.3f}, is_on_side={}", longest_axis_z, is_on_side);
   }
 
+  // Compute depth offset: how far to scoot the placement toward the robot
+  // so the object center clears the shelf surface.
+  double depth_offset = 0.0;
+  if (shape_type == "cylinder")
+  {
+    depth_offset = bv.dimensions[1];  // radius
+    spdlog::info("ComputeGroceryPlaceHeight: depth_offset={:.4f} (cylinder radius)", depth_offset);
+  }
+  else if (shape_type == "sphere")
+  {
+    depth_offset = bv.dimensions[0];  // radius
+    spdlog::info("ComputeGroceryPlaceHeight: depth_offset={:.4f} (sphere radius)", depth_offset);
+  }
+  else if (shape_type == "box")
+  {
+    // Use the smallest horizontal dimension as the depth (object placed upright, thinnest side faces shelf back)
+    const std::array<double, 3> dims = {bv.dimensions[0], bv.dimensions[1], bv.dimensions[2]};
+    // Find the two non-longest dimensions (the longest will be vertical when upright)
+    double max_dim = *std::max_element(dims.begin(), dims.end());
+    double min_horizontal = max_dim;
+    for (const auto& d : dims)
+    {
+      if (d < max_dim && d < min_horizontal)
+        min_horizontal = d;
+    }
+    depth_offset = min_horizontal / 2.0;
+    spdlog::info("ComputeGroceryPlaceHeight: depth_offset={:.4f} (box half-depth)", depth_offset);
+  }
+
   setOutput(kPortIDPlaceHeight, place_height);
+  setOutput(kPortIDDepthOffset, depth_offset);
   setOutput(kPortIDPlaceTranslation, std::vector<double>{0.0, 0.0, -place_height});
   setOutput(kPortIDGraspApproachTranslation, std::vector<double>{0.0, 0.0, approach_z});
   setOutput(kPortIDTopOffset, top_offset);

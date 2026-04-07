@@ -3,7 +3,7 @@
   <BehaviorTree
     ID="Calibrate Qualcomm Shelves"
     _description="Calibrates the shelf location using AprilTags. Places chunky_shelf for collision avoidance, detects 4 tags across top and bottom shelves, places individual shelf_only URDFs for each shelf level, adds back and base collision boxes, and saves all calibrated poses."
-    _favorite="true"
+    _favorite="false"
   >
     <Control ID="Sequence" name="TopLevelSequence">
       <!--=== CLEANUP previous calibration objects ===-->
@@ -14,27 +14,40 @@
         <Action ID="RemoveURDFFromScene" urdf_name="calibrated_bottom_shelf" />
       </Decorator>
       <Decorator ID="ForceSuccess">
-        <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
+        <Action ID="RemoveURDFFromScene" urdf_name="touch_top_shelf" />
       </Decorator>
-      <!--=== PLACE CHUNKY SHELF for collision avoidance during calibration ===-->
+      <Decorator ID="ForceSuccess">
+        <Action ID="RemoveURDFFromScene" urdf_name="touch_bottom_shelf" />
+      </Decorator>
+      <!--=== LOAD TOUCH-CALIBRATED SHELVES for collision avoidance during calibration ===-->
       <Action
-        ID="CreateStampedPose"
-        position_xyz="0.0;0.66;-0.805"
-        orientation_xyzw="0;0;1;0"
-        reference_frame="world"
-        stamped_pose="{chunky_shelf_pose}"
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/top_shelf_pose.yaml"
+        output="{touch_top_shelf_pose}"
       />
       <Action
         ID="AddURDF"
-        urdf_name="chunky_shelf_approx"
-        urdf_pose="{chunky_shelf_pose}"
+        urdf_name="touch_top_shelf"
+        urdf_pose="{touch_top_shelf_pose}"
         package_name="picknik_009_ur5e_config"
-        urdf_file_path="description/chunky_shelf.urdf"
+        urdf_file_path="description/shelf_only.urdf"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bottom_shelf_pose.yaml"
+        output="{touch_bottom_shelf_pose}"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="touch_bottom_shelf"
+        urdf_pose="{touch_bottom_shelf_pose}"
+        package_name="picknik_009_ur5e_config"
+        urdf_file_path="description/shelf_only.urdf"
       />
       <Action
         ID="LogMessage"
         log_level="info"
-        message="Chunky shelf placed for collision avoidance. Starting tag detection..."
+        message="Touch-calibrated shelves loaded for collision avoidance. Starting tag detection..."
       />
       <!--=== TAG 0: Top Left (tag36h11_0000) ===-->
       <Action ID="ResetPoseStampedVector" vector="{tag0_poses}" />
@@ -425,8 +438,9 @@
         log_level="info"
         message="Shelf base collision box placed and pose saved."
       />
-      <!--=== REMOVE CHUNKY SHELF (replaced by calibrated objects) ===-->
-      <Action ID="RemoveURDFFromScene" urdf_name="chunky_shelf_approx" />
+      <!--=== REMOVE TOUCH-CALIBRATED SHELVES (replaced by tag-calibrated objects) ===-->
+      <Action ID="RemoveURDFFromScene" urdf_name="touch_top_shelf" />
+      <Action ID="RemoveURDFFromScene" urdf_name="touch_bottom_shelf" />
       <Action
         ID="LogMessage"
         log_level="info"
@@ -458,7 +472,7 @@
             camera_info="{wrist_camera_info}"
             detections="{detections}"
             apriltag_family_name="36h11"
-            tag_size="0.105"
+            tag_size="0.085"
             max_hamming="0"
             n_threads="1"
             quad_decimate="2.0"
