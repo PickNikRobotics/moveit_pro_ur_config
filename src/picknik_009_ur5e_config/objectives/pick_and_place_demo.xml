@@ -34,13 +34,9 @@
           ID="Convert CollisionObject To GraspableObject"
           _collapsed="false"
         />
-        <!-- Skip this to avoid PlanCartesianPath planning failures -->
-        <!-- Would need updating to new site location -->
-        <Action
-          ID="ModifyObjectInPlanningScene"
-          object="{graspable_object}"
-          _skipIf="true"
-        />
+        <!--Skip this to avoid PlanCartesianPath planning failures-->
+        <!--Would need updating to new site location-->
+        <Action ID="ModifyObjectInPlanningScene" object="{graspable_object}" />
       </Control>
       <SubTree
         ID="Move to Waypoint"
@@ -55,7 +51,7 @@
           orientation_xyzw="0.000; 1.000; 0.000; 0.000"
           reference_frame="tomato_soup_can_1_tf"
           stamped_pose="{pick_pose}"
-          position_xyz="0;0;-0.01"
+          position_xyz="0;0;0.06"
         />
         <Action
           ID="VisualizePose"
@@ -68,7 +64,7 @@
           orientation_xyzw="0.000; 1.000; 0.000; 0.000"
           reference_frame="tomato_soup_can_1_tf"
           stamped_pose="{pre_pick_pose}"
-          position_xyz="0;0;0.02"
+          position_xyz="0;0;0.09"
         />
         <Action
           ID="VisualizePose"
@@ -114,12 +110,13 @@
           ID="ExecuteTrajectory"
           controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
         />
+        <SubTree ID="Activate Vacuum" _collapsed="true" />
       </Control>
       <Control ID="Sequence">
         <!--Retract after pick up-->
         <Action
           ID="CreateStampedPose"
-          position_xyz="0;0;-0.15"
+          position_xyz="0;0;-0.22"
           reference_frame="epick_tip"
           stamped_pose="{retract_pose}"
         />
@@ -136,7 +133,6 @@
           blending_radius="0.010000"
           debug_solution="{debug_solution}"
         />
-        <SubTree ID="Close Gripper" _collapsed="true" />
         <Action
           ID="ExecuteTrajectory"
           controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
@@ -200,8 +196,14 @@
           ID="ExecuteTrajectory"
           controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
         />
-        <SubTree ID="Open Gripper" _collapsed="true" />
+        <SubTree ID="Deactivate Vacuum" _collapsed="true" />
       </Control>
+      <SubTree
+        ID="Move to Waypoint"
+        _collapsed="true"
+        controller_action_server="/joint_trajectory_admittance_controller/follow_joint_trajectory"
+        waypoint_name="Look at Tote"
+      />
     </Control>
   </BehaviorTree>
   <TreeNodesModel>

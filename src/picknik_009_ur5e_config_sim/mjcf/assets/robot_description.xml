@@ -115,14 +115,6 @@
       forcelimited="false"
       dampratio="1"
     />
-    <position
-      joint="gripper"
-      name="gripper"
-      ctrlrange="-3.14 3.14"
-      kp="1000"
-      forcelimited="false"
-      dampratio="1"
-    />
   </actuator>
   <worldbody>
     <body name="base_link" gravcomp="1">
@@ -478,14 +470,13 @@
                                                 name="gripper"
                                                 pos="0 0 0"
                                                 axis="1 0 0"
-                                                range="0 1"
-                                                actuatorfrcrange="-30 30"
+                                                range="0 0"
                                               />
                                               <!-- suction cup site and geometry -->
                                               <site name="suction_cup_epick" />
                                               <geom
-                                                margin="0.01"
-                                                gap="0.01"
+                                                margin="0.03"
+                                                gap="0.03"
                                                 type="sphere"
                                                 size="0.01"
                                               />

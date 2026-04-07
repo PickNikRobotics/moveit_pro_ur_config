@@ -45,10 +45,10 @@
 
   <worldbody>
     <!-- Freejoint bodies must be direct worldbody children -->
-    <body name="tomato_soup_can_1" pos="0.046 -0.784 0.0" euler="0 0 0">
+    <body name="tomato_soup_can_1" pos="0.046 -0.784 0.00" euler="0 0 0">
       <site
         name="tomato_soup_can_1_tf"
-        pos="0 0 0.04"
+        pos="0 0 0"
         size="0.008"
         rgba="1 0 0 0.35"
       />
@@ -117,7 +117,7 @@
       <inertial
         pos="0 0 0"
         euler="0 0 0"
-        mass="0.349"
+        mass="0.01"
         diaginertia="0.001 0.001 0.001"
       />
     </body>

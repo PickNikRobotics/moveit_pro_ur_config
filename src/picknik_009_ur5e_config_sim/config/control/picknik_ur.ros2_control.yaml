@@ -16,7 +16,7 @@ controller_manager:
     joint_velocity_controller:
       type: joint_velocity_controller/JointVelocityController
     epick_controller:
-      type: epick_controllers/EpickGripperActionController
+      type: position_controllers/GripperActionController
     epick_status_publisher_controller:
       type: epick_controllers/EpickStatusPublisherController
 
