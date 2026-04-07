@@ -2,6 +2,7 @@
   <include file="assets/robot_description.xml" />
   <include file="assets/ur_stand.xml" />
   <include file="assets/additions.xml" />
+  <include file="assets/extra_objects.xml" />
 
   <!-- welds for suction -->
   <equality>
