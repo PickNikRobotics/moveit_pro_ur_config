@@ -19,7 +19,7 @@ ros2_control:
     package: "picknik_009_ur5e_config_sim"
     path: "config/control/picknik_ur.ros2_control.yaml"
   controllers_active_at_startup:
-    # - "force_torque_sensor_broadcaster"
+    - "force_torque_sensor_broadcaster"
     - "epick_controller"
     # - "epick_status_publisher_controller"
     - "joint_state_broadcaster"

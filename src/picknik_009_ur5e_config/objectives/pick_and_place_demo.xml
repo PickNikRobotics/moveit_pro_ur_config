@@ -17,6 +17,12 @@
           stamped_pose="{tomato_can_pose}"
           position_xyz="0;0;0.01"
         />
+        <Action
+          ID="VisualizePose"
+          pose="{tomato_can_pose}"
+          marker_text="tomato_can_pose"
+          marker_name="tomato_can_pose"
+        />
         <Action ID="CreateSolidPrimitiveBox" dimensions="0.06;0.06;0.09" />
         <Action
           ID="CreateCollisionObjectFromSolidPrimitive"
@@ -26,9 +32,15 @@
         />
         <SubTree
           ID="Convert CollisionObject To GraspableObject"
-          _collapsed="true"
+          _collapsed="false"
         />
-        <Action ID="ModifyObjectInPlanningScene" object="{graspable_object}" />
+        <!-- Skip this to avoid PlanCartesianPath planning failures -->
+        <!-- Would need updating to new site location -->
+        <Action
+          ID="ModifyObjectInPlanningScene"
+          object="{graspable_object}"
+          _skipIf="true"
+        />
       </Control>
       <SubTree
         ID="Move to Waypoint"
@@ -43,14 +55,26 @@
           orientation_xyzw="0.000; 1.000; 0.000; 0.000"
           reference_frame="tomato_soup_can_1_tf"
           stamped_pose="{pick_pose}"
-          position_xyz="0;0;0.07"
+          position_xyz="0;0;-0.01"
+        />
+        <Action
+          ID="VisualizePose"
+          pose="{pick_pose}"
+          marker_text="pick_pose"
+          marker_name="pick_pose"
         />
         <Action
           ID="CreateStampedPose"
           orientation_xyzw="0.000; 1.000; 0.000; 0.000"
           reference_frame="tomato_soup_can_1_tf"
           stamped_pose="{pre_pick_pose}"
-          position_xyz="0;0;0.11"
+          position_xyz="0;0;0.02"
+        />
+        <Action
+          ID="VisualizePose"
+          pose="{pre_pick_pose}"
+          marker_text="pre_pick_pose"
+          marker_name="pre_pick_pose"
         />
         <Action
           ID="AddPoseStampedToVector"
@@ -69,6 +93,11 @@
           path="{pick_path}"
           blending_radius="0.010000"
           debug_solution="{debug_solution}"
+        />
+        <Action
+          ID="WaitForUserTrajectoryApproval"
+          solution="{debug_solution}"
+          _skipIf="true"
         />
         <Action ID="GetCurrentPlanningScene" />
         <Action
@@ -107,6 +136,7 @@
           blending_radius="0.010000"
           debug_solution="{debug_solution}"
         />
+        <SubTree ID="Close Gripper" _collapsed="true" />
         <Action
           ID="ExecuteTrajectory"
           controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
@@ -170,6 +200,7 @@
           ID="ExecuteTrajectory"
           controller_action_name="/joint_trajectory_admittance_controller/follow_joint_trajectory"
         />
+        <SubTree ID="Open Gripper" _collapsed="true" />
       </Control>
     </Control>
   </BehaviorTree>

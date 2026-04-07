@@ -48,7 +48,7 @@
     <body name="tomato_soup_can_1" pos="0.046 -0.784 0.0" euler="0 0 0">
       <site
         name="tomato_soup_can_1_tf"
-        pos="0 0 0"
+        pos="0 0 0.04"
         size="0.008"
         rgba="1 0 0 0.35"
       />
