@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Generate Bin Objects">
+  <BehaviorTree ID="Generate Bin Objects" _description="" _favorite="false">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <Action
+        ID="ReadYamlList"
+        package_name="picknik_009_ur5e_config_mock_hw"
+        relative_file_path="config/bin_layouts.yaml"
+        key1="{bin_layout_name}"
+        key2="primitive_names"
+        value_list="{primitive_names}"
+      />
+      <Action ID="ResetVector" vector="{primitives}" />
+      <Action ID="ResetVector" vector="{primitive_poses}" />
+      <Decorator
+        ID="ForEach"
+        out="{primitive_name}"
+        vector_in="{primitive_names}"
+      >
+        <Control ID="Sequence">
+          <Action
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="orientation"
+            value="{orient}"
+          />
+          <Action
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="position"
+            value="{pos}"
+          />
+          <Action
+            ID="CreateStampedPose"
+            position_xyz="{pos}"
+            orientation_xyzw="{orient}"
+            stamped_pose="{pose}"
+          />
+          <Action
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="type"
+            value="{type}"
+          />
+          <Action
+            ID="ReadYamlValue"
+            package_name="picknik_009_ur5e_config_mock_hw"
+            relative_file_path="config/bin_layouts.yaml"
+            key1="{bin_layout_name}"
+            key2="{primitive_name}"
+            key3="dimensions"
+            value="{dims}"
+          />
+          <Action
+            ID="CreateSolidPrimitiveFromShape"
+            pose_stamped="{pose}"
+            shape_type="{type}"
+            solid_primitive="{primitive}"
+            dimensions="{dims}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="{primitive}"
+            input_vector="{primitives}"
+            output_vector="{primitives}"
+          />
+          <SubTree
+            ID="AddToVector"
+            _collapsed="true"
+            element="{pose}"
+            input_vector="{primitive_poses}"
+            output_vector="{primitive_poses}"
+          />
+          <Control ID="Sequence" name="publish a marker">
+            <Action ID="ResetVector" vector="{poses}" />
+            <SubTree
+              ID="AddToVector"
+              _collapsed="true"
+              input_vector="{poses}"
+              element="{pose}"
+              output_vector="{poses}"
+            />
+            <Action
+              ID="PublishMarkers"
+              marker_poses="{poses}"
+              marker_namespace="{primitive_name}"
+              marker_scale_xyz="{dims}"
+              marker_type="{type}"
+            />
+          </Control>
+        </Control>
+      </Decorator>
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Generate Bin Objects">
+      <input_port name="bin_layout_name" default="layout_1" />
+      <output_port name="primitive_names" default="{primitive_names}" />
+      <output_port name="primitives" default="{primitives}" />
+      <output_port name="primitive_poses" default="{primitive_poses}" />
+    </SubTree>
+  </TreeNodesModel>
+</root>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root BTCPP_format="4" main_tree_to_execute="Test Find Best Pick">
+  <BehaviorTree ID="Test Find Best Pick" _description="" _favorite="false">
+    <Control ID="Sequence" name="TopLevelSequence">
+      <SubTree ID="Generate Bin Objects" _collapsed="true" />
+      <SubTree ID="Find Best Pick" _collapsed="true" />
+    </Control>
+  </BehaviorTree>
+  <TreeNodesModel>
+    <SubTree ID="Test Find Best Pick" />
+  </TreeNodesModel>
+</root>
