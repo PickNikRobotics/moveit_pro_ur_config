@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <root BTCPP_format="4" main_tree_to_execute="Take Wrist Camera Snapshot">
   <BehaviorTree
     ID="Take Wrist Camera Snapshot"
@@ -6,10 +6,10 @@
     _favorite="true"
   >
     <Control ID="Sequence" name="TopLevelSequence">
-      <!-- Do not clear snapshots first, so we can take multiple snapshots from different angles -->
+      <!--Do not clear snapshots first, so we can take multiple snapshots from different angles-->
       <Action
         ID="GetPointCloud"
-        topic_name="/camera/wrist_mounted_camera/depth/color/points"
+        topic_name="/tote_camera/points"
         message_timeout_sec="15"
       />
       <Action ID="SendPointCloudToUI" />

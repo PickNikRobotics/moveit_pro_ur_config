@@ -3,7 +3,9 @@
   <name>picknik_009_ur5e_config_mock_hw</name>
   <version>0.8.0</version>
 
-  <description>Mock hardware config for Dev-009 UR-5e + EPick gripper (fake hardware)</description>
+  <description>
+    Mock hardware config for Dev-009 UR-5e + EPick gripper (fake hardware)
+  </description>
 
   <maintainer email="henningkayser@picknik.ai">Henning Kayser</maintainer>
 

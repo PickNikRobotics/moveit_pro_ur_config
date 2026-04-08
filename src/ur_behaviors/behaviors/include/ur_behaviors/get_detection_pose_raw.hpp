@@ -13,8 +13,7 @@ namespace ur_behaviors
 class GetDetectionPoseRaw final : public moveit_pro::behaviors::SharedResourcesNode<BT::SyncActionNode>
 {
 public:
-  GetDetectionPoseRaw(const std::string& name,
-                      const BT::NodeConfiguration& config,
+  GetDetectionPoseRaw(const std::string& name, const BT::NodeConfiguration& config,
                       const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
 
   static BT::PortsList providedPorts();

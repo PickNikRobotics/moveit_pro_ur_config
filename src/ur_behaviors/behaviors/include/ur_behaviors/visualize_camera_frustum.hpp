@@ -15,9 +15,8 @@ namespace ur_behaviors
 class VisualizeCameraFrustum final : public moveit_pro::behaviors::SharedResourcesNode<BT::SyncActionNode>
 {
 public:
-  VisualizeCameraFrustum(const std::string& name,
-                        const BT::NodeConfiguration& config,
-                        const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
+  VisualizeCameraFrustum(const std::string& name, const BT::NodeConfiguration& config,
+                         const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
 
   static BT::PortsList providedPorts();
 

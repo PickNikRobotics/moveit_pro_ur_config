@@ -3,7 +3,9 @@
   <name>picknik_009_ur5e_config</name>
   <version>0.8.0</version>
 
-  <description>Site config for Dev-009 UR-5e + EPick gripper (real hardware)</description>
+  <description>
+    Site config for Dev-009 UR-5e + EPick gripper (real hardware)
+  </description>
 
   <maintainer email="henningkayser@picknik.ai">Henning Kayser</maintainer>
 

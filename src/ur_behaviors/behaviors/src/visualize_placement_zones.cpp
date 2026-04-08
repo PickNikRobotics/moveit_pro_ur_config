@@ -1,12 +1,12 @@
 #include <ur_behaviors/visualize_placement_zones.hpp>
 
+#include <yaml-cpp/yaml.h>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <moveit_pro_behavior_interface/get_required_ports.hpp>
 #include <moveit_pro_behavior_interface/metadata_fields.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
-#include <yaml-cpp/yaml.h>
 
 #include <Eigen/Geometry>
 #include <algorithm>
@@ -29,7 +29,7 @@ constexpr auto kPortIDConfigFile = "config_file";
 constexpr auto kDefaultMarkerTopic = "/visual_markers";
 
 // Shelf geometry constants
-constexpr double kShelfWidth = 1.27;       // meters
+constexpr double kShelfWidth = 1.27;  // meters
 constexpr int kSlotsPerShelf = 6;
 constexpr double kSlotSpacing = kShelfWidth / kSlotsPerShelf;  // ~0.2117m
 // Slot centers in shelf X: from -(width/2 - spacing/2) to +(width/2 - spacing/2)
@@ -86,8 +86,8 @@ PlacementConfig loadConfig(const std::string& file_path)
   catch (const std::exception& e)
   {
     // Log error but return defaults with "empty" labels
-    RCLCPP_ERROR(rclcpp::get_logger("VisualizePlacementZones"),
-        "Failed to load placement zones from '%s': %s", file_path.c_str(), e.what());
+    RCLCPP_ERROR(rclcpp::get_logger("VisualizePlacementZones"), "Failed to load placement zones from '%s': %s",
+                 file_path.c_str(), e.what());
   }
 
   return config;
@@ -99,8 +99,7 @@ namespace ur_behaviors
 {
 
 VisualizePlacementZones::VisualizePlacementZones(
-    const std::string& name,
-    const BT::NodeConfiguration& config,
+    const std::string& name, const BT::NodeConfiguration& config,
     const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources)
   : SharedResourcesNode(name, config, shared_resources)
   , publisher_{ shared_resources_->node->create_publisher<visualization_msgs::msg::MarkerArray>(
@@ -112,35 +111,29 @@ VisualizePlacementZones::VisualizePlacementZones(
 
 BT::PortsList VisualizePlacementZones::providedPorts()
 {
-  return {
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose,
-      "Calibrated top shelf pose"),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose,
-      "Calibrated bottom shelf pose"),
-    BT::InputPort<std::string>(kPortIDConfigFile, "../config/placement_zones.yaml",
-      "Path to placement zones YAML config (relative to config source directory)")
-  };
+  return { BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose, "Calibrated top shelf pose"),
+           BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose, "Calibrated bottom shelf pose"),
+           BT::InputPort<std::string>(kPortIDConfigFile, "../config/placement_zones.yaml",
+                                      "Path to placement zones YAML config (relative to config source directory)") };
 }
 
 BT::KeyValueVector VisualizePlacementZones::metadata()
 {
-  return {
-    { moveit_pro::behaviors::kDescriptionMetadataKey, kDescriptionVisualizePlacementZones },
-    { moveit_pro::behaviors::kSubcategoryMetadataKey, "Application - Grocery" }
-  };
+  return { { moveit_pro::behaviors::kDescriptionMetadataKey, kDescriptionVisualizePlacementZones },
+           { moveit_pro::behaviors::kSubcategoryMetadataKey, "Application - Grocery" } };
 }
 
 BT::NodeStatus VisualizePlacementZones::tick()
 {
-  const auto ports = moveit_pro::behaviors::getRequiredInputs(
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose),
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose),
-      getInput<std::string>(kPortIDConfigFile));
+  const auto ports =
+      moveit_pro::behaviors::getRequiredInputs(getInput<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose),
+                                               getInput<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose),
+                                               getInput<std::string>(kPortIDConfigFile));
 
   if (!ports.has_value())
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Failed to get required value from input data port: " + ports.error());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to get required value from input data port: " +
+                                                                 ports.error());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -150,13 +143,12 @@ BT::NodeStatus VisualizePlacementZones::tick()
   std::string config_source_directory;
   try
   {
-    config_source_directory =
-        shared_resources_->node->get_parameter("config_source_directory").as_string();
+    config_source_directory = shared_resources_->node->get_parameter("config_source_directory").as_string();
   }
   catch (const std::exception& e)
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        std::string("Failed to get config_source_directory parameter: ") + e.what());
+    shared_resources_->logger->publishFailureMessage(
+        name(), std::string("Failed to get config_source_directory parameter: ") + e.what());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -164,15 +156,14 @@ BT::NodeStatus VisualizePlacementZones::tick()
   // Go up one level to reach the package root.
   const std::string full_config_path = config_source_directory + "/" + config_file;
 
-  shared_resources_->logger->publishInfoMessage(name(),
-      "Loading placement zones from: " + full_config_path);
+  shared_resources_->logger->publishInfoMessage(name(), "Loading placement zones from: " + full_config_path);
 
   // Load placement zone configuration
   const auto config = loadConfig(full_config_path);
 
   // Log what we loaded for debugging
-  shared_resources_->logger->publishInfoMessage(name(),
-      "Top slot 1: " + config.top_shelf[0] + ", Bottom slot 1: " + config.bottom_shelf[0]);
+  shared_resources_->logger->publishInfoMessage(name(), "Top slot 1: " + config.top_shelf[0] +
+                                                            ", Bottom slot 1: " + config.bottom_shelf[0]);
 
   // Get shelf transforms
   Eigen::Isometry3d top_shelf_transform, bottom_shelf_transform;
@@ -187,8 +178,7 @@ BT::NodeStatus VisualizePlacementZones::tick()
   constexpr double kAxisWidth = 0.005;
 
   // Helper to create an axis line from origin to tip
-  auto makeAxisLine = [&](const Eigen::Vector3d& origin, const Eigen::Vector3d& tip,
-                          float r, float g, float b) {
+  auto makeAxisLine = [&](const Eigen::Vector3d& origin, const Eigen::Vector3d& tip, float r, float g, float b) {
     visualization_msgs::msg::Marker line;
     line.header.frame_id = "world";
     line.header.stamp = shared_resources_->node->now();
@@ -204,17 +194,20 @@ BT::NodeStatus VisualizePlacementZones::tick()
     line.color.a = 1.0;
     line.lifetime = rclcpp::Duration(0, 0);
     geometry_msgs::msg::Point p1, p2;
-    p1.x = origin.x(); p1.y = origin.y(); p1.z = origin.z();
-    p2.x = tip.x(); p2.y = tip.y(); p2.z = tip.z();
+    p1.x = origin.x();
+    p1.y = origin.y();
+    p1.z = origin.z();
+    p2.x = tip.x();
+    p2.y = tip.y();
+    p2.z = tip.z();
     line.points.push_back(p1);
     line.points.push_back(p2);
     marker_array.markers.push_back(line);
   };
 
   // Helper lambda to create axes + text label at a slot position
-  auto createSlotMarker = [&](const Eigen::Isometry3d& shelf_transform,
-                               int slot_index, const std::string& label,
-                               const std::string& prefix) {
+  auto createSlotMarker = [&](const Eigen::Isometry3d& shelf_transform, int slot_index, const std::string& label,
+                              const std::string& prefix) {
     // Compute slot position in shelf frame
     double x_shelf = slotCenterX(slot_index);
     double y_shelf = kDepthOffsetShelfFrame;
@@ -289,8 +282,10 @@ BT::NodeStatus VisualizePlacementZones::tick()
 
   publisher_->publish(marker_array);
 
-  shared_resources_->logger->publishInfoMessage(name(),
-      "Published " + std::to_string(kSlotsPerShelf * 2) + " placement zone markers to /visual_markers and labels to /placement_zone_labels from " + full_config_path);
+  shared_resources_->logger->publishInfoMessage(
+      name(), "Published " + std::to_string(kSlotsPerShelf * 2) +
+                  " placement zone markers to /visual_markers and labels to /placement_zone_labels from " +
+                  full_config_path);
 
   return BT::NodeStatus::SUCCESS;
 }

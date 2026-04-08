@@ -11,11 +11,11 @@ namespace filter_graspable_objects
 class FilterGraspableObjectsBehaviorsLoader : public moveit_pro::behaviors::SharedResourcesNodeLoaderBase
 {
 public:
-  void registerBehaviors(BT::BehaviorTreeFactory& factory,
-    [[maybe_unused]] const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
+  void registerBehaviors(
+      BT::BehaviorTreeFactory& factory,
+      [[maybe_unused]] const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
   {
     moveit_pro::behaviors::registerBehavior<FilterGraspableObjects>(factory, "FilterGraspableObjects", shared_resources);
-    
   }
 };
 }  // namespace filter_graspable_objects

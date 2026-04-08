@@ -5,7 +5,7 @@
 # Slot centers in shelf X: -0.529, -0.317, -0.106, 0.106, 0.317, 0.529
 # Placement Y offset from shelf pose: -0.20 (center of shelf depth in shelf frame)
 # Placement Z offset from shelf pose: 0.0 (on the shelf surface)
-# HEY: This is right to left (slot 1 is the right-most slot) 
+# HEY: This is right to left (slot 1 is the right-most slot)
 
 top_shelf:
   slot_1: "pringles"

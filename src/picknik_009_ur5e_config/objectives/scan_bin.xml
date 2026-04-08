@@ -9,11 +9,7 @@
       <SubTree ID="Clear Snapshot" _collapsed="true" />
 
       <!--=== Scan position 1 ===-->
-      <SubTree
-        ID="Move to Waypoint"
-        _collapsed="true"
-        waypoint_name="Scan 1"
-      />
+      <SubTree ID="Move to Waypoint" _collapsed="true" waypoint_name="Scan 1" />
       <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
       <Action
         ID="TransformPointCloudFrame"
@@ -28,11 +24,7 @@
       />
 
       <!--=== Scan position 2 ===-->
-      <SubTree
-        ID="Move to Waypoint"
-        _collapsed="true"
-        waypoint_name="Scan 2"
-      />
+      <SubTree ID="Move to Waypoint" _collapsed="true" waypoint_name="Scan 2" />
       <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
       <Action
         ID="TransformPointCloudFrame"
@@ -47,11 +39,7 @@
       />
 
       <!--=== Scan position 3 ===-->
-      <SubTree
-        ID="Move to Waypoint"
-        _collapsed="true"
-        waypoint_name="Scan 3"
-      />
+      <SubTree ID="Move to Waypoint" _collapsed="true" waypoint_name="Scan 3" />
       <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
       <Action
         ID="TransformPointCloudFrame"
@@ -66,11 +54,7 @@
       />
 
       <!--=== Scan position 4 ===-->
-      <SubTree
-        ID="Move to Waypoint"
-        _collapsed="true"
-        waypoint_name="Scan 4"
-      />
+      <SubTree ID="Move to Waypoint" _collapsed="true" waypoint_name="Scan 4" />
       <SubTree ID="Get Wrist Camera Point Cloud" _collapsed="true" />
       <Action
         ID="TransformPointCloudFrame"
@@ -128,11 +112,21 @@
         <Metadata subcategory="Application - Grocery" />
         <Metadata runnable="true" />
       </MetadataFields>
-      <inout_port name="fused_point_cloud" default="{fused_point_cloud}">Fused multi-view point cloud output.</inout_port>
-      <inout_port name="scan_waypoint_1" default="Scan 1">First scan waypoint name.</inout_port>
-      <inout_port name="scan_waypoint_2" default="Scan 2">Second scan waypoint name.</inout_port>
-      <inout_port name="scan_waypoint_3" default="Scan 3">Third scan waypoint name.</inout_port>
-      <inout_port name="scan_waypoint_4" default="Scan 4">Fourth scan waypoint name.</inout_port>
+      <inout_port name="fused_point_cloud" default="{fused_point_cloud}">
+        Fused multi-view point cloud output.
+      </inout_port>
+      <inout_port name="scan_waypoint_1" default="Scan 1">
+        First scan waypoint name.
+      </inout_port>
+      <inout_port name="scan_waypoint_2" default="Scan 2">
+        Second scan waypoint name.
+      </inout_port>
+      <inout_port name="scan_waypoint_3" default="Scan 3">
+        Third scan waypoint name.
+      </inout_port>
+      <inout_port name="scan_waypoint_4" default="Scan 4">
+        Fourth scan waypoint name.
+      </inout_port>
     </SubTree>
   </TreeNodesModel>
 </root>

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <launch>
   <!-- Top shelf ZED 2i camera -->
-  <include
-    file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py"
-  >
+  <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py">
     <arg name="camera_name" value="top_shelf_zed" />
     <arg name="camera_model" value="zed2i" />
     <arg name="serial_number" value="36944623" />
@@ -13,9 +11,7 @@
   </include>
 
   <!-- Bottom shelf ZED 2i camera -->
-  <include
-    file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py"
-  >
+  <include file="$(find-pkg-share zed_wrapper)/launch/zed_camera.launch.py">
     <arg name="camera_name" value="bottom_shelf_zed" />
     <arg name="camera_model" value="zed2i" />
     <arg name="serial_number" value="34758561" />

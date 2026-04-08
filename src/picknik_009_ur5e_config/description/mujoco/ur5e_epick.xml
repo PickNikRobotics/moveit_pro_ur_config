@@ -1,5 +1,11 @@
 <ur5e_body>
-  <body gravcomp="1" name="base" pos="0.0 0.0 0.0" euler="0 0 0" childclass="ur5e">
+  <body
+    gravcomp="1"
+    name="base"
+    pos="0.0 0.0 0.0"
+    euler="0 0 0"
+    childclass="ur5e"
+  >
     <inertial
       mass="4.0"
       pos="0 0 0"
@@ -96,11 +102,7 @@
                 />
                 <joint name="wrist_3_joint" class="size1" />
                 <geom material="linkgray" mesh="wrist3" class="visual" />
-                <site
-                  name="attachment_site"
-                  pos="0 0.1 0"
-                  quat="-1 1 0 0"
-                />
+                <site name="attachment_site" pos="0 0.1 0" quat="-1 1 0 0" />
                 <site
                   name="tcp_fts_sensor"
                   size="0.01"
@@ -180,8 +182,17 @@
                   />
                   <!-- Dummy gripper joint to match URDF epick_vacuum_state -->
                   <body name="epick_vacuum_state" pos="0 0 0.08">
-                    <inertial mass="0.01" pos="0 0 0" diaginertia="1e-6 1e-6 1e-6" />
-                    <joint name="gripper" type="hinge" axis="0 0 1" range="0 1" />
+                    <inertial
+                      mass="0.01"
+                      pos="0 0 0"
+                      diaginertia="1e-6 1e-6 1e-6"
+                    />
+                    <joint
+                      name="gripper"
+                      type="hinge"
+                      axis="0 0 1"
+                      range="0 1"
+                    />
                   </body>
                 </body>
               </body>

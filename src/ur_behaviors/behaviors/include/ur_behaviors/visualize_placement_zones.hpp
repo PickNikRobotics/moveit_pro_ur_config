@@ -15,8 +15,7 @@ namespace ur_behaviors
 class VisualizePlacementZones final : public moveit_pro::behaviors::SharedResourcesNode<BT::SyncActionNode>
 {
 public:
-  VisualizePlacementZones(const std::string& name,
-                          const BT::NodeConfiguration& config,
+  VisualizePlacementZones(const std::string& name, const BT::NodeConfiguration& config,
                           const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
 
   static BT::PortsList providedPorts();

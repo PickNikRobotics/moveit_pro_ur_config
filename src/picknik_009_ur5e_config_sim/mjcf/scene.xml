@@ -1,0 +1,23 @@
+<mujoco model="picknik_009_ur5e_config_sim_scene">
+  <include file="assets/robot_description.xml" />
+  <include file="assets/ur_stand.xml" />
+  <include file="assets/additions.xml" />
+  <include file="assets/extra_objects.xml" />
+
+  <!-- welds for suction -->
+  <equality>
+    <weld
+      name="epick_vacuum_state-tomato_soup_can_1"
+      body1="tomato_soup_can_1"
+      body2="epick_vacuum_state"
+      active="false"
+      torquescale="5"
+    />
+  </equality>
+  <keyframe>
+    <key
+      name="default"
+      qpos="6.44005e-18 -7.9645e-19 -3.18714e-19 -1.39502e-19 -3.14085e-18 7.07637e-19 0 0.0547246 -0.7052610 0.0033708 0.999997 0.00135872 -0.00165723 -0.000801093"
+    />
+  </keyframe>
+</mujoco>

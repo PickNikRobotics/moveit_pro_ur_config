@@ -21,3 +21,6 @@
 [submodule "src/zed-ros2-wrapper"]
 	path = src/zed-ros2-wrapper
 	url = git@github.com:PickNikRobotics/zed-ros2-wrapper.git
+[submodule "src/picknik_009_ur5e_config_sim/mjcf/assets/ycb_dataset"]
+	path = src/picknik_009_ur5e_config_sim/mjcf/assets/ycb_dataset
+	url = https://github.com/elpis-lab/YCB_Dataset.git

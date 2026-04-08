@@ -29,16 +29,18 @@ constexpr auto kPortIDMarkerNamespace = "marker_namespace";
 constexpr auto kDefaultMarkerTopic = "/visual_markers";
 constexpr auto kDefaultNamespace = "camera_frustum";
 
-inline double degToRad(double degrees) {
+inline double degToRad(double degrees)
+{
   return degrees * M_PI / 180.0;
 }
 
-struct FrustumCorners {
+struct FrustumCorners
+{
   std::array<Eigen::Vector3d, 8> corners;
 };
 
-FrustumCorners calculateFrustumCorners(double near_plane, double far_plane,
-                                      double h_fov_deg, double v_fov_deg) {
+FrustumCorners calculateFrustumCorners(double near_plane, double far_plane, double h_fov_deg, double v_fov_deg)
+{
   const double h_fov_rad = degToRad(h_fov_deg);
   const double v_fov_rad = degToRad(v_fov_deg);
 
@@ -64,7 +66,7 @@ FrustumCorners calculateFrustumCorners(double near_plane, double far_plane,
 }
 
 [[nodiscard]] tl::expected<void, std::string> validateParameters(double near_plane, double far_plane,
-                                                                   double horizontal_fov, double vertical_fov)
+                                                                 double horizontal_fov, double vertical_fov)
 {
   if (near_plane <= 0.0)
   {
@@ -89,7 +91,8 @@ FrustumCorners calculateFrustumCorners(double near_plane, double far_plane,
   return {};
 }
 
-geometry_msgs::msg::Point eigenToPoint(const Eigen::Vector3d& vec) {
+geometry_msgs::msg::Point eigenToPoint(const Eigen::Vector3d& vec)
+{
   geometry_msgs::msg::Point point;
   point.x = vec.x();
   point.y = vec.y();
@@ -103,8 +106,7 @@ namespace ur_behaviors
 {
 
 VisualizeCameraFrustum::VisualizeCameraFrustum(
-    const std::string& name,
-    const BT::NodeConfiguration& config,
+    const std::string& name, const BT::NodeConfiguration& config,
     const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources)
   : SharedResourcesNode(name, config, shared_resources)
   , publisher_{ shared_resources_->node->create_publisher<visualization_msgs::msg::MarkerArray>(
@@ -114,52 +116,38 @@ VisualizeCameraFrustum::VisualizeCameraFrustum(
 
 BT::PortsList VisualizeCameraFrustum::providedPorts()
 {
-  return {
-    BT::InputPort<std::string>(kPortIDTopicName, kDefaultMarkerTopic,
-      "Topic to publish visualization markers"),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDCameraPose,
-      "Camera pose (Z forward, X right, Y down)"),
-    BT::InputPort<double>(kPortIDNearPlane,
-      "Near plane distance in meters"),
-    BT::InputPort<double>(kPortIDFarPlane,
-      "Far plane distance in meters"),
-    BT::InputPort<double>(kPortIDHorizontalFov,
-      "Horizontal field of view in degrees"),
-    BT::InputPort<double>(kPortIDVerticalFov,
-      "Vertical field of view in degrees"),
-    BT::InputPort<std::string>(kPortIDMarkerNamespace, kDefaultNamespace,
-      "Namespace for markers")
-  };
+  return { BT::InputPort<std::string>(kPortIDTopicName, kDefaultMarkerTopic, "Topic to publish visualization markers"),
+           BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDCameraPose,
+                                                          "Camera pose (Z forward, X right, Y down)"),
+           BT::InputPort<double>(kPortIDNearPlane, "Near plane distance in meters"),
+           BT::InputPort<double>(kPortIDFarPlane, "Far plane distance in meters"),
+           BT::InputPort<double>(kPortIDHorizontalFov, "Horizontal field of view in degrees"),
+           BT::InputPort<double>(kPortIDVerticalFov, "Vertical field of view in degrees"),
+           BT::InputPort<std::string>(kPortIDMarkerNamespace, kDefaultNamespace, "Namespace for markers") };
 }
 
 BT::KeyValueVector VisualizeCameraFrustum::metadata()
 {
-  return {
-    { moveit_pro::behaviors::kDescriptionMetadataKey, kDescriptionVisualizeCameraFrustum }
-  };
+  return { { moveit_pro::behaviors::kDescriptionMetadataKey, kDescriptionVisualizeCameraFrustum } };
 }
 
 BT::NodeStatus VisualizeCameraFrustum::tick()
 {
   // Get required inputs from ports
   const auto ports = moveit_pro::behaviors::getRequiredInputs(
-      getInput<std::string>(kPortIDTopicName),
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDCameraPose),
-      getInput<double>(kPortIDNearPlane),
-      getInput<double>(kPortIDFarPlane),
-      getInput<double>(kPortIDHorizontalFov),
-      getInput<double>(kPortIDVerticalFov),
-      getInput<std::string>(kPortIDMarkerNamespace));
+      getInput<std::string>(kPortIDTopicName), getInput<geometry_msgs::msg::PoseStamped>(kPortIDCameraPose),
+      getInput<double>(kPortIDNearPlane), getInput<double>(kPortIDFarPlane), getInput<double>(kPortIDHorizontalFov),
+      getInput<double>(kPortIDVerticalFov), getInput<std::string>(kPortIDMarkerNamespace));
 
   if (!ports.has_value())
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Failed to get required value from input data port: " + ports.error());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to get required value from input data port: " +
+                                                                 ports.error());
     return BT::NodeStatus::FAILURE;
   }
 
-  const auto& [topic_name, camera_pose, near_plane, far_plane,
-               horizontal_fov, vertical_fov, marker_namespace] = ports.value();
+  const auto& [topic_name, camera_pose, near_plane, far_plane, horizontal_fov, vertical_fov, marker_namespace] =
+      ports.value();
 
   // Validate parameter ranges
   if (const auto validation_result = validateParameters(near_plane, far_plane, horizontal_fov, vertical_fov);
@@ -170,8 +158,7 @@ BT::NodeStatus VisualizeCameraFrustum::tick()
   }
 
   // Calculate frustum corners in camera frame
-  const auto frustum_corners = calculateFrustumCorners(
-    near_plane, far_plane, horizontal_fov, vertical_fov);
+  const auto frustum_corners = calculateFrustumCorners(near_plane, far_plane, horizontal_fov, vertical_fov);
 
   // Convert camera pose to Eigen transform
   Eigen::Isometry3d camera_transform;
@@ -248,7 +235,7 @@ BT::NodeStatus VisualizeCameraFrustum::tick()
   publisher_->publish(marker_array);
 
   shared_resources_->logger->publishInfoMessage(name(),
-      "Published camera frustum visualization to topic: " + topic_name);
+                                                "Published camera frustum visualization to topic: " + topic_name);
 
   return BT::NodeStatus::SUCCESS;
 }

@@ -147,10 +147,7 @@
         graspable_object="{table_graspable}"
       />
       <Action ID="GetCurrentPlanningScene" />
-      <Action
-        ID="AddVirtualObjectToPlanningScene"
-        object="{table_graspable}"
-      />
+      <Action ID="AddVirtualObjectToPlanningScene" object="{table_graspable}" />
 
       <!--=== LOAD CALIBRATED BIN (walls-only URDF so robot can reach inside) ===-->
       <Action
@@ -191,10 +188,7 @@
         graspable_object="{pole_graspable}"
       />
       <Action ID="GetCurrentPlanningScene" />
-      <Action
-        ID="AddVirtualObjectToPlanningScene"
-        object="{pole_graspable}"
-      />
+      <Action ID="AddVirtualObjectToPlanningScene" object="{pole_graspable}" />
 
       <!--=== LOAD CALIBRATED SCENE CAMERA (from Calibrate Scene Camera objective) ===-->
       <Action

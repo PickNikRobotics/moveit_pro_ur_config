@@ -1,10 +1,10 @@
 #include <ur_behaviors/get_placement_pose_for_object.hpp>
 
+#include <yaml-cpp/yaml.h>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <moveit_pro_behavior_interface/get_required_ports.hpp>
 #include <moveit_pro_behavior_interface/metadata_fields.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
-#include <yaml-cpp/yaml.h>
 
 #include <Eigen/Geometry>
 #include <string>
@@ -41,8 +41,7 @@ namespace ur_behaviors
 {
 
 GetPlacementPoseForObject::GetPlacementPoseForObject(
-    const std::string& name,
-    const BT::NodeConfiguration& config,
+    const std::string& name, const BT::NodeConfiguration& config,
     const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources)
   : SharedResourcesNode(name, config, shared_resources)
 {
@@ -50,42 +49,36 @@ GetPlacementPoseForObject::GetPlacementPoseForObject(
 
 BT::PortsList GetPlacementPoseForObject::providedPorts()
 {
-  return {
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose,
-      "Calibrated top shelf pose"),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose,
-      "Calibrated bottom shelf pose"),
-    BT::InputPort<std::string>(kPortIDConfigFile, "../config/placement_zones.yaml",
-      "Path to placement zones YAML config (relative to config source directory)"),
-    BT::InputPort<std::string>(kPortIDObjectName, "pringles",
-      "Name of the object to look up in placement_zones.yaml"),
-    BT::OutputPort<geometry_msgs::msg::PoseStamped>(kPortIDPlacementPose,
-      "{placement_pose}", "World-frame placement pose for the requested object"),
-    BT::OutputPort<std::string>(kPortIDShelfName,
-      "{shelf_name}", "Which shelf the object is on: 'top_shelf' or 'bottom_shelf'")
-  };
+  return { BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose, "Calibrated top shelf pose"),
+           BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose, "Calibrated bottom shelf pose"),
+           BT::InputPort<std::string>(kPortIDConfigFile, "../config/placement_zones.yaml",
+                                      "Path to placement zones YAML config (relative to config source directory)"),
+           BT::InputPort<std::string>(kPortIDObjectName, "pringles",
+                                      "Name of the object to look up in placement_zones.yaml"),
+           BT::OutputPort<geometry_msgs::msg::PoseStamped>(kPortIDPlacementPose, "{placement_pose}",
+                                                           "World-frame placement pose for the requested object"),
+           BT::OutputPort<std::string>(kPortIDShelfName, "{shelf_name}",
+                                       "Which shelf the object is on: 'top_shelf' or 'bottom_shelf'") };
 }
 
 BT::KeyValueVector GetPlacementPoseForObject::metadata()
 {
-  return {
-    { moveit_pro::behaviors::kDescriptionMetadataKey, kDescription },
-    { moveit_pro::behaviors::kSubcategoryMetadataKey, "Application - Grocery" }
-  };
+  return { { moveit_pro::behaviors::kDescriptionMetadataKey, kDescription },
+           { moveit_pro::behaviors::kSubcategoryMetadataKey, "Application - Grocery" } };
 }
 
 BT::NodeStatus GetPlacementPoseForObject::tick()
 {
-  const auto ports = moveit_pro::behaviors::getRequiredInputs(
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose),
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose),
-      getInput<std::string>(kPortIDConfigFile),
-      getInput<std::string>(kPortIDObjectName));
+  const auto ports =
+      moveit_pro::behaviors::getRequiredInputs(getInput<geometry_msgs::msg::PoseStamped>(kPortIDTopShelfPose),
+                                               getInput<geometry_msgs::msg::PoseStamped>(kPortIDBottomShelfPose),
+                                               getInput<std::string>(kPortIDConfigFile),
+                                               getInput<std::string>(kPortIDObjectName));
 
   if (!ports.has_value())
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Failed to get required value from input data port: " + ports.error());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to get required value from input data port: " +
+                                                                 ports.error());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -95,13 +88,12 @@ BT::NodeStatus GetPlacementPoseForObject::tick()
   std::string config_source_directory;
   try
   {
-    config_source_directory =
-        shared_resources_->node->get_parameter("config_source_directory").as_string();
+    config_source_directory = shared_resources_->node->get_parameter("config_source_directory").as_string();
   }
   catch (const std::exception& e)
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        std::string("Failed to get config_source_directory parameter: ") + e.what());
+    shared_resources_->logger->publishFailureMessage(
+        name(), std::string("Failed to get config_source_directory parameter: ") + e.what());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -115,8 +107,8 @@ BT::NodeStatus GetPlacementPoseForObject::tick()
   }
   catch (const std::exception& e)
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Failed to load placement zones from '" + full_config_path + "': " + e.what());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to load placement zones from '" +
+                                                                 full_config_path + "': " + e.what());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -144,8 +136,8 @@ BT::NodeStatus GetPlacementPoseForObject::tick()
 
   if (found_slot < 0)
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Object '" + object_name + "' not found in placement zones config: " + full_config_path);
+    shared_resources_->logger->publishFailureMessage(
+        name(), "Object '" + object_name + "' not found in placement zones config: " + full_config_path);
     return BT::NodeStatus::FAILURE;
   }
 
@@ -167,9 +159,8 @@ BT::NodeStatus GetPlacementPoseForObject::tick()
   setOutput(kPortIDPlacementPose, placement_pose);
   setOutput(kPortIDShelfName, found_shelf);
 
-  shared_resources_->logger->publishInfoMessage(name(),
-      "Found '" + object_name + "' at " + found_shelf + " slot " +
-      std::to_string(found_slot + 1) + ". Placement pose set.");
+  shared_resources_->logger->publishInfoMessage(name(), "Found '" + object_name + "' at " + found_shelf + " slot " +
+                                                            std::to_string(found_slot + 1) + ". Placement pose set.");
 
   return BT::NodeStatus::SUCCESS;
 }

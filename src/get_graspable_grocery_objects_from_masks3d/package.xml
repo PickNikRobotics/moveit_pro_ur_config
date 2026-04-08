@@ -2,14 +2,13 @@
 <package format="3">
   <name>get_graspable_grocery_objects_from_masks3d</name>
   <version>0.0.0</version>
-  <description>Fits best primitive shape (box, cylinder, or sphere) to point cloud segments from 3D masks.</description>
+  <description>
+    Fits best primitive shape (box, cylinder, or sphere) to point cloud segments
+    from 3D masks.
+  </description>
 
-  <maintainer email="support@picknik.ai">
-    MoveIt Pro User
-  </maintainer>
-  <author email="support@picknik.ai">
-    MoveIt Pro User
-  </author>
+  <maintainer email="support@picknik.ai">MoveIt Pro User</maintainer>
+  <author email="support@picknik.ai">MoveIt Pro User</author>
 
   <license>TODO</license>
 

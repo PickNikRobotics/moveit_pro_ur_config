@@ -57,6 +57,8 @@
 
   <!-- convert to property to use substitution in function -->
   <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)"/>
+  <xacro:property name="use_fake_hardware_prop" value="$(arg use_fake_hardware)"/>
+  <xacro:property name="generate_ros2_control" value="${'false' if use_fake_hardware_prop else 'true'}" />
 
   <!-- create link fixed to the "world" -->
   <link name="world" />
@@ -98,6 +100,7 @@
           reverse_port="$(arg reverse_port)"
           script_sender_port="$(arg script_sender_port)"
           trajectory_port="$(arg trajectory_port)"
+          generate_ros2_control_tag="${generate_ros2_control}"
   >
     <origin xyz="0 0 0" rpy="0 0 0" />
   </xacro:ur_robot>
@@ -190,4 +193,8 @@
   <!-- Shelf is placed dynamically by the "Calibrate Qualcomm Setup" objective
        using AprilTag-based calibration.  Do not add a static shelf here. -->
 
+  <!-- Include MuJoCo ros2_control when using fake hardware (simulation) -->
+  <xacro:if value="$(arg use_fake_hardware)">
+    <xacro:include filename="$(find picknik_009_ur5e_config_sim)/urdf/ur_mujoco_ros2_control.xacro"/>
+  </xacro:if>
 </robot>

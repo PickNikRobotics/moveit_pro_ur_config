@@ -12,10 +12,10 @@
 #include <string>
 #include <vector>
 
-#include <Eigen/Dense>
 #include <fmt/format.h>
-#include <geometry_msgs/msg/pose_stamped.hpp>
 #include <spdlog/spdlog.h>
+#include <Eigen/Dense>
+#include <geometry_msgs/msg/pose_stamped.hpp>
 
 namespace
 {
@@ -73,23 +73,20 @@ BT::PortsList GenerateShapeUrdf::providedPorts()
                                        "Box requires 3 values [width;height;depth], "
                                        "sphere requires 1 value [radius], "
                                        "cylinder requires 2 values [radius;height]."),
-    BT::OutputPort<std::string>(kPortIDUrdfString, "{urdf_string}",
-                                "The generated URDF XML string."),
-    BT::InputPort<std::string>(kPortIDUrdfFilePath, kDefaultUrdfFilePath,
-                                "File path to write the URDF to."),
+    BT::OutputPort<std::string>(kPortIDUrdfString, "{urdf_string}", "The generated URDF XML string."),
+    BT::InputPort<std::string>(kPortIDUrdfFilePath, kDefaultUrdfFilePath, "File path to write the URDF to."),
     BT::InputPort<std::string>(kPortIDObjectName, "generated_object",
-                                "Name used for the robot and link elements in the URDF."),
-    BT::InputPort<double>(kPortIDOriginOffsetZ, 0.0,
-                           "Z offset for the collision origin."),
+                               "Name used for the robot and link elements in the URDF."),
+    BT::InputPort<double>(kPortIDOriginOffsetZ, 0.0, "Z offset for the collision origin."),
     BT::InputPort<std::vector<double>>(kPortIDOriginRPY, "",
-                           "Roll, pitch, yaw (radians) for the collision origin orientation. "
-                           "If empty, computed from object_pose and grasp_pose if provided."),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDObjectPose, "",
-                           "Object pose in world frame. Used with grasp_pose to auto-compute orientation."),
+                                       "Roll, pitch, yaw (radians) for the collision origin orientation. "
+                                       "If empty, computed from object_pose and grasp_pose if provided."),
+    BT::InputPort<geometry_msgs::msg::PoseStamped>(
+        kPortIDObjectPose, "", "Object pose in world frame. Used with grasp_pose to auto-compute orientation."),
     BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDGraspPose, "",
-                           "Grasp_link pose in world frame at pick time. Used with object_pose to auto-compute orientation."),
-    BT::OutputPort<std::string>("output_file_path", "{generated_urdf_path}",
-                                "The file path the URDF was written to."),
+                                                   "Grasp_link pose in world frame at pick time. Used with object_pose "
+                                                   "to auto-compute orientation."),
+    BT::OutputPort<std::string>("output_file_path", "{generated_urdf_path}", "The file path the URDF was written to."),
   };
 }
 
@@ -132,7 +129,7 @@ BT::NodeStatus GenerateShapeUrdf::tick()
     if (dimensions.size() != 3)
     {
       spdlog::error("GenerateShapeUrdf: 'box' requires exactly 3 dimensions [width, height, depth], got {}.",
-                     dimensions.size());
+                    dimensions.size());
       return BT::NodeStatus::FAILURE;
     }
     geometry_xml = fmt::format(R"(<box size="{} {} {}"/>)", dimensions[0], dimensions[1], dimensions[2]);
@@ -151,15 +148,14 @@ BT::NodeStatus GenerateShapeUrdf::tick()
     if (dimensions.size() != 2)
     {
       spdlog::error("GenerateShapeUrdf: 'cylinder' requires exactly 2 dimensions [radius, height], got {}.",
-                     dimensions.size());
+                    dimensions.size());
       return BT::NodeStatus::FAILURE;
     }
     geometry_xml = fmt::format(R"(<cylinder radius="{}" length="{}"/>)", dimensions[0], dimensions[1]);
   }
   else
   {
-    spdlog::error("GenerateShapeUrdf: unsupported shape type '{}'. Must be 'box', 'sphere', or 'cylinder'.",
-                   shape_type);
+    spdlog::error("GenerateShapeUrdf: unsupported shape type '{}'. Must be 'box', 'sphere', or 'cylinder'.", shape_type);
     return BT::NodeStatus::FAILURE;
   }
 
@@ -217,12 +213,8 @@ BT::NodeStatus GenerateShapeUrdf::tick()
                   "    </collision>\n"
                   "  </link>\n"
                   "</robot>\n",
-                  fmt::arg("name", object_name),
-                  fmt::arg("offset_z", origin_offset_z),
-                  fmt::arg("roll", roll),
-                  fmt::arg("pitch", pitch),
-                  fmt::arg("yaw", yaw),
-                  fmt::arg("geometry", geometry_xml));
+                  fmt::arg("name", object_name), fmt::arg("offset_z", origin_offset_z), fmt::arg("roll", roll),
+                  fmt::arg("pitch", pitch), fmt::arg("yaw", yaw), fmt::arg("geometry", geometry_xml));
 
   // Write to file
   std::ofstream urdf_file(file_path);
@@ -234,8 +226,8 @@ BT::NodeStatus GenerateShapeUrdf::tick()
   urdf_file << urdf_string;
   urdf_file.close();
 
-  spdlog::info("GenerateShapeUrdf: wrote URDF to '{}' (shape={}, object={}, offset_z={:.4f}).",
-               file_path, shape_type, object_name, origin_offset_z);
+  spdlog::info("GenerateShapeUrdf: wrote URDF to '{}' (shape={}, object={}, offset_z={:.4f}).", file_path, shape_type,
+               object_name, origin_offset_z);
 
   setOutput(kPortIDUrdfString, urdf_string);
   setOutput("output_file_path", file_path);

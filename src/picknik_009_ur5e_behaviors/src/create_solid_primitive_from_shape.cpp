@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
+#include <spdlog/spdlog.h>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <shape_msgs/msg/solid_primitive.hpp>
-#include <spdlog/spdlog.h>
 
 namespace
 {
@@ -38,9 +38,8 @@ inline constexpr auto kDescription = R"(
 
 [[nodiscard]] std::string normalizeShapeType(std::string shape_type)
 {
-  std::transform(shape_type.begin(), shape_type.end(), shape_type.begin(), [](unsigned char character) {
-    return static_cast<char>(std::tolower(character));
-  });
+  std::transform(shape_type.begin(), shape_type.end(), shape_type.begin(),
+                 [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
   return shape_type;
 }
 

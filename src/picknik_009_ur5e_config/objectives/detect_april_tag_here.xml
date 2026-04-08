@@ -28,7 +28,8 @@
             target_id="3"
             detection_pose="{tag_pose}"
           />
-        </Control>1
+        </Control>
+        1
       </Decorator>
       <Action
         ID="TransformPoseFrame"
