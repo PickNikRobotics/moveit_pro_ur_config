@@ -28,7 +28,7 @@ constexpr auto kPortIDShelfName = "shelf_name";
 constexpr double kShelfWidth = 1.27;
 constexpr int kSlotsPerShelf = 6;
 constexpr double kSlotSpacing = kShelfWidth / kSlotsPerShelf;
-constexpr double kDepthOffsetShelfFrame = -0.20;
+constexpr double kDepthOffsetShelfFrame = -0.15;
 
 double slotCenterX(int slot_index)
 {

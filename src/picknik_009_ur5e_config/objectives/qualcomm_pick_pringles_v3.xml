@@ -7,6 +7,7 @@
   >
     <Control ID="Sequence" name="TopLevelSequence">
       <!--=== CLEANUP ===-->
+      <SubTree ID="Reset Planning Scene" _collapsed="true" />
       <Decorator ID="ForceSuccess">
         <Action ID="DetachURDF" urdf_name="grocery_item" />
       </Decorator>
@@ -14,6 +15,9 @@
         <Action ID="RemoveURDFFromScene" urdf_name="grocery_item" />
       </Decorator>
       <SubTree ID="Deactivate Vacuum" _collapsed="true" />
+
+      <!--=== LOAD CALIBRATED SCENE ===-->
+      <SubTree ID="Load Calibrated Scene" _collapsed="true" />
 
       <!--=== STEP 1: LOOK UP PRINGLES PLACEMENT ZONE FROM CONFIG ===-->
       <Action
@@ -163,6 +167,7 @@
         grasp_approach_translation_xyz="{grasp_approach_translation_xyz}"
         shape_type="{shape_type}"
         depth_offset="{depth_offset}"
+        collision_dimensions="{collision_dimensions}"
       />
       <!--Pick pose: gripper pointing down at top of object-->
       <Action
@@ -286,6 +291,32 @@
         <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MIN_PRESSURE" />
       </Control>
 
+      <!--=== ATTACH COLLISION OBJECT (before retract, while grasp_link is still at pick pose) ===-->
+      <!--Place at object_pose so the relative transform between grasp_link and
+           the object is captured correctly at pick time. -->
+      <Action
+        ID="GenerateShapeUrdf"
+        shape_type="{shape_type}"
+        dimensions="{collision_dimensions}"
+        object_name="grocery_item"
+        origin_offset_z="0.0"
+        urdf_file_path="/tmp/grocery_item_collision.urdf"
+        output_file_path="{generated_urdf_path}"
+      />
+      <Action
+        ID="AddURDF"
+        urdf_name="grocery_item"
+        urdf_pose="{object_pose}"
+        package_name=""
+        urdf_file_path="{generated_urdf_path}"
+      />
+      <Action
+        ID="AttachURDF"
+        urdf_name="grocery_item"
+        allowed_collision_links="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
+        parent_link_name="grasp_link"
+      />
+
       <!--=== STEP 8: RETRACT FROM BIN ===-->
       <Action
         ID="CreateStampedPose"
@@ -319,32 +350,7 @@
       <!--Clear point cloud obstacles so they don't block place planning-->
       <SubTree ID="Clear Snapshot" _collapsed="true" />
 
-      <!--=== STEP 9: ATTACH COLLISION OBJECT AND RETURN TO ABOVE GROCERY BIN ===-->
-      <!--Attach immediately after retract while arm is stationary, before any waypoint moves-->
-      <Action
-        ID="GetLatestTransform"
-        target_frame_id="world"
-        source_frame_id="grasp_link"
-        transform="{current_grasp_tf}"
-      />
-      <Action
-        ID="ConvertTransformStampedToPoseStamped"
-        transform_stamped="{current_grasp_tf}"
-        pose_stamped="{current_grasp_pose}"
-      />
-      <Action
-        ID="AddURDF"
-        urdf_name="grocery_item"
-        urdf_pose="{current_grasp_pose}"
-        package_name="picknik_009_ur5e_config"
-        urdf_file_path="description/grocery_item_collision.urdf"
-      />
-      <Action
-        ID="AttachURDF"
-        urdf_name="grocery_item"
-        allowed_collision_links="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
-        parent_link_name="grasp_link"
-      />
+      <!--=== STEP 9: RETURN TO ABOVE GROCERY BIN ===-->
       <SubTree
         ID="Move to Waypoint"
         _collapsed="true"
@@ -407,43 +413,140 @@
         overwrite="true"
         message="{place_pose}"
       />
+      <!--Capture current EE orientation for fallback-->
       <Action
-        ID="InitializeMTCTask"
-        controller_names="joint_trajectory_controller"
-        task="{mtc_task}"
-        task_id="place_pringles_v3"
-        trajectory_monitoring="false"
-        timeout="-1.000000"
-      />
-      <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
-      <Action
-        ID="SetupMTCIgnoreCollisionsBetweenObjects"
-        allow_collision="true"
-        task="{mtc_task}"
-        object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item;ur_stand;base_link_inertia;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table;wrist_3_link;tool0;gripper_mount_link;forearm_link"
+        ID="GetLatestTransform"
+        target_frame_id="world"
+        source_frame_id="grasp_link"
+        transform="{current_ee_tf}"
       />
       <Action
-        ID="SetupMTCPlanToPose"
-        acceleration_scale_factor="1.000000"
-        ik_frame="grasp_link"
-        keep_orientation="false"
-        keep_orientation_link_names="grasp_link"
-        keep_orientation_tolerance="0.100000"
-        link_padding="0.005"
-        max_iterations="5000"
-        monitored_stage="current state"
-        planning_group_name="manipulator"
-        target_pose="{place_pose}"
-        task="{mtc_task}"
-        trajectory_sampling_rate="100"
-        velocity_scale_factor="0.500000"
+        ID="ConvertTransformStampedToPoseStamped"
+        transform_stamped="{current_ee_tf}"
+        pose_stamped="{current_ee_pose}"
       />
-      <Action
-        ID="PlanMTCTask"
-        solution="{place_solution}"
-        task="{mtc_task}"
-        max_solutions="10"
-      />
+
+      <Control ID="Fallback" name="TryComputedThenCurrentOrientation">
+        <!--=== ATTEMPT 1: Computed place orientation ===-->
+        <Control ID="Sequence" name="ComputedOrientation">
+          <Action
+            ID="InitializeMTCTask"
+            controller_names="joint_trajectory_controller"
+            task="{mtc_task}"
+            task_id="place_pringles_v3"
+            trajectory_monitoring="false"
+            timeout="-1.000000"
+          />
+          <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grocery_item;grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
+          />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grocery_item;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table"
+          />
+          <Action
+            ID="SetupMTCPlanToPose"
+            acceleration_scale_factor="1.000000"
+            ik_frame="grasp_link"
+            keep_orientation="false"
+            keep_orientation_link_names="grasp_link"
+            keep_orientation_tolerance="0.100000"
+            link_padding="0.005"
+            max_iterations="5000"
+            monitored_stage="current state"
+            planning_group_name="manipulator"
+            target_pose="{place_pose}"
+            task="{mtc_task}"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="0.500000"
+          />
+          <Action
+            ID="PlanMTCTask"
+            solution="{place_solution}"
+            task="{mtc_task}"
+            max_solutions="10"
+          />
+        </Control>
+
+        <!--=== ATTEMPT 2: Use current EE orientation as fallback ===-->
+        <Control ID="Sequence" name="CurrentEEOrientation">
+          <Action
+            ID="LogMessage"
+            log_level="info"
+            message="Computed place orientation failed IK. Retrying with current EE orientation..."
+          />
+          <!--Keep place_pose position, override orientation with current EE orientation-->
+          <Action
+            ID="ExtractPoseOrientation"
+            input_pose="{current_ee_pose}"
+            orientation_xyzw="{current_ee_orientation}"
+          />
+          <Action
+            ID="OverridePoseOrientation"
+            input_pose="{place_pose}"
+            orientation_xyzw="{current_ee_orientation}"
+            output_pose="{place_pose_fallback}"
+          />
+          <Action
+            ID="VisualizePose"
+            marker_lifetime="0.000000"
+            marker_name="place_target_fallback"
+            marker_size="0.050000"
+            pose="{place_pose_fallback}"
+            marker_text="Place Target (current EE orientation)"
+          />
+          <Action
+            ID="InitializeMTCTask"
+            controller_names="joint_trajectory_controller"
+            task="{mtc_task}"
+            task_id="place_pringles_v3_fallback"
+            trajectory_monitoring="false"
+            timeout="-1.000000"
+          />
+          <Action ID="SetupMTCCurrentState" task="{mtc_task}" />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grocery_item;grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
+          />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grocery_item;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table"
+          />
+          <Action
+            ID="SetupMTCPlanToPose"
+            acceleration_scale_factor="1.000000"
+            ik_frame="grasp_link"
+            keep_orientation="false"
+            keep_orientation_link_names="grasp_link"
+            keep_orientation_tolerance="0.100000"
+            link_padding="0.005"
+            max_iterations="5000"
+            monitored_stage="current state"
+            planning_group_name="manipulator"
+            target_pose="{place_pose_fallback}"
+            task="{mtc_task}"
+            trajectory_sampling_rate="100"
+            velocity_scale_factor="0.500000"
+          />
+          <Action
+            ID="PlanMTCTask"
+            solution="{place_solution}"
+            task="{mtc_task}"
+            max_solutions="10"
+          />
+        </Control>
+      </Control>
+
       <Action ID="WaitForUserTrajectoryApproval" solution="{place_solution}" />
       <SubTree
         ID="Execute MTC Solution"
@@ -496,7 +599,7 @@
           minimum_consecutive_wrench_values="10"
           wrench_frame_name="tool0"
           hand_frame_name="grasp_link"
-          force_threshold="5"
+          force_threshold="25"
         />
         <Action
           ID="PublishVelocityForceCommand"

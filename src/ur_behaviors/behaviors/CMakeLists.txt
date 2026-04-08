@@ -22,6 +22,7 @@ add_library(
         src/get_placement_pose_for_object.cpp
         src/publish_static_transform.cpp
         src/compute_camera_pose_from_tag.cpp
+        src/extract_pose_orientation.cpp
         src/register_behaviors.cpp)
 target_include_directories(
         ur_behaviors

@@ -9,6 +9,7 @@
 #include <ur_behaviors/get_placement_pose_for_object.hpp>
 #include <ur_behaviors/publish_static_transform.hpp>
 #include <ur_behaviors/compute_camera_pose_from_tag.hpp>
+#include <ur_behaviors/extract_pose_orientation.hpp>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -36,6 +37,8 @@ public:
       factory, "PublishStaticTransform", shared_resources);
     moveit_pro::behaviors::registerBehavior<ComputeCameraPoseFromTag>(
       factory, "ComputeCameraPoseFromTag", shared_resources);
+    moveit_pro::behaviors::registerBehavior<ExtractPoseOrientation>(
+      factory, "ExtractPoseOrientation", shared_resources);
   }
 };
 

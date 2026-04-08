@@ -34,7 +34,7 @@ constexpr int kSlotsPerShelf = 6;
 constexpr double kSlotSpacing = kShelfWidth / kSlotsPerShelf;  // ~0.2117m
 // Slot centers in shelf X: from -(width/2 - spacing/2) to +(width/2 - spacing/2)
 // Depth offset in shelf frame: -0.20 (center of 0.40m depth)
-constexpr double kDepthOffsetShelfFrame = -0.20;
+constexpr double kDepthOffsetShelfFrame = -0.15;
 
 // Compute slot center X positions in shelf frame
 double slotCenterX(int slot_index)

@@ -81,34 +81,34 @@
         pose="{bottom_right_tag_pose}"
         marker_text="Bottom Right Tag"
       />
-      <!--=== OFFSET TAG POSES: tags are 5.25cm behind shelf edge (further from robot) ===-->
-      <!--Shift each tag pose +Y (toward robot) to align with shelf front edge-->
+      <!--=== OFFSET TAG POSES: tags are on the shelf front face, 5.25cm closer to robot than shelf center ===-->
+      <!--Shift each tag pose -Y (away from robot) to get the shelf center-->
       <Action
         ID="TransformPose"
         input_pose="{top_left_tag_pose}"
         output_pose="{top_left_tag_pose}"
-        translation_xyz="0;0.0525;0"
+        translation_xyz="0;-0.0525;0"
         quaternion_xyzw="0;0;0;1"
       />
       <Action
         ID="TransformPose"
         input_pose="{top_right_tag_pose}"
         output_pose="{top_right_tag_pose}"
-        translation_xyz="0;0.0525;0"
+        translation_xyz="0;-0.0525;0"
         quaternion_xyzw="0;0;0;1"
       />
       <Action
         ID="TransformPose"
         input_pose="{bottom_left_tag_pose}"
         output_pose="{bottom_left_tag_pose}"
-        translation_xyz="0;0.0525;0"
+        translation_xyz="0;-0.0525;0"
         quaternion_xyzw="0;0;0;1"
       />
       <Action
         ID="TransformPose"
         input_pose="{bottom_right_tag_pose}"
         output_pose="{bottom_right_tag_pose}"
-        translation_xyz="0;0.0525;0"
+        translation_xyz="0;-0.0525;0"
         quaternion_xyzw="0;0;0;1"
       />
 

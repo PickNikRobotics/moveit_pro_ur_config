@@ -36,7 +36,13 @@
             ID="SetupMTCIgnoreCollisionsBetweenObjects"
             allow_collision="true"
             task="{mtc_task}"
-            object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item;ur_stand;base_link_inertia;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table;wrist_3_link;tool0;gripper_mount_link;forearm_link"
+            object_names="grocery_item;grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
+          />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grocery_item;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table"
           />
           <Action
             ID="SetupMTCPlanToPose"
@@ -97,7 +103,13 @@
             ID="SetupMTCIgnoreCollisionsBetweenObjects"
             allow_collision="true"
             task="{mtc_task}"
-            object_names="grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp;grocery_item;ur_stand;base_link_inertia;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table;wrist_3_link;tool0;gripper_mount_link;forearm_link"
+            object_names="grocery_item;grasp_link;epick_suction_cup;epick_extension;epick_body;epick_tcp"
+          />
+          <Action
+            ID="SetupMTCIgnoreCollisionsBetweenObjects"
+            allow_collision="true"
+            task="{mtc_task}"
+            object_names="grocery_item;calibrated_top_shelf;calibrated_bottom_shelf;shelf_back;shelf_base;calibrated_bin;calibrated_pole;calibrated_camera;calibrated_table"
           />
           <Action
             ID="SetupMTCPlanToPose"
