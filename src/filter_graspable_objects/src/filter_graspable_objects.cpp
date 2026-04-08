@@ -1,8 +1,8 @@
 #include <filter_graspable_objects/filter_graspable_objects.hpp>
 
+#include <spdlog/spdlog.h>
 #include <algorithm>
 #include <shape_msgs/msg/solid_primitive.hpp>
-#include <spdlog/spdlog.h>
 
 namespace
 {
@@ -14,9 +14,8 @@ constexpr auto kPortIDMaxVolumeCm3 = "max_volume_cm3";
 constexpr auto kMarkerTopic = "/visual_markers";
 constexpr auto kMarkerNamespace = "filter_graspable_objects";
 
-visualization_msgs::msg::Marker makeBoxMarker(
-    const moveit_studio_vision_msgs::msg::GraspableObject& obj,
-    int id, float r, float g, float b, float a)
+visualization_msgs::msg::Marker makeBoxMarker(const moveit_studio_vision_msgs::msg::GraspableObject& obj, int id,
+                                              float r, float g, float b, float a)
 {
   visualization_msgs::msg::Marker m;
   m.action = visualization_msgs::msg::Marker::ADD;
@@ -71,17 +70,15 @@ BT::PortsList FilterGraspableObjects::providedPorts()
 
 BT::KeyValueVector FilterGraspableObjects::metadata()
 {
-  return { { "description",
-             "Filters graspable objects by maximum linear dimension and optionally by volume. "
-             "Results are sorted by centroid height (highest Z first). "
-             "Publishes blue markers for rejected objects and green for accepted." },
+  return { { "description", "Filters graspable objects by maximum linear dimension and optionally by volume. "
+                            "Results are sorted by centroid height (highest Z first). "
+                            "Publishes blue markers for rejected objects and green for accepted." },
            { "subcategory", "Perception - 3D" } };
 }
 
 BT::NodeStatus FilterGraspableObjects::tick()
 {
-  const auto objects_in =
-      getInput<std::vector<moveit_studio_vision_msgs::msg::GraspableObject>>(kPortIDObjectsIn);
+  const auto objects_in = getInput<std::vector<moveit_studio_vision_msgs::msg::GraspableObject>>(kPortIDObjectsIn);
   const auto max_linear_dim = getInput<double>(kPortIDMaxLinearDimension);
   const auto max_volume_cm3 = getInput<double>(kPortIDMaxVolumeCm3);
 
@@ -120,8 +117,8 @@ BT::NodeStatus FilterGraspableObjects::tick()
     const double volume_cm3 = dx * dy * dz * 1e6;
 
     spdlog::warn("  [{}] dims: {:.4f} x {:.4f} x {:.4f} m, largest={:.4f}m, vol={:.1f}cm3, pos=({:.3f},{:.3f},{:.3f})",
-                 idx, dx, dy, dz, largest_dim, volume_cm3,
-                 obj.object.pose.position.x, obj.object.pose.position.y, obj.object.pose.position.z);
+                 idx, dx, dy, dz, largest_dim, volume_cm3, obj.object.pose.position.x, obj.object.pose.position.y,
+                 obj.object.pose.position.z);
 
     bool reject = false;
     if (largest_dim > max_dim)

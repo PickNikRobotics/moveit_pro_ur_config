@@ -9,9 +9,9 @@
 
 #include <Eigen/Geometry>
 
+#include <spdlog/spdlog.h>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <shape_msgs/msg/solid_primitive.hpp>
-#include <spdlog/spdlog.h>
 #include <tf2_eigen/tf2_eigen.hpp>
 
 namespace
@@ -93,9 +93,8 @@ void appendUniquePoint(std::vector<Eigen::Vector3d>& points, const Eigen::Vector
   }
 }
 
-[[nodiscard]] std::vector<Eigen::Vector3d> sampleCirclePoints(
-    const std::function<Eigen::Vector3d(double)>& point_generator,
-    const double angular_resolution_deg)
+[[nodiscard]] std::vector<Eigen::Vector3d>
+sampleCirclePoints(const std::function<Eigen::Vector3d(double)>& point_generator, const double angular_resolution_deg)
 {
   std::vector<Eigen::Vector3d> points;
 
@@ -127,9 +126,8 @@ void appendUniquePoint(std::vector<Eigen::Vector3d>& points, const Eigen::Vector
   return std::ranges::all_of(primitive.dimensions, [](const double dimension) { return dimension > 0.0; });
 }
 
-[[nodiscard]] std::vector<Eigen::Vector3d> sampleSurfacePoints(
-    const shape_msgs::msg::SolidPrimitive& primitive,
-    const double angular_resolution_deg)
+[[nodiscard]] std::vector<Eigen::Vector3d> sampleSurfacePoints(const shape_msgs::msg::SolidPrimitive& primitive,
+                                                               const double angular_resolution_deg)
 {
   std::vector<Eigen::Vector3d> points;
 
@@ -141,28 +139,30 @@ void appendUniquePoint(std::vector<Eigen::Vector3d>& points, const Eigen::Vector
       const double half_y = primitive.dimensions[shape_msgs::msg::SolidPrimitive::BOX_Y] * 0.5;
       const double half_z = primitive.dimensions[shape_msgs::msg::SolidPrimitive::BOX_Z] * 0.5;
       points = {
-        Eigen::Vector3d(half_x, 0.0, 0.0),
-        Eigen::Vector3d(-half_x, 0.0, 0.0),
-        Eigen::Vector3d(0.0, half_y, 0.0),
-        Eigen::Vector3d(0.0, -half_y, 0.0),
-        Eigen::Vector3d(0.0, 0.0, half_z),
-        Eigen::Vector3d(0.0, 0.0, -half_z),
+        Eigen::Vector3d(half_x, 0.0, 0.0),  Eigen::Vector3d(-half_x, 0.0, 0.0), Eigen::Vector3d(0.0, half_y, 0.0),
+        Eigen::Vector3d(0.0, -half_y, 0.0), Eigen::Vector3d(0.0, 0.0, half_z),  Eigen::Vector3d(0.0, 0.0, -half_z),
       };
       break;
     }
     case shape_msgs::msg::SolidPrimitive::SPHERE:
     {
       const double radius = primitive.dimensions[shape_msgs::msg::SolidPrimitive::SPHERE_RADIUS];
-      for (const auto& circle_points : {
-               sampleCirclePoints([&](const double angle_rad) {
-                 return Eigen::Vector3d(0.0, radius * std::cos(angle_rad), radius * std::sin(angle_rad));
-               }, angular_resolution_deg),
-               sampleCirclePoints([&](const double angle_rad) {
-                 return Eigen::Vector3d(radius * std::cos(angle_rad), 0.0, radius * std::sin(angle_rad));
-               }, angular_resolution_deg),
-               sampleCirclePoints([&](const double angle_rad) {
-                 return Eigen::Vector3d(radius * std::cos(angle_rad), radius * std::sin(angle_rad), 0.0);
-               }, angular_resolution_deg) })
+      for (const auto& circle_points :
+           { sampleCirclePoints(
+                 [&](const double angle_rad) {
+                   return Eigen::Vector3d(0.0, radius * std::cos(angle_rad), radius * std::sin(angle_rad));
+                 },
+                 angular_resolution_deg),
+             sampleCirclePoints(
+                 [&](const double angle_rad) {
+                   return Eigen::Vector3d(radius * std::cos(angle_rad), 0.0, radius * std::sin(angle_rad));
+                 },
+                 angular_resolution_deg),
+             sampleCirclePoints(
+                 [&](const double angle_rad) {
+                   return Eigen::Vector3d(radius * std::cos(angle_rad), radius * std::sin(angle_rad), 0.0);
+                 },
+                 angular_resolution_deg) })
       {
         for (const auto& point : circle_points)
         {
@@ -202,9 +202,8 @@ void appendUniquePoint(std::vector<Eigen::Vector3d>& points, const Eigen::Vector
 namespace picknik_009_ur5e_behaviors
 {
 
-GenerateSurfacePosesFromSolidPrimitive::GenerateSurfacePosesFromSolidPrimitive(
-    const std::string& name,
-    const BT::NodeConfiguration& config)
+GenerateSurfacePosesFromSolidPrimitive::GenerateSurfacePosesFromSolidPrimitive(const std::string& name,
+                                                                               const BT::NodeConfiguration& config)
   : BT::SyncActionNode(name, config)
 {
 }
@@ -212,17 +211,15 @@ GenerateSurfacePosesFromSolidPrimitive::GenerateSurfacePosesFromSolidPrimitive(
 BT::PortsList GenerateSurfacePosesFromSolidPrimitive::providedPorts()
 {
   return {
-    BT::InputPort<shape_msgs::msg::SolidPrimitive>(kPortIDSolidPrimitive, "{solid_primitive}",
-                                                   "Primitive to sample."),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(
-        kPortIDPrimitivePose, "{primitive_pose}",
-        "Pose of the primitive frame in the output frame. Required because SolidPrimitive has no header."),
+    BT::InputPort<shape_msgs::msg::SolidPrimitive>(kPortIDSolidPrimitive, "{solid_primitive}", "Primitive to sample."),
+    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPrimitivePose, "{primitive_pose}",
+                                                   "Pose of the primitive frame in the output frame. Required because "
+                                                   "SolidPrimitive has no header."),
     BT::InputPort<double>(kPortIDAngularFaceResolution, "{angular_face_resolution}",
                           "Angular resolution in degrees for sphere and cylinder surface sampling."),
     BT::InputPort<double>(kPortIDZOffset, "{z_offset}",
                           "Offset applied along local -Z after orienting poses toward the centroid."),
-    BT::OutputPort<std::vector<geometry_msgs::msg::PoseStamped>>(kPortIDPoses, "{poses}",
-                                                                 "Generated surface poses."),
+    BT::OutputPort<std::vector<geometry_msgs::msg::PoseStamped>>(kPortIDPoses, "{poses}", "Generated surface poses."),
   };
 }
 
@@ -293,9 +290,9 @@ BT::NodeStatus GenerateSurfacePosesFromSolidPrimitive::tick()
       primitive.type != shape_msgs::msg::SolidPrimitive::SPHERE &&
       primitive.type != shape_msgs::msg::SolidPrimitive::CYLINDER)
   {
-    spdlog::error(
-        "GenerateSurfacePosesFromSolidPrimitive: unsupported primitive type {}. Only BOX, SPHERE, and CYLINDER are supported.",
-        primitive.type);
+    spdlog::error("GenerateSurfacePosesFromSolidPrimitive: unsupported primitive type {}. Only BOX, SPHERE, and "
+                  "CYLINDER are supported.",
+                  primitive.type);
     return BT::NodeStatus::FAILURE;
   }
 
@@ -311,8 +308,7 @@ BT::NodeStatus GenerateSurfacePosesFromSolidPrimitive::tick()
   {
     const Eigen::Quaterniond local_orientation = orientationTowardCentroid(surface_point);
     const Eigen::Vector3d local_negative_z = local_orientation * Eigen::Vector3d::UnitZ();
-    const Eigen::Vector3d backed_off_local_position =
-      surface_point - (z_offset * local_negative_z);
+    const Eigen::Vector3d backed_off_local_position = surface_point - (z_offset * local_negative_z);
     const Eigen::Vector3d world_position = primitive_transform * backed_off_local_position;
     const Eigen::Quaterniond world_orientation = primitive_rotation * local_orientation;
 

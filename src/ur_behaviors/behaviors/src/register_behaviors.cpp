@@ -2,14 +2,14 @@
 #include <moveit_pro_behavior_interface/behavior_context.hpp>
 #include <moveit_pro_behavior_interface/shared_resources_node_loader.hpp>
 
+#include <ur_behaviors/compute_camera_pose_from_tag.hpp>
 #include <ur_behaviors/create_pose_stamped_grid.hpp>
-#include <ur_behaviors/visualize_camera_frustum.hpp>
-#include <ur_behaviors/visualize_placement_zones.hpp>
+#include <ur_behaviors/extract_pose_orientation.hpp>
 #include <ur_behaviors/get_highest_confidence_mask.hpp>
 #include <ur_behaviors/get_placement_pose_for_object.hpp>
 #include <ur_behaviors/publish_static_transform.hpp>
-#include <ur_behaviors/compute_camera_pose_from_tag.hpp>
-#include <ur_behaviors/extract_pose_orientation.hpp>
+#include <ur_behaviors/visualize_camera_frustum.hpp>
+#include <ur_behaviors/visualize_placement_zones.hpp>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -19,30 +19,24 @@ namespace ur_behaviors
 class UrBehaviorsLoader : public moveit_pro::behaviors::SharedResourcesNodeLoaderBase
 {
 public:
-  void registerBehaviors(
-      BT::BehaviorTreeFactory& factory,
-      const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
+  void registerBehaviors(BT::BehaviorTreeFactory& factory,
+                         const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
   {
-    moveit_pro::behaviors::registerBehavior<CreatePoseStampedGrid>(
-      factory, "CreatePoseStampedGrid", shared_resources);
-    moveit_pro::behaviors::registerBehavior<VisualizeCameraFrustum>(
-      factory, "VisualizeCameraFrustum", shared_resources);
-    moveit_pro::behaviors::registerBehavior<VisualizePlacementZones>(
-      factory, "VisualizePlacementZones", shared_resources);
-    moveit_pro::behaviors::registerBehavior<GetHighestConfidenceMask>(
-      factory, "GetHighestConfidenceMask", shared_resources);
-    moveit_pro::behaviors::registerBehavior<GetPlacementPoseForObject>(
-      factory, "GetPlacementPoseForObject", shared_resources);
-    moveit_pro::behaviors::registerBehavior<PublishStaticTransform>(
-      factory, "PublishStaticTransform", shared_resources);
-    moveit_pro::behaviors::registerBehavior<ComputeCameraPoseFromTag>(
-      factory, "ComputeCameraPoseFromTag", shared_resources);
-    moveit_pro::behaviors::registerBehavior<ExtractPoseOrientation>(
-      factory, "ExtractPoseOrientation", shared_resources);
+    moveit_pro::behaviors::registerBehavior<CreatePoseStampedGrid>(factory, "CreatePoseStampedGrid", shared_resources);
+    moveit_pro::behaviors::registerBehavior<VisualizeCameraFrustum>(factory, "VisualizeCameraFrustum", shared_resources);
+    moveit_pro::behaviors::registerBehavior<VisualizePlacementZones>(factory, "VisualizePlacementZones",
+                                                                     shared_resources);
+    moveit_pro::behaviors::registerBehavior<GetHighestConfidenceMask>(factory, "GetHighestConfidenceMask",
+                                                                      shared_resources);
+    moveit_pro::behaviors::registerBehavior<GetPlacementPoseForObject>(factory, "GetPlacementPoseForObject",
+                                                                       shared_resources);
+    moveit_pro::behaviors::registerBehavior<PublishStaticTransform>(factory, "PublishStaticTransform", shared_resources);
+    moveit_pro::behaviors::registerBehavior<ComputeCameraPoseFromTag>(factory, "ComputeCameraPoseFromTag",
+                                                                      shared_resources);
+    moveit_pro::behaviors::registerBehavior<ExtractPoseOrientation>(factory, "ExtractPoseOrientation", shared_resources);
   }
 };
 
 }  // namespace ur_behaviors
 
-PLUGINLIB_EXPORT_CLASS(ur_behaviors::UrBehaviorsLoader,
-                       moveit_pro::behaviors::SharedResourcesNodeLoaderBase);
+PLUGINLIB_EXPORT_CLASS(ur_behaviors::UrBehaviorsLoader, moveit_pro::behaviors::SharedResourcesNodeLoaderBase);

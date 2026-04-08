@@ -6,8 +6,16 @@
     _favorite="true"
   >
     <Control ID="Sequence" name="TopLevelSequence">
-      <Action ID="LoadPoseStampedFromYaml" file_path="calibration/top_shelf_pose.yaml" output="{top_shelf_pose}" />
-      <Action ID="LoadPoseStampedFromYaml" file_path="calibration/bottom_shelf_pose.yaml" output="{bottom_shelf_pose}" />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/top_shelf_pose.yaml"
+        output="{top_shelf_pose}"
+      />
+      <Action
+        ID="LoadPoseStampedFromYaml"
+        file_path="calibration/bottom_shelf_pose.yaml"
+        output="{bottom_shelf_pose}"
+      />
       <Action
         ID="VisualizePlacementZones"
         top_shelf_pose="{top_shelf_pose}"

@@ -16,8 +16,8 @@
 #include <pcl/search/kdtree.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
-#include <cmath>
 #include <spdlog/spdlog.h>
+#include <cmath>
 
 namespace get_graspable_grocery_objects_from_masks3d
 {
@@ -28,10 +28,10 @@ constexpr int kRansacMaxIterations = 1000;
 constexpr double kPi = 3.14159265358979323846;
 
 // Max dimensions for grocery items
-constexpr double kMaxCylinderRadius = 0.20;   // 20cm
-constexpr double kMaxCylinderHeight = 0.40;   // 40cm
-constexpr double kMaxBoxDimension = 0.40;     // 40cm
-constexpr double kMaxSphereRadius = 0.10;     // 10cm
+constexpr double kMaxCylinderRadius = 0.20;  // 20cm
+constexpr double kMaxCylinderHeight = 0.40;  // 40cm
+constexpr double kMaxBoxDimension = 0.40;    // 40cm
+constexpr double kMaxSphereRadius = 0.10;    // 10cm
 
 /** @brief Extract the subset of points from a cloud given indices, with statistical outlier removal. */
 [[nodiscard]] pcl::PointCloud<pcl::PointXYZRGB>::Ptr
@@ -65,9 +65,9 @@ extractPoints(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cl
 }
 }  // namespace
 
-tl::expected<ShapeFitResult, std::string>
-fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-       const std::shared_ptr<const pcl::PointIndices>& indices, double /*bin_floor_z*/)
+tl::expected<ShapeFitResult, std::string> fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
+                                                 const std::shared_ptr<const pcl::PointIndices>& indices,
+                                                 double /*bin_floor_z*/)
 {
   if (static_cast<int>(indices->indices.size()) < kMinPointsForFitting)
   {
@@ -100,10 +100,8 @@ fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
   const double size_z = world_max_z - world_min_z;
 
   Eigen::Isometry3d origin = Eigen::Isometry3d::Identity();
-  origin.translation() = Eigen::Vector3d(
-      (world_min_x + world_max_x) / 2.0,
-      (world_min_y + world_max_y) / 2.0,
-      (world_min_z + world_max_z) / 2.0);
+  origin.translation() = Eigen::Vector3d((world_min_x + world_max_x) / 2.0, (world_min_y + world_max_y) / 2.0,
+                                         (world_min_z + world_max_z) / 2.0);
 
   ShapeFitResult result;
   result.origin = origin;
@@ -120,8 +118,7 @@ fitBox(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
 
 tl::expected<ShapeFitResult, std::string>
 fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-            const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
-            double /*bin_floor_z*/)
+            const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold, double /*bin_floor_z*/)
 {
   if (static_cast<int>(indices->indices.size()) < kMinPointsForFitting)
   {
@@ -166,8 +163,8 @@ fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& clou
   const double radius = std::abs(coefficients.values[6]);
   const Eigen::Vector3d axis_normalized = axis_dir.normalized();
 
-  spdlog::info("Cylinder RANSAC: axis=[{:.3f}, {:.3f}, {:.3f}], radius={:.4f}",
-               axis_normalized.x(), axis_normalized.y(), axis_normalized.z(), radius);
+  spdlog::info("Cylinder RANSAC: axis=[{:.3f}, {:.3f}, {:.3f}], radius={:.4f}", axis_normalized.x(),
+               axis_normalized.y(), axis_normalized.z(), radius);
 
   // Project all points onto the cylinder axis to find the height extent.
   double min_proj = std::numeric_limits<double>::max();
@@ -219,8 +216,7 @@ fitCylinder(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& clou
 
 tl::expected<ShapeFitResult, std::string>
 fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-          const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
-          double /*bin_floor_z*/)
+          const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold, double /*bin_floor_z*/)
 {
   if (static_cast<int>(indices->indices.size()) < kMinPointsForFitting)
   {
@@ -265,8 +261,8 @@ fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
 
 tl::expected<ShapeFitResult, std::string>
 fitBestShape(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
-             const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
-             double bin_floor_z, const std::string& forced_shape)
+             const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold, double bin_floor_z,
+             const std::string& forced_shape)
 {
   // If a specific shape is forced, only fit that one.
   if (forced_shape == "cylinder")

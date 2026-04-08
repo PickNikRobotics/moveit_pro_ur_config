@@ -25,13 +25,11 @@ TEST(BehaviorTests, LoadAndInstantiate)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance =
-        class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
+    auto plugin_instance = class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
     ASSERT_NO_THROW(plugin_instance->registerBehaviors(factory, shared_resources));
   }
 
-  EXPECT_NO_THROW(
-      (void)factory.instantiateTreeNode("test_behavior_name", "GenerateShapeUrdf", BT::NodeConfiguration()));
+  EXPECT_NO_THROW((void)factory.instantiateTreeNode("test_behavior_name", "GenerateShapeUrdf", BT::NodeConfiguration()));
 }
 
 TEST(BehaviorTests, GenerateBoxUrdf)
@@ -44,8 +42,7 @@ TEST(BehaviorTests, GenerateBoxUrdf)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance =
-        class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
+    auto plugin_instance = class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
     plugin_instance->registerBehaviors(factory, shared_resources);
   }
 
@@ -75,8 +72,7 @@ TEST(BehaviorTests, GenerateSphereUrdf)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance =
-        class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
+    auto plugin_instance = class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
     plugin_instance->registerBehaviors(factory, shared_resources);
   }
 
@@ -106,8 +102,7 @@ TEST(BehaviorTests, GenerateCylinderUrdf)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance =
-        class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
+    auto plugin_instance = class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
     plugin_instance->registerBehaviors(factory, shared_resources);
   }
 
@@ -137,8 +132,7 @@ TEST(BehaviorTests, InvalidShapeTypeFails)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance =
-        class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
+    auto plugin_instance = class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
     plugin_instance->registerBehaviors(factory, shared_resources);
   }
 
@@ -164,8 +158,7 @@ TEST(BehaviorTests, WrongDimensionCountFails)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance =
-        class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
+    auto plugin_instance = class_loader.createUniqueInstance("generate_shape_urdf::GenerateShapeUrdfBehaviorsLoader");
     plugin_instance->registerBehaviors(factory, shared_resources);
   }
 

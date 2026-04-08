@@ -112,22 +112,51 @@
         <Metadata runnable="true" />
       </MetadataFields>
       <inout_port name="shape_type_override" default="">
-        Force shape type: 'cylinder', 'box', or 'sphere'. Leave empty to auto-detect.
+        Force shape type: 'cylinder', 'box', or 'sphere'. Leave empty to
+        auto-detect.
       </inout_port>
       <inout_port name="text_prompt" default="grocery item">
         SAM3 text prompt describing what to detect.
       </inout_port>
-      <inout_port name="object_pose" default="{object_pose}">Detected object pose.</inout_port>
-      <inout_port name="graspable_object" default="{graspable_object}">Detected graspable object.</inout_port>
-      <inout_port name="place_height" default="{place_height}">Computed place height.</inout_port>
-      <inout_port name="grasp_approach_translation_xyz" default="{grasp_approach_translation_xyz}">Translation from object center to grasp approach.</inout_port>
-      <inout_port name="collision_dimensions" default="{collision_dimensions}">Dimensions for collision URDF generation.</inout_port>
-      <inout_port name="collision_rpy" default="{collision_rpy}">Object orientation relative to grasp_link as RPY.</inout_port>
-      <inout_port name="pick_pose" default="{pick_pose}">Grasp_link pose at pick time (optional, for collision RPY).</inout_port>
-      <inout_port name="top_offset" default="{top_offset}">Distance from object center to top surface.</inout_port>
-      <inout_port name="shape_type" default="{shape_type}">Detected shape type (cylinder, box, sphere).</inout_port>
-      <inout_port name="place_translation_xyz" default="{place_translation_xyz}">Translation vector for place offset.</inout_port>
-      <inout_port name="grocery_objects" default="{grocery_objects}">All detected graspable objects.</inout_port>
+      <inout_port name="object_pose" default="{object_pose}">
+        Detected object pose.
+      </inout_port>
+      <inout_port name="graspable_object" default="{graspable_object}">
+        Detected graspable object.
+      </inout_port>
+      <inout_port name="place_height" default="{place_height}">
+        Computed place height.
+      </inout_port>
+      <inout_port
+        name="grasp_approach_translation_xyz"
+        default="{grasp_approach_translation_xyz}"
+      >
+        Translation from object center to grasp approach.
+      </inout_port>
+      <inout_port name="collision_dimensions" default="{collision_dimensions}">
+        Dimensions for collision URDF generation.
+      </inout_port>
+      <inout_port name="collision_rpy" default="{collision_rpy}">
+        Object orientation relative to grasp_link as RPY.
+      </inout_port>
+      <inout_port name="pick_pose" default="{pick_pose}">
+        Grasp_link pose at pick time (optional, for collision RPY).
+      </inout_port>
+      <inout_port name="top_offset" default="{top_offset}">
+        Distance from object center to top surface.
+      </inout_port>
+      <inout_port name="shape_type" default="{shape_type}">
+        Detected shape type (cylinder, box, sphere).
+      </inout_port>
+      <inout_port
+        name="place_translation_xyz"
+        default="{place_translation_xyz}"
+      >
+        Translation vector for place offset.
+      </inout_port>
+      <inout_port name="grocery_objects" default="{grocery_objects}">
+        All detected graspable objects.
+      </inout_port>
     </SubTree>
   </TreeNodesModel>
 </root>

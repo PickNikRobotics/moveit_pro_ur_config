@@ -13,8 +13,7 @@ namespace ur_behaviors
 class ComputeCameraPoseFromTag final : public moveit_pro::behaviors::SharedResourcesNode<BT::SyncActionNode>
 {
 public:
-  ComputeCameraPoseFromTag(const std::string& name,
-                           const BT::NodeConfiguration& config,
+  ComputeCameraPoseFromTag(const std::string& name, const BT::NodeConfiguration& config,
                            const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
 
   static BT::PortsList providedPorts();

@@ -15,22 +15,20 @@
 
 namespace get_graspable_grocery_objects_from_masks3d
 {
-class GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader
-  : public moveit_pro::behaviors::SharedResourcesNodeLoaderBase
+class GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader : public moveit_pro::behaviors::SharedResourcesNodeLoaderBase
 {
 public:
   void registerBehaviors(
       BT::BehaviorTreeFactory& factory,
       [[maybe_unused]] const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
   {
-    moveit_pro::behaviors::registerBehavior<ComputeGroceryPlaceHeight>(
-        factory, "ComputeGroceryPlaceHeight", shared_resources);
+    moveit_pro::behaviors::registerBehavior<ComputeGroceryPlaceHeight>(factory, "ComputeGroceryPlaceHeight",
+                                                                       shared_resources);
     moveit_pro::behaviors::registerBehavior<GetGraspableGroceryObjectsFromMasks3D>(
         factory, "GetGraspableGroceryObjectsFromMasks3D", shared_resources);
   }
 };
 }  // namespace get_graspable_grocery_objects_from_masks3d
 
-PLUGINLIB_EXPORT_CLASS(
-    get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader,
-    moveit_pro::behaviors::SharedResourcesNodeLoaderBase);
+PLUGINLIB_EXPORT_CLASS(get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader,
+                       moveit_pro::behaviors::SharedResourcesNodeLoaderBase);

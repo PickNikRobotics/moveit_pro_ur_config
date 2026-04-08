@@ -25,8 +25,7 @@ namespace ur_behaviors
 class GetHighestConfidenceMask final : public moveit_pro::behaviors::SharedResourcesNode<BT::SyncActionNode>
 {
 public:
-  GetHighestConfidenceMask(const std::string& name,
-                           const BT::NodeConfiguration& config,
+  GetHighestConfidenceMask(const std::string& name, const BT::NodeConfiguration& config,
                            const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources);
 
   static BT::PortsList providedPorts();

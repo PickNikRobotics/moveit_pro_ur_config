@@ -248,15 +248,36 @@
               message_out="{vacuum_status}"
             />
             <Control ID="Fallback">
-              <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MAX_PRESSURE" />
-              <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MIN_PRESSURE" />
+              <Action
+                ID="CompareEpickObjectDetectionStatus"
+                value1="{vacuum_status}"
+                value2="OBJECT_DETECTED_AT_MAX_PRESSURE"
+              />
+              <Action
+                ID="CompareEpickObjectDetectionStatus"
+                value1="{vacuum_status}"
+                value2="OBJECT_DETECTED_AT_MIN_PRESSURE"
+              />
             </Control>
           </Control>
           <Control ID="Sequence" name="NudgeDown">
-            <Action ID="LogMessage" log_level="info" message="No vacuum grip detected. Nudging down 1cm..." />
-            <Action ID="CreateStampedPose" reference_frame="grasp_link" stamped_pose="{nudge_pose}" position_xyz="0;0;0.01" />
+            <Action
+              ID="LogMessage"
+              log_level="info"
+              message="No vacuum grip detected. Nudging down 1cm..."
+            />
+            <Action
+              ID="CreateStampedPose"
+              reference_frame="grasp_link"
+              stamped_pose="{nudge_pose}"
+              position_xyz="0;0;0.01"
+            />
             <Action ID="ResetPoseStampedVector" vector="{nudge_path}" />
-            <Action ID="AddPoseStampedToVector" input="{nudge_pose}" vector="{nudge_path}" />
+            <Action
+              ID="AddPoseStampedToVector"
+              input="{nudge_pose}"
+              vector="{nudge_path}"
+            />
             <Action
               ID="PlanCartesianPath"
               acceleration_scale_factor="0.500000"
@@ -287,8 +308,16 @@
         message_out="{vacuum_status}"
       />
       <Control ID="Fallback" name="FinalGripCheck">
-        <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MAX_PRESSURE" />
-        <Action ID="CompareEpickObjectDetectionStatus" value1="{vacuum_status}" value2="OBJECT_DETECTED_AT_MIN_PRESSURE" />
+        <Action
+          ID="CompareEpickObjectDetectionStatus"
+          value1="{vacuum_status}"
+          value2="OBJECT_DETECTED_AT_MAX_PRESSURE"
+        />
+        <Action
+          ID="CompareEpickObjectDetectionStatus"
+          value1="{vacuum_status}"
+          value2="OBJECT_DETECTED_AT_MIN_PRESSURE"
+        />
       </Control>
 
       <!--=== ATTACH COLLISION OBJECT (before retract, while grasp_link is still at pick pose) ===-->
@@ -325,7 +354,11 @@
         position_xyz="0;0;-0.20"
       />
       <Action ID="ResetPoseStampedVector" vector="{retract_up_path}" />
-      <Action ID="AddPoseStampedToVector" input="{retract_above_bin}" vector="{retract_up_path}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{retract_above_bin}"
+        vector="{retract_up_path}"
+      />
       <Action
         ID="PlanCartesianPath"
         acceleration_scale_factor="0.500000"
@@ -635,7 +668,11 @@
         position_xyz="0;0;-0.1"
       />
       <Action ID="ResetPoseStampedVector" vector="{retract_path}" />
-      <Action ID="AddPoseStampedToVector" input="{retract_pose}" vector="{retract_path}" />
+      <Action
+        ID="AddPoseStampedToVector"
+        input="{retract_pose}"
+        vector="{retract_path}"
+      />
       <Action
         ID="PlanCartesianPath"
         acceleration_scale_factor="1.000000"

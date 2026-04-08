@@ -92,7 +92,6 @@ fitSphere(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
 [[nodiscard]] tl::expected<ShapeFitResult, std::string>
 fitBestShape(const std::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& cloud,
              const std::shared_ptr<const pcl::PointIndices>& indices, double distance_threshold,
-             double bin_floor_z = std::numeric_limits<double>::quiet_NaN(),
-             const std::string& forced_shape = "");
+             double bin_floor_z = std::numeric_limits<double>::quiet_NaN(), const std::string& forced_shape = "");
 
 }  // namespace get_graspable_grocery_objects_from_masks3d

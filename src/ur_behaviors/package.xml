@@ -2,9 +2,7 @@
 <package format="3">
   <name>ur_behaviors</name>
   <version>0.0.0</version>
-  <description>
-    Custom behaviors for the UR robot configuration.
-  </description>
+  <description>Custom behaviors for the UR robot configuration.</description>
 
   <maintainer email="support@picknik.ai">MoveIt Pro Maintainer</maintainer>
 

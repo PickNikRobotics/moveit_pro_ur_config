@@ -3,7 +3,9 @@
   <name>picknik_009_ur5e_config_sim</name>
   <version>0.8.0</version>
 
-  <description>Simulation config for Dev-009 UR-5e + EPick gripper (fake hardware)</description>
+  <description>
+    Simulation config for Dev-009 UR-5e + EPick gripper (fake hardware)
+  </description>
 
   <maintainer email="henningkayser@picknik.ai">Henning Kayser</maintainer>
 

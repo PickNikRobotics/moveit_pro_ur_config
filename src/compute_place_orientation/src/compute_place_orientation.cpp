@@ -6,9 +6,9 @@
 
 #include <compute_place_orientation/compute_place_orientation.hpp>
 
+#include <spdlog/spdlog.h>
 #include <Eigen/Dense>
 #include <geometry_msgs/msg/pose_stamped.hpp>
-#include <spdlog/spdlog.h>
 #include <tf2_eigen/tf2_eigen.hpp>
 
 namespace
@@ -47,26 +47,27 @@ BT::PortsList ComputePlaceOrientation::providedPorts()
 {
   return {
     BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDObjectPose, "{object_pose}",
-                                                    "Object pose in world frame from detection."),
+                                                   "Object pose in world frame from detection."),
     BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPickPose, "{pick_pose}",
-                                                    "Grasp_link pose in world frame at the time of picking."),
+                                                   "Grasp_link pose in world frame at the time of picking."),
     BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPlacePosition, "{shelf_target_pose}",
-                                                    "Target place position (only XY used, Z computed from height_offset)."),
+                                                   "Target place position (only XY used, Z computed from "
+                                                   "height_offset)."),
     BT::InputPort<double>(kPortIDHeightOffset, 0.0,
                           "Height offset above the place position for the object bottom (typically place_height)."),
     BT::InputPort<double>(kPortIDDepthOffset, 0.0,
-                          "Forward offset (toward robot) for the object center: cylinder/sphere radius or box half-depth."),
+                          "Forward offset (toward robot) for the object center: cylinder/sphere radius or box "
+                          "half-depth."),
     BT::OutputPort<geometry_msgs::msg::PoseStamped>(kPortIDPlacePose, "{place_pose}",
-                                                     "Computed grasp_link pose for placing the object upright."),
+                                                    "Computed grasp_link pose for placing the object upright."),
   };
 }
 
 BT::KeyValueVector ComputePlaceOrientation::metadata()
 {
   return { { "subcategory", "Motion - Planning" },
-           { "description",
-             "Computes the grasp_link pose for placing a held object upright at a target location. "
-             "The object's longest axis (Z of its fitted shape frame) is aligned with world Z." } };
+           { "description", "Computes the grasp_link pose for placing a held object upright at a target location. "
+                            "The object's longest axis (Z of its fitted shape frame) is aligned with world Z." } };
 }
 
 BT::NodeStatus ComputePlaceOrientation::tick()
@@ -95,16 +96,15 @@ BT::NodeStatus ComputePlaceOrientation::tick()
   const Eigen::Isometry3d T_grasp_object = T_world_grasp.inverse() * T_world_object;
 
   spdlog::info("ComputePlaceOrientation: T_grasp_object translation = [{:.4f}, {:.4f}, {:.4f}]",
-               T_grasp_object.translation().x(), T_grasp_object.translation().y(),
-               T_grasp_object.translation().z());
+               T_grasp_object.translation().x(), T_grasp_object.translation().y(), T_grasp_object.translation().z());
 
   // Desired object orientation at place: object Z aligned with world Z.
   // We want the object's Z axis (longest axis of fitted shape) to point up.
   // The simplest: R_world_object_desired = Identity (object Z = world Z).
   // But we also need to choose a yaw. Use the object's original yaw (around Z).
   const Eigen::Vector3d object_z = T_world_object.linear().col(2);
-  spdlog::info("ComputePlaceOrientation: object Z axis in world = [{:.4f}, {:.4f}, {:.4f}]",
-               object_z.x(), object_z.y(), object_z.z());
+  spdlog::info("ComputePlaceOrientation: object Z axis in world = [{:.4f}, {:.4f}, {:.4f}]", object_z.x(), object_z.y(),
+               object_z.z());
 
   // For the desired orientation, we want object Z = world Z (upright).
   // Preserve the object's original yaw (rotation around Z) as much as possible.
@@ -148,8 +148,8 @@ BT::NodeStatus ComputePlaceOrientation::tick()
   const Eigen::Isometry3d T_world_shelf = poseToIsometry(place_pos);
   const Eigen::Vector3d shelf_y_axis = T_world_shelf.linear().col(1);
   const Eigen::Vector3d depth_shift = shelf_y_axis * depth_offset;
-  spdlog::info("ComputePlaceOrientation: depth_offset={:.4f}, shift=[{:.4f}, {:.4f}, {:.4f}]",
-               depth_offset, depth_shift.x(), depth_shift.y(), depth_shift.z());
+  spdlog::info("ComputePlaceOrientation: depth_offset={:.4f}, shift=[{:.4f}, {:.4f}, {:.4f}]", depth_offset,
+               depth_shift.x(), depth_shift.y(), depth_shift.z());
 
   // Build the final grasp_link pose:
   //   - XY from the shelf target placement position + depth offset toward robot
@@ -157,10 +157,8 @@ BT::NodeStatus ComputePlaceOrientation::tick()
   //   - Orientation from the upright-object computation above
   Eigen::Isometry3d T_world_grasp_desired = Eigen::Isometry3d::Identity();
   T_world_grasp_desired.linear() = T_world_grasp_orientation.linear();
-  T_world_grasp_desired.translation() =
-      Eigen::Vector3d(place_pos.pose.position.x + depth_shift.x(),
-                      place_pos.pose.position.y + depth_shift.y(),
-                      grasp_target_z);
+  T_world_grasp_desired.translation() = Eigen::Vector3d(place_pos.pose.position.x + depth_shift.x(),
+                                                        place_pos.pose.position.y + depth_shift.y(), grasp_target_z);
 
   spdlog::info("ComputePlaceOrientation: desired grasp position = [{:.4f}, {:.4f}, {:.4f}]",
                T_world_grasp_desired.translation().x(), T_world_grasp_desired.translation().y(),

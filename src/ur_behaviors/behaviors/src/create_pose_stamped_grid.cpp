@@ -38,8 +38,7 @@ namespace ur_behaviors
 {
 
 CreatePoseStampedGrid::CreatePoseStampedGrid(
-    const std::string& name,
-    const BT::NodeConfiguration& config,
+    const std::string& name, const BT::NodeConfiguration& config,
     const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources)
   : SharedResourcesNode(name, config, shared_resources)
 {
@@ -73,27 +72,20 @@ BT::NodeStatus CreatePoseStampedGrid::tick()
 {
   // Get required inputs
   const auto ports = moveit_pro::behaviors::getRequiredInputs(
-      getInput<geometry_msgs::msg::PoseStamped>(kPortPose),
-      getInput<int>(kPortRepeatX),
-      getInput<int>(kPortRepeatY),
-      getInput<int>(kPortRepeatZ),
-      getInput<double>(kPortOffsetX),
-      getInput<double>(kPortOffsetY),
-      getInput<double>(kPortOffsetZ),
-      getInput<double>(kPortRotateX),
-      getInput<double>(kPortRotateY),
+      getInput<geometry_msgs::msg::PoseStamped>(kPortPose), getInput<int>(kPortRepeatX), getInput<int>(kPortRepeatY),
+      getInput<int>(kPortRepeatZ), getInput<double>(kPortOffsetX), getInput<double>(kPortOffsetY),
+      getInput<double>(kPortOffsetZ), getInput<double>(kPortRotateX), getInput<double>(kPortRotateY),
       getInput<double>(kPortRotateZ));
 
   if (!ports.has_value())
   {
-    shared_resources_->logger->publishFailureMessage(
-        name(), "Failed to get required value from input data port: " + ports.error());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to get required value from input data port: " +
+                                                                 ports.error());
     return BT::NodeStatus::FAILURE;
   }
 
-  const auto& [pose, repeat_x, repeat_y, repeat_z,
-               offset_x, offset_y, offset_z,
-               rotate_x, rotate_y, rotate_z] = ports.value();
+  const auto& [pose, repeat_x, repeat_y, repeat_z, offset_x, offset_y, offset_z, rotate_x, rotate_y, rotate_z] =
+      ports.value();
 
   // Validate repeat counts
   if (repeat_x < 0 || repeat_y < 0 || repeat_z < 0)
@@ -119,8 +111,7 @@ BT::NodeStatus CreatePoseStampedGrid::tick()
       {
         // Compute local-frame offset
         const Eigen::Vector3d local_offset(offset_x * ix, offset_y * iy, offset_z * iz);
-        const Eigen::Vector3d world_position =
-            original_transform.translation() + original_rotation * local_offset;
+        const Eigen::Vector3d world_position = original_transform.translation() + original_rotation * local_offset;
 
         // Compute incremental rotation (intrinsic: applied in local frame)
         const Eigen::Quaterniond incremental_rotation =

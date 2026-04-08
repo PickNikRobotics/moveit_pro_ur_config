@@ -24,8 +24,7 @@ namespace ur_behaviors
 {
 
 PublishStaticTransform::PublishStaticTransform(
-    const std::string& name,
-    const BT::NodeConfiguration& config,
+    const std::string& name, const BT::NodeConfiguration& config,
     const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources)
   : SharedResourcesNode(name, config, shared_resources)
   , static_broadcaster_{ std::make_shared<tf2_ros::StaticTransformBroadcaster>(shared_resources_->node) }
@@ -34,32 +33,27 @@ PublishStaticTransform::PublishStaticTransform(
 
 BT::PortsList PublishStaticTransform::providedPorts()
 {
-  return {
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPose,
-      "Pose defining the transform (frame_id = parent, position/orientation = transform)"),
-    BT::InputPort<std::string>(kPortIDChildFrameID, "scene_camera_link",
-      "Child frame ID for the static transform")
-  };
+  return { BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPose, "Pose defining the transform (frame_id = "
+                                                                       "parent, position/orientation = transform)"),
+           BT::InputPort<std::string>(kPortIDChildFrameID, "scene_camera_link",
+                                      "Child frame ID for the static transform") };
 }
 
 BT::KeyValueVector PublishStaticTransform::metadata()
 {
-  return {
-    { moveit_pro::behaviors::kDescriptionMetadataKey, kDescription },
-    { moveit_pro::behaviors::kSubcategoryMetadataKey, "Utilities" }
-  };
+  return { { moveit_pro::behaviors::kDescriptionMetadataKey, kDescription },
+           { moveit_pro::behaviors::kSubcategoryMetadataKey, "Utilities" } };
 }
 
 BT::NodeStatus PublishStaticTransform::tick()
 {
-  const auto ports = moveit_pro::behaviors::getRequiredInputs(
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDPose),
-      getInput<std::string>(kPortIDChildFrameID));
+  const auto ports = moveit_pro::behaviors::getRequiredInputs(getInput<geometry_msgs::msg::PoseStamped>(kPortIDPose),
+                                                              getInput<std::string>(kPortIDChildFrameID));
 
   if (!ports.has_value())
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Failed to get required value from input data port: " + ports.error());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to get required value from input data port: " +
+                                                                 ports.error());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -76,8 +70,8 @@ BT::NodeStatus PublishStaticTransform::tick()
 
   static_broadcaster_->sendTransform(tf_msg);
 
-  shared_resources_->logger->publishInfoMessage(name(),
-      "Published static transform: " + pose.header.frame_id + " -> " + child_frame_id);
+  shared_resources_->logger->publishInfoMessage(name(), "Published static transform: " + pose.header.frame_id + " -> " +
+                                                            child_frame_id);
 
   return BT::NodeStatus::SUCCESS;
 }

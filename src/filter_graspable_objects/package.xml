@@ -4,12 +4,8 @@
   <version>0.0.0</version>
   <description>This filters graspable objects by size.</description>
 
-  <maintainer email="support@picknik.ai">
-    MoveIt Pro User
-  </maintainer>
-  <author email="support@picknik.ai">
-    MoveIt Pro User
-  </author>
+  <maintainer email="support@picknik.ai">MoveIt Pro User</maintainer>
+  <author email="support@picknik.ai">MoveIt Pro User</author>
 
   <license>TODO</license>
 

@@ -19,13 +19,14 @@ TEST(BehaviorTests, test_load_behavior_plugins)
 
   BT::BehaviorTreeFactory factory;
   {
-    auto plugin_instance = class_loader.createUniqueInstance("filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader");
+    auto plugin_instance =
+        class_loader.createUniqueInstance("filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader");
     ASSERT_NO_THROW(plugin_instance->registerBehaviors(factory, shared_resources));
   }
 
   // Test that ClassLoader is able to find and instantiate each behavior using the package's plugin description info.
   EXPECT_NO_THROW(
-    (void)factory.instantiateTreeNode("test_behavior_name", "FilterGraspableObjects", BT::NodeConfiguration()));
+      (void)factory.instantiateTreeNode("test_behavior_name", "FilterGraspableObjects", BT::NodeConfiguration()));
 }
 
 int main(int argc, char** argv)

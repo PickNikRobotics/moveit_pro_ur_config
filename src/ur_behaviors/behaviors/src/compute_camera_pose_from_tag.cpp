@@ -29,8 +29,7 @@ namespace ur_behaviors
 {
 
 ComputeCameraPoseFromTag::ComputeCameraPoseFromTag(
-    const std::string& name,
-    const BT::NodeConfiguration& config,
+    const std::string& name, const BT::NodeConfiguration& config,
     const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources)
   : SharedResourcesNode(name, config, shared_resources)
 {
@@ -38,35 +37,31 @@ ComputeCameraPoseFromTag::ComputeCameraPoseFromTag(
 
 BT::PortsList ComputeCameraPoseFromTag::providedPorts()
 {
-  return {
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseWorld,
-      "Tag pose in world frame (from wrist camera detection + TransformPoseFrame)"),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseCamera,
-      "Tag pose in target camera's optical frame (from scene camera detection, NOT transformed)"),
-    BT::OutputPort<geometry_msgs::msg::PoseStamped>(kPortIDCameraPoseWorld,
-      "{camera_pose_world}",
-      "Target camera optical frame pose in world frame")
-  };
+  return { BT::InputPort<geometry_msgs::msg::PoseStamped>(
+               kPortIDTagPoseWorld, "Tag pose in world frame (from wrist camera detection + TransformPoseFrame)"),
+           BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseCamera,
+                                                          "Tag pose in target camera's optical frame (from scene "
+                                                          "camera detection, NOT transformed)"),
+           BT::OutputPort<geometry_msgs::msg::PoseStamped>(kPortIDCameraPoseWorld, "{camera_pose_world}",
+                                                           "Target camera optical frame pose in world frame") };
 }
 
 BT::KeyValueVector ComputeCameraPoseFromTag::metadata()
 {
-  return {
-    { moveit_pro::behaviors::kDescriptionMetadataKey, kDescription },
-    { moveit_pro::behaviors::kSubcategoryMetadataKey, "Application - Grocery" }
-  };
+  return { { moveit_pro::behaviors::kDescriptionMetadataKey, kDescription },
+           { moveit_pro::behaviors::kSubcategoryMetadataKey, "Application - Grocery" } };
 }
 
 BT::NodeStatus ComputeCameraPoseFromTag::tick()
 {
-  const auto ports = moveit_pro::behaviors::getRequiredInputs(
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseWorld),
-      getInput<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseCamera));
+  const auto ports =
+      moveit_pro::behaviors::getRequiredInputs(getInput<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseWorld),
+                                               getInput<geometry_msgs::msg::PoseStamped>(kPortIDTagPoseCamera));
 
   if (!ports.has_value())
   {
-    shared_resources_->logger->publishFailureMessage(name(),
-        "Failed to get required value from input data port: " + ports.error());
+    shared_resources_->logger->publishFailureMessage(name(), "Failed to get required value from input data port: " +
+                                                                 ports.error());
     return BT::NodeStatus::FAILURE;
   }
 
@@ -94,11 +89,10 @@ BT::NodeStatus ComputeCameraPoseFromTag::tick()
   // Log the result for debugging
   const auto& p = camera_pose_world.pose.position;
   const auto& q = camera_pose_world.pose.orientation;
-  shared_resources_->logger->publishInfoMessage(name(),
-      "Computed camera pose in world: position=(" +
-      std::to_string(p.x) + ", " + std::to_string(p.y) + ", " + std::to_string(p.z) +
-      ") orientation=(" + std::to_string(q.x) + ", " + std::to_string(q.y) + ", " +
-      std::to_string(q.z) + ", " + std::to_string(q.w) + ")");
+  shared_resources_->logger->publishInfoMessage(
+      name(), "Computed camera pose in world: position=(" + std::to_string(p.x) + ", " + std::to_string(p.y) + ", " +
+                  std::to_string(p.z) + ") orientation=(" + std::to_string(q.x) + ", " + std::to_string(q.y) + ", " +
+                  std::to_string(q.z) + ", " + std::to_string(q.w) + ")");
 
   return BT::NodeStatus::SUCCESS;
 }

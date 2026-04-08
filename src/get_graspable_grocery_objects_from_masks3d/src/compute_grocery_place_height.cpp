@@ -6,13 +6,13 @@
 
 #include <get_graspable_grocery_objects_from_masks3d/compute_grocery_place_height.hpp>
 
+#include <spdlog/spdlog.h>
+#include <Eigen/Dense>
 #include <algorithm>
 #include <cmath>
-#include <vector>
 #include <geometry_msgs/msg/pose_stamped.hpp>
-#include <Eigen/Dense>
 #include <shape_msgs/msg/solid_primitive.hpp>
-#include <spdlog/spdlog.h>
+#include <vector>
 
 namespace
 {
@@ -28,7 +28,7 @@ constexpr auto kPortIDPickPose = "pick_pose";
 constexpr auto kPortIDIsOnSide = "is_on_side";
 constexpr auto kPortIDDepthOffset = "depth_offset";
 constexpr double kGraspApproachClearance = 0.0;  // directly at top surface
-constexpr double kOnSideThreshold = 0.5;  // axis_z < this means object is on its side
+constexpr double kOnSideThreshold = 0.5;         // axis_z < this means object is on its side
 }  // namespace
 
 namespace get_graspable_grocery_objects_from_masks3d
@@ -44,10 +44,10 @@ ComputeGroceryPlaceHeight::ComputeGroceryPlaceHeight(
 BT::PortsList ComputeGroceryPlaceHeight::providedPorts()
 {
   return {
-    BT::InputPort<moveit_studio_vision_msgs::msg::GraspableObject>(
-        kPortIDGraspableObject, "{graspable_object}",
-        "GraspableObject with fitted shape. The grasp_info.object_type field must be set to "
-        "\"box\", \"cylinder\", or \"sphere\"."),
+    BT::InputPort<moveit_studio_vision_msgs::msg::GraspableObject>(kPortIDGraspableObject, "{graspable_object}",
+                                                                   "GraspableObject with fitted shape. The "
+                                                                   "grasp_info.object_type field must be set to "
+                                                                   "\"box\", \"cylinder\", or \"sphere\"."),
     BT::OutputPort<double>(kPortIDPlaceHeight, "{place_height}",
                            "Computed height above shelf target for grasp_link placement, in meters."),
     BT::OutputPort<std::vector<double>>(kPortIDPlaceTranslation, "{place_translation_xyz}",
@@ -55,17 +55,20 @@ BT::PortsList ComputeGroceryPlaceHeight::providedPorts()
     BT::OutputPort<std::string>(kPortIDShapeType, "{shape_type}",
                                 "The detected shape type: \"box\", \"cylinder\", or \"sphere\"."),
     BT::OutputPort<double>(kPortIDTopOffset, "{top_offset}",
-                           "Distance from object center to topmost point in world Z. Use as collision URDF origin offset."),
+                           "Distance from object center to topmost point in world Z. Use as collision URDF origin "
+                           "offset."),
     BT::OutputPort<std::vector<double>>(kPortIDGraspApproachTranslation, "{grasp_approach_translation_xyz}",
-                                        "Translation from object center to grasp approach point [0, 0, -(half_height + clearance)]."),
+                                        "Translation from object center to grasp approach point [0, 0, -(half_height + "
+                                        "clearance)]."),
     BT::OutputPort<std::vector<double>>(kPortIDCollisionDimensions, "{collision_dimensions}",
-                                        "Dimensions for GenerateShapeUrdf. Cylinder: [radius, height], Box: [x, y, z], Sphere: [radius]."),
+                                        "Dimensions for GenerateShapeUrdf. Cylinder: [radius, height], Box: [x, y, z], "
+                                        "Sphere: [radius]."),
     BT::OutputPort<std::vector<double>>(kPortIDCollisionRPY, "{collision_rpy}",
                                         "Roll, pitch, yaw of the object shape frame relative to grasp_link."),
-    BT::InputPort<geometry_msgs::msg::PoseStamped>(kPortIDPickPose, "{pick_pose}",
-                                                    "Grasp_link pose at pick time, used to compute relative orientation."),
+    BT::InputPort<geometry_msgs::msg::PoseStamped>(
+        kPortIDPickPose, "{pick_pose}", "Grasp_link pose at pick time, used to compute relative orientation."),
     BT::OutputPort<bool>(kPortIDIsOnSide, "{is_on_side}",
-                          "True if the object's longest axis is roughly horizontal (on its side)."),
+                         "True if the object's longest axis is roughly horizontal (on its side)."),
     BT::OutputPort<double>(kPortIDDepthOffset, "{depth_offset}",
                            "Forward offset for placement: cylinder/sphere radius, or box half-depth."),
   };
@@ -83,8 +86,7 @@ BT::KeyValueVector ComputeGroceryPlaceHeight::metadata()
 
 BT::NodeStatus ComputeGroceryPlaceHeight::tick()
 {
-  const auto object_input =
-      getInput<moveit_studio_vision_msgs::msg::GraspableObject>(kPortIDGraspableObject);
+  const auto object_input = getInput<moveit_studio_vision_msgs::msg::GraspableObject>(kPortIDGraspableObject);
 
   if (!object_input.has_value())
   {
@@ -149,13 +151,15 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
     if (axis_z_component < kOnSideThreshold)
     {
       place_height = height / 2.0;
-      spdlog::info("ComputeGroceryPlaceHeight: cylinder ON SIDE, height={:.4f}, radius={:.4f}, axis_z={:.3f}, place_height={:.4f} (half)",
+      spdlog::info("ComputeGroceryPlaceHeight: cylinder ON SIDE, height={:.4f}, radius={:.4f}, axis_z={:.3f}, "
+                   "place_height={:.4f} (half)",
                    height, cyl_radius, axis_z_component, place_height);
     }
     else
     {
       place_height = height;
-      spdlog::info("ComputeGroceryPlaceHeight: cylinder UPRIGHT, height={:.4f}, radius={:.4f}, axis_z={:.3f}, place_height={:.4f} (full)",
+      spdlog::info("ComputeGroceryPlaceHeight: cylinder UPRIGHT, height={:.4f}, radius={:.4f}, axis_z={:.3f}, "
+                   "place_height={:.4f} (full)",
                    height, cyl_radius, axis_z_component, place_height);
     }
   }
@@ -201,7 +205,7 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
 
   // Compute the object's orientation relative to grasp_link for the collision URDF.
   // R_grasp_object = R_world_grasp^-1 * R_world_object
-  std::vector<double> collision_rpy = {0.0, 0.0, 0.0};
+  std::vector<double> collision_rpy = { 0.0, 0.0, 0.0 };
   const auto pick_pose_input = getInput<geometry_msgs::msg::PoseStamped>(kPortIDPickPose);
   if (pick_pose_input.has_value())
   {
@@ -210,9 +214,9 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
     const Eigen::Quaterniond q_object(object_quat);
     const Eigen::Quaterniond q_grasp_object = q_grasp.inverse() * q_object;
     const Eigen::Vector3d euler = q_grasp_object.toRotationMatrix().eulerAngles(0, 1, 2);
-    collision_rpy = {euler.x(), euler.y(), euler.z()};
-    spdlog::info("ComputeGroceryPlaceHeight: collision_rpy=[{:.4f}, {:.4f}, {:.4f}]",
-                 collision_rpy[0], collision_rpy[1], collision_rpy[2]);
+    collision_rpy = { euler.x(), euler.y(), euler.z() };
+    spdlog::info("ComputeGroceryPlaceHeight: collision_rpy=[{:.4f}, {:.4f}, {:.4f}]", collision_rpy[0],
+                 collision_rpy[1], collision_rpy[2]);
   }
 
   // Determine if the object is on its side (longest axis roughly horizontal).
@@ -229,8 +233,8 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
   else if (shape_type == "box")
   {
     // Find which axis corresponds to the longest dimension
-    const std::array<double, 3> dims = {bv.dimensions[0], bv.dimensions[1], bv.dimensions[2]};
-    const std::array<Eigen::Vector3d, 3> axes = {shape_x, shape_y, shape_z};
+    const std::array<double, 3> dims = { bv.dimensions[0], bv.dimensions[1], bv.dimensions[2] };
+    const std::array<Eigen::Vector3d, 3> axes = { shape_x, shape_y, shape_z };
     const auto max_it = std::max_element(dims.begin(), dims.end());
     const size_t max_idx = std::distance(dims.begin(), max_it);
     const double longest_axis_z = std::abs(axes[max_idx].z());
@@ -254,7 +258,7 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
   else if (shape_type == "box")
   {
     // Use the smallest horizontal dimension as the depth (object placed upright, thinnest side faces shelf back)
-    const std::array<double, 3> dims = {bv.dimensions[0], bv.dimensions[1], bv.dimensions[2]};
+    const std::array<double, 3> dims = { bv.dimensions[0], bv.dimensions[1], bv.dimensions[2] };
     // Find the two non-longest dimensions (the longest will be vertical when upright)
     double max_dim = *std::max_element(dims.begin(), dims.end());
     double min_horizontal = max_dim;
@@ -269,8 +273,8 @@ BT::NodeStatus ComputeGroceryPlaceHeight::tick()
 
   setOutput(kPortIDPlaceHeight, place_height);
   setOutput(kPortIDDepthOffset, depth_offset);
-  setOutput(kPortIDPlaceTranslation, std::vector<double>{0.0, 0.0, -place_height});
-  setOutput(kPortIDGraspApproachTranslation, std::vector<double>{0.0, 0.0, approach_z});
+  setOutput(kPortIDPlaceTranslation, std::vector<double>{ 0.0, 0.0, -place_height });
+  setOutput(kPortIDGraspApproachTranslation, std::vector<double>{ 0.0, 0.0, approach_z });
   setOutput(kPortIDTopOffset, top_offset);
   setOutput(kPortIDCollisionDimensions, collision_dims);
   setOutput(kPortIDCollisionRPY, collision_rpy);

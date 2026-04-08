@@ -2,14 +2,12 @@
 <package format="3">
   <name>picknik_009_ur5e_behaviors</name>
   <version>0.0.0</version>
-  <description>Custom behavior package scaffold for the PickNik 009 UR5e configuration.</description>
+  <description>
+    Custom behavior package scaffold for the PickNik 009 UR5e configuration.
+  </description>
 
-  <maintainer email="support@picknik.ai">
-    MoveIt Pro User
-  </maintainer>
-  <author email="support@picknik.ai">
-    MoveIt Pro User
-  </author>
+  <maintainer email="support@picknik.ai">MoveIt Pro User</maintainer>
+  <author email="support@picknik.ai">MoveIt Pro User</author>
 
   <license>TODO</license>
 

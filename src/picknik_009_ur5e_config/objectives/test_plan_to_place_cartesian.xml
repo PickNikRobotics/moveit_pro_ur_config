@@ -24,7 +24,11 @@
         <!--=== ATTEMPT 1: Original place pose ===-->
         <Control ID="Sequence" name="OriginalPose">
           <Action ID="ResetPoseStampedVector" vector="{place_path}" />
-          <Action ID="AddPoseStampedToVector" input="{place_pose}" vector="{place_path}" />
+          <Action
+            ID="AddPoseStampedToVector"
+            input="{place_pose}"
+            vector="{place_path}"
+          />
           <Action
             ID="PlanCartesianPath"
             acceleration_scale_factor="0.500000"
@@ -65,7 +69,11 @@
             marker_text="Place Target (fallback orientation)"
           />
           <Action ID="ResetPoseStampedVector" vector="{place_path}" />
-          <Action ID="AddPoseStampedToVector" input="{place_pose_fallback}" vector="{place_path}" />
+          <Action
+            ID="AddPoseStampedToVector"
+            input="{place_pose_fallback}"
+            vector="{place_path}"
+          />
           <Action
             ID="PlanCartesianPath"
             acceleration_scale_factor="0.500000"

@@ -96,7 +96,10 @@
                         element="{best_pick_primitive_name}"
                         index="{index1}"
                       />
-                      <Action ID="Script" code="best_pick_primitive_index := index1" />
+                      <Action
+                        ID="Script"
+                        code="best_pick_primitive_index := index1"
+                      />
                       <Action
                         ID="GetElementOfVector"
                         vector_in="{surface_poses}"

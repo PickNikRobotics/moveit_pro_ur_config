@@ -22,9 +22,9 @@ public:
     moveit_pro::behaviors::registerBehavior<GenerateSurfacePosesFromSolidPrimitive>(
         factory, "GenerateSurfacePosesFromSolidPrimitive");
     moveit_pro::behaviors::registerBehavior<picknik_009_ur5e_behaviors::ReadYamlList>(factory, "ReadYamlList",
-                                                                                        shared_resources);
+                                                                                      shared_resources);
     moveit_pro::behaviors::registerBehavior<picknik_009_ur5e_behaviors::ReadYamlValue>(factory, "ReadYamlValue",
-                                                                                         shared_resources);
+                                                                                       shared_resources);
   }
 };
 }  // namespace picknik_009_ur5e_behaviors

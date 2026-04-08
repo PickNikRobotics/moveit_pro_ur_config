@@ -17,8 +17,9 @@ namespace generate_shape_urdf
 class GenerateShapeUrdfBehaviorsLoader : public moveit_pro::behaviors::SharedResourcesNodeLoaderBase
 {
 public:
-  void registerBehaviors(BT::BehaviorTreeFactory& factory,
-    [[maybe_unused]] const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
+  void registerBehaviors(
+      BT::BehaviorTreeFactory& factory,
+      [[maybe_unused]] const std::shared_ptr<moveit_pro::behaviors::BehaviorContext>& shared_resources) override
   {
     moveit_pro::behaviors::registerBehavior<GenerateShapeUrdf>(factory, "GenerateShapeUrdf");
   }

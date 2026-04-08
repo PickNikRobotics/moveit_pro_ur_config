@@ -11,6 +11,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <spdlog/spdlog.h>
 
+#include <tf2_ros/buffer.h>
 #include <moveit_pro_behavior_interface/get_required_ports.hpp>
 #include <moveit_studio_vision_msgs/msg/graspable_object.hpp>
 #include <moveit_studio_vision_msgs/msg/mask3_d.hpp>
@@ -18,7 +19,6 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <shape_msgs/msg/solid_primitive.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
-#include <tf2_ros/buffer.h>
 
 namespace
 {
@@ -48,9 +48,9 @@ constexpr auto kMarkerNamespace = "grocery_objects";
 const auto kTFLookupTimeoutSeconds = std::chrono::duration<double>{ 0.1 };
 
 /** @brief Create a visualization marker for a shape fit result. */
-visualization_msgs::msg::Marker createShapeMarker(
-    const get_graspable_grocery_objects_from_masks3d::ShapeFitResult& fit, const Eigen::Isometry3d& tform_base_to_cloud,
-    const std::string& frame_id, int id)
+visualization_msgs::msg::Marker createShapeMarker(const get_graspable_grocery_objects_from_masks3d::ShapeFitResult& fit,
+                                                  const Eigen::Isometry3d& tform_base_to_cloud,
+                                                  const std::string& frame_id, int id)
 {
   visualization_msgs::msg::Marker m;
   m.action = visualization_msgs::msg::Marker::ADD;
@@ -76,7 +76,7 @@ visualization_msgs::msg::Marker createShapeMarker(
     m.type = visualization_msgs::msg::Marker::CYLINDER;
     m.scale.x = fit.primitive.dimensions[1] * 2.0;  // diameter
     m.scale.y = fit.primitive.dimensions[1] * 2.0;  // diameter
-    m.scale.z = fit.primitive.dimensions[0];         // height
+    m.scale.z = fit.primitive.dimensions[0];        // height
   }
   else if (fit.primitive.type == shape_msgs::msg::SolidPrimitive::SPHERE)
   {
@@ -92,8 +92,8 @@ visualization_msgs::msg::Marker createShapeMarker(
 
 /** @brief Create a text marker labeling the shape type. */
 visualization_msgs::msg::Marker createLabelMarker(const get_graspable_grocery_objects_from_masks3d::ShapeFitResult& fit,
-                                                   const Eigen::Isometry3d& tform_base_to_cloud,
-                                                   const std::string& frame_id, int id)
+                                                  const Eigen::Isometry3d& tform_base_to_cloud,
+                                                  const std::string& frame_id, int id)
 {
   visualization_msgs::msg::Marker m;
   m.action = visualization_msgs::msg::Marker::ADD;
@@ -139,36 +139,33 @@ BT::PortsList GetGraspableGroceryObjectsFromMasks3D::providedPorts()
                                                                        "3D masks selecting subsets of points."),
     BT::InputPort<std::string>(kPortIDBaseFrame, "world",
                                "Calculate poses of graspable objects relative to this frame."),
-    BT::InputPort<double>(kPortIDPlaneInlierThreshold, 0.01,
-                          "Distance threshold in meters for RANSAC shape fitting."),
+    BT::InputPort<double>(kPortIDPlaneInlierThreshold, 0.01, "Distance threshold in meters for RANSAC shape fitting."),
     BT::InputPort<double>(kPortIDMinimumFaceArea, 0.000625,
                           "Minimum area in meters^2 for a face to be considered graspable."),
     BT::InputPort<double>(kPortIDFaceSeparationThreshold, 0.01,
                           "Distance in meters between coplanar clusters to split them into separate faces."),
     BT::OutputPort<std::vector<moveit_studio_vision_msgs::msg::GraspableObject>>(
-        kPortIDGraspableObjects, "{graspable_objects}",
-        "Vector of graspable objects with best-fit primitive shapes."),
+        kPortIDGraspableObjects, "{graspable_objects}", "Vector of graspable objects with best-fit primitive shapes."),
     BT::InputPort<std::string>(kPortIDBinFloorFrame, "",
                                "TF frame at the bin floor. The Z coordinate of this frame in the base_frame "
                                "is used to clamp cylinder height. Leave empty to disable."),
     BT::InputPort<std::string>(kPortIDShapeType, "",
                                "Force a specific shape type: 'cylinder', 'box', or 'sphere'. "
                                "Leave empty to auto-detect best fit."),
-    BT::InputPort<sensor_msgs::msg::PointCloud2>(kPortIDFusedCloud, "",
-                               "Optional fused multi-view point cloud. When provided, each mask's 3D bounding "
-                               "box is used to crop this cloud for shape fitting instead of the single-view cloud."),
+    BT::InputPort<sensor_msgs::msg::PointCloud2>(
+        kPortIDFusedCloud, "",
+        "Optional fused multi-view point cloud. When provided, each mask's 3D bounding "
+        "box is used to crop this cloud for shape fitting instead of the single-view cloud."),
     BT::OutputPort<sensor_msgs::msg::PointCloud2>(
-        "segment_cloud", "{segment_cloud}",
-        "Point cloud of the first mask segment, for debugging visualization."),
+        "segment_cloud", "{segment_cloud}", "Point cloud of the first mask segment, for debugging visualization."),
     BT::InputPort<int>(kPortIDMaxObjects, 1,
-                        "Maximum number of masks to process. Set to 1 to only use the highest-confidence detection."),
+                       "Maximum number of masks to process. Set to 1 to only use the highest-confidence detection."),
   };
 }
 
 BT::KeyValueVector GetGraspableGroceryObjectsFromMasks3D::metadata()
 {
-  return { { "subcategory", "Perception - 3D" },
-           { "description", kDescriptionGetGraspableGroceryObjectsFromMasks3D } };
+  return { { "subcategory", "Perception - 3D" }, { "description", kDescriptionGetGraspableGroceryObjectsFromMasks3D } };
 }
 
 tl::expected<bool, std::string> GetGraspableGroceryObjectsFromMasks3D::doWork()
@@ -293,12 +290,19 @@ tl::expected<bool, std::string> GetGraspableGroceryObjectsFromMasks3D::doWork()
         const auto& pt = point_cloud->points[idx];
         // Transform to base frame
         const Eigen::Vector3d p_base = tform_base_to_cloud * Eigen::Vector3d(pt.x, pt.y, pt.z);
-        min_x = std::min(min_x, p_base.x()); max_x = std::max(max_x, p_base.x());
-        min_y = std::min(min_y, p_base.y()); max_y = std::max(max_y, p_base.y());
-        min_z = std::min(min_z, p_base.z()); max_z = std::max(max_z, p_base.z());
+        min_x = std::min(min_x, p_base.x());
+        max_x = std::max(max_x, p_base.x());
+        min_y = std::min(min_y, p_base.y());
+        max_y = std::max(max_y, p_base.y());
+        min_z = std::min(min_z, p_base.z());
+        max_z = std::max(max_z, p_base.z());
       }
-      min_x -= kBboxPadding; min_y -= kBboxPadding; min_z -= kBboxPadding;
-      max_x += kBboxPadding; max_y += kBboxPadding; max_z += kBboxPadding;
+      min_x -= kBboxPadding;
+      min_y -= kBboxPadding;
+      min_z -= kBboxPadding;
+      max_x += kBboxPadding;
+      max_y += kBboxPadding;
+      max_z += kBboxPadding;
 
       // Crop the fused cloud to this bounding box.
       // The fused cloud is assumed to be in the base (world) frame already.
@@ -312,8 +316,8 @@ tl::expected<bool, std::string> GetGraspableGroceryObjectsFromMasks3D::doWork()
       }
 
       fit_cloud = fused_cloud;
-      spdlog::info("Cropped fused cloud to mask {} bounding box: {} points (from {} total)",
-                   i, fit_indices->indices.size(), fused_cloud->points.size());
+      spdlog::info("Cropped fused cloud to mask {} bounding box: {} points (from {} total)", i,
+                   fit_indices->indices.size(), fused_cloud->points.size());
     }
     else
     {
@@ -343,10 +347,9 @@ tl::expected<bool, std::string> GetGraspableGroceryObjectsFromMasks3D::doWork()
                    segment->points.size());
     }
 
-    const auto fit_result = fitBestShape(
-        std::const_pointer_cast<const pcl::PointCloud<pcl::PointXYZRGB>>(fit_cloud),
-        std::const_pointer_cast<const pcl::PointIndices>(fit_indices), plane_inlier_threshold, bin_floor_z,
-        forced_shape);
+    const auto fit_result = fitBestShape(std::const_pointer_cast<const pcl::PointCloud<pcl::PointXYZRGB>>(fit_cloud),
+                                         std::const_pointer_cast<const pcl::PointIndices>(fit_indices),
+                                         plane_inlier_threshold, bin_floor_z, forced_shape);
 
     if (!fit_result.has_value())
     {
@@ -366,8 +369,8 @@ tl::expected<bool, std::string> GetGraspableGroceryObjectsFromMasks3D::doWork()
       constexpr double kMaxCenterOffset = 0.15;  // 15cm max offset from centroid
       if (center_distance > kMaxCenterOffset)
       {
-        spdlog::warn("Rejecting fit for mask {}: shape center is {:.4f}m from point centroid (max {:.4f}m)",
-                     i, center_distance, kMaxCenterOffset);
+        spdlog::warn("Rejecting fit for mask {}: shape center is {:.4f}m from point centroid (max {:.4f}m)", i,
+                     center_distance, kMaxCenterOffset);
         continue;
       }
     }

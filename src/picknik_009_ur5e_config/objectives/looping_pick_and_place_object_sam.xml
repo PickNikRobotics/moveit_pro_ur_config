@@ -29,7 +29,10 @@
                   <Action ID="AlwaysSuccess" />
                 </Decorator>
                 <Control ID="Sequence">
-                  <SubTree ID="Re-Zero Force-Torque Sensors" _collapsed="true" />
+                  <SubTree
+                    ID="Re-Zero Force-Torque Sensors"
+                    _collapsed="true"
+                  />
                   <Action ID="Script" code="grasp_count:=0" />
                 </Control>
                 <Action ID="AlwaysSuccess" name="Skip re-zero" />
