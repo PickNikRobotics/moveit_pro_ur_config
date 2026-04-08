@@ -7,7 +7,9 @@
     _favorite="false"
   >
     <Control ID="Sequence" name="TopLevelSequence">
-      <SubTree ID="Load Calibrated Scene" _collapsed="true" />
+      <Decorator ID="ForceSuccess">
+        <SubTree ID="Load Calibrated Scene" _collapsed="true" />
+      </Decorator>
       <Control ID="Sequence">
         <!--Add Tomato Can collision object-->
         <Action
@@ -99,6 +101,7 @@
         <Action
           ID="RemoveCollisionObjectFromPlanningScene"
           object_id="virtual_calibrated_bin"
+          _skipIf="true"
         />
         <Action ID="GetCurrentPlanningScene" />
         <Action

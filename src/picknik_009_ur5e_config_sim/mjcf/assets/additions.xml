@@ -1,7 +1,7 @@
 <sim_additions>
   <asset>
-    <material name="rack_material" rgba="0.6 0.4 0.2 1" />
-    <material name="shelf_material" rgba="0.6 0.4 0.2 1" />
+    <material name="rack_material" rgba="0.65 0.68 0.72 1" />
+    <material name="shelf_material" rgba="0.55 0.35 0.2 1" />
     <material name="table_material" rgba="0.6 0.4 0.2 1" />
     <material name="bin_material" rgba="0.4 0.4 0.4 1" />
     <material name="pole_material" rgba="0.3 0.3 0.3 1" />
@@ -45,7 +45,11 @@
 
   <worldbody>
     <!-- Freejoint bodies must be direct worldbody children -->
-    <body name="tomato_soup_can_1" pos="0.046 -0.784 0.00" euler="0 0 0">
+    <body
+      name="tomato_soup_can_1"
+      pos="0.0547246 -0.7052610 0.0033708"
+      euler="0 0 0"
+    >
       <site
         name="tomato_soup_can_1_tf"
         pos="0 0 0"
@@ -117,7 +121,7 @@
       <inertial
         pos="0 0 0"
         euler="0 0 0"
-        mass="0.01"
+        mass="0.3"
         diaginertia="0.001 0.001 0.001"
       />
     </body>
@@ -127,7 +131,7 @@
     <!-- Table: 1.8288m x 0.46m x 0.74m -->
     <body
       name="calibrated_table"
-      pos="0.0460 -0.7836 -0.5192"
+      pos="0.054902253274909302 -0.70466415649525793 -0.42217732293650212"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -148,7 +152,7 @@
     <!-- Bin: 0.6096m x 0.381m x 0.1905m (24" x 15" x 7.5" industrial tote) -->
     <body
       name="calibrated_bin"
-      pos="0.0460 -0.7836 -0.0532"
+      pos="0.054902253274909302 -0.70466415649525793 0.043822677063497933"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -224,8 +228,8 @@
     <!-- Top Shelf -->
     <body
       name="calibrated_top_shelf"
-      pos="-0.0376 0.6948 0.5723"
-      euler="0 0 3.14159"
+      pos="-0.0626 0.5212 0.6423"
+      euler="0 0 3.1416"
       gravcomp="1"
     >
       <geom
@@ -254,8 +258,8 @@
     <!-- Bottom Shelf -->
     <body
       name="calibrated_bottom_shelf"
-      pos="-0.0351 0.6389 -0.3156"
-      euler="0 0 3.14159"
+      pos="-0.0603 0.5524 -0.2004"
+      euler="0 0 3.1416"
       gravcomp="1"
     >
       <geom
@@ -284,7 +288,7 @@
     <!-- Shelf Back Box: 1.27m x 0.08m x 1.8288m -->
     <body
       name="shelf_back"
-      pos="-0.0364 1.1069 0.0383"
+      pos="-0.0615 0.9769 0.1309"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -292,7 +296,7 @@
         name="shelf_back_geom"
         type="box"
         size="0.635 0.04 0.9144"
-        material="table_material"
+        rgba="0.55 0.35 0.2 1"
       />
       <site name="shelf_back_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
     </body>
@@ -300,7 +304,7 @@
     <!-- Shelf Base Box: 1.27m x 0.48m x 0.20m -->
     <body
       name="shelf_base"
-      pos="-0.0364 0.9069 -0.7757"
+      pos="-0.0615 0.7769 -0.6605"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -308,19 +312,19 @@
         name="shelf_base_geom"
         type="box"
         size="0.635 0.24 0.10"
-        material="table_material"
+        rgba="0.55 0.35 0.2 1"
       />
       <site name="shelf_base_tf" pos="0 0 0" size="0.01" rgba="0 1 0 0.35" />
     </body>
 
     <site
       name="tote_camera_optical_frame"
-      pos="0.046 -0.7836 0.5"
+      pos="0.0549 -0.7047 0.597"
       euler="0 3.1415 0"
     />
     <camera
       name="tote_camera"
-      pos="0.046 -0.7836 0.5"
+      pos="0.0549 -0.7047 0.597"
       fovy="58"
       mode="fixed"
       resolution="640 480"

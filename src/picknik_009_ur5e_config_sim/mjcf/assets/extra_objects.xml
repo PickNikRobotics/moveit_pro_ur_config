@@ -228,7 +228,7 @@
   <worldbody>
     <body
       name="tuna_fish_can_static"
-      pos="0.24 -0.88 -0.13"
+      pos="0.249 -0.801 -0.033"
       euler="0 0 0.2"
       gravcomp="1"
     >
@@ -309,7 +309,7 @@
 
     <body
       name="sugar_box_static"
-      pos="-0.17 -0.67 -0.04"
+      pos="-0.161 -0.591 0.057"
       euler="0 0 1.5708"
       gravcomp="1"
     >
@@ -360,7 +360,7 @@
 
     <body
       name="tennis_ball_static"
-      pos="-0.14 -0.88 -0.1"
+      pos="-0.131 -0.801 -0.003"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -401,7 +401,7 @@
 
     <body
       name="baseball_static"
-      pos="0.11 -0.66 -0.12"
+      pos="0.119 -0.581 -0.023"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -442,7 +442,7 @@
 
     <body
       name="cracker_box_static"
-      pos="0.25 -0.72 -0.03"
+      pos="0.259 -0.641 0.067"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -493,7 +493,7 @@
 
     <body
       name="gelatin_box_static"
-      pos="-0.05 -0.71 -0.12"
+      pos="-0.041 -0.631 -0.023"
       euler="0 0 -0.95"
       gravcomp="1"
     >
@@ -554,7 +554,7 @@
 
     <body
       name="golf_ball_static"
-      pos="0.14 -0.76 -0.12"
+      pos="0.149 -0.681 -0.023"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -595,7 +595,7 @@
 
     <body
       name="master_chef_can_static"
-      pos="0.15 -0.9 -0.08"
+      pos="0.159 -0.821 0.017"
       euler="0 0 0"
       gravcomp="1"
     >
@@ -676,7 +676,7 @@
 
     <body
       name="potted_meat_can_static"
-      pos="-0.16 -0.79 -0.08"
+      pos="-0.151 -0.711 0.017"
       euler="0 0 0.1"
       gravcomp="1"
     >
@@ -757,7 +757,7 @@
 
     <body
       name="pudding_box_static"
-      pos="-0.03 -0.86 -0.12"
+      pos="-0.021 -0.781 -0.023"
       euler="0 0 1.5708"
       gravcomp="1"
     >
