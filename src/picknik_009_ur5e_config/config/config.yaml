@@ -34,8 +34,8 @@ objectives:
       - "moveit_pro::behaviors::VisionBehaviorsLoader"
       - "moveit_pro::behaviors::ConverterBehaviorsLoader"
       - "moveit_pro::behaviors::MujocoBehaviorsLoader"
-    # epick:
-    #   - "epick_moveit_studio::BehaviorLoader"
+    epick:
+      - "epick_moveit_studio::BehaviorLoader"
     custom:
       - "filter_graspable_objects::FilterGraspableObjectsBehaviorsLoader"
       - "get_graspable_grocery_objects_from_masks3d::GetGraspableGroceryObjectsFromMasks3DBehaviorsLoader"
