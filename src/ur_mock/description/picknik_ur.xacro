@@ -15,7 +15,7 @@
   <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg ur_type)/default_kinematics.yaml"/>
   <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg ur_type)/physical_parameters.yaml"/>
   <xacro:arg name="visual_params" default="$(find ur_description)/config/$(arg ur_type)/visual_parameters.yaml"/>
-  <xacro:arg name="transmission_hw_interface" default=""/>
+  <!-- <xacro:arg name="transmission_hw_interface" default=""/> -->
   <xacro:arg name="safety_limits" default="false"/>
   <xacro:arg name="safety_pos_margin" default="0.15"/>
   <xacro:arg name="safety_k_position" default="20"/>
@@ -64,37 +64,20 @@
           kinematics_parameters_file="$(arg kinematics_params)"
           physical_parameters_file="$(arg physical_params)"
           visual_parameters_file="$(arg visual_params)"
-          transmission_hw_interface="$(arg transmission_hw_interface)"
           safety_limits="$(arg safety_limits)"
           safety_pos_margin="$(arg safety_pos_margin)"
           safety_k_position="$(arg safety_k_position)"
-          use_fake_hardware="$(arg use_fake_hardware)"
-          mock_sensor_commands="$(arg mock_sensor_commands)"
-          sim_gazebo="false"
-          sim_ignition="false"
-          headless_mode="$(arg headless_mode)"
-          initial_positions="${xacro.load_yaml(initial_positions_file)}"
-          use_tool_communication="$(arg use_tool_communication)"
-          tool_voltage="$(arg tool_voltage)"
-          tool_parity="$(arg tool_parity)"
-          tool_baud_rate="$(arg tool_baud_rate)"
-          tool_stop_bits="$(arg tool_stop_bits)"
-          tool_rx_idle_chars="$(arg tool_rx_idle_chars)"
-          tool_tx_idle_chars="$(arg tool_tx_idle_chars)"
-          tool_device_name="$(arg tool_device_name)"
-          tool_tcp_port="$(arg tool_tcp_port)"
-          robot_ip="$(arg robot_ip)"
-          script_filename="$(arg script_filename)"
-          output_recipe_filename="$(arg output_recipe_filename)"
-          input_recipe_filename="$(arg input_recipe_filename)"
-          reverse_ip="$(arg reverse_ip)"
-          script_command_port="$(arg script_command_port)"
-          reverse_port="$(arg reverse_port)"
-          script_sender_port="$(arg script_sender_port)"
-          trajectory_port="$(arg trajectory_port)"
   >
     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
   </xacro:ur_robot>
+
+  <!-- ros2_control mock hardware -->
+  <xacro:include filename="$(find ur_description)/urdf/ros2_control_mock_hardware.xacro"/>
+  <xacro:ur_ros2_control
+    name="$(arg name)"
+    tf_prefix="$(arg tf_prefix)"
+    mock_sensor_commands="$(arg mock_sensor_commands)"
+  />
 
   <!-- Gripper, UR adapter, and realsense camera -->
   <xacro:include
