@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<package format="3">
+  <name>ur_sim</name>
+  <version>0.0.1</version>
+  <description>
+    MoveIt Pro configuration package for a sim hardware UR arm.
+  </description>
+
+  <maintainer email="support@picknik.ai">MoveIt Pro Maintainer</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>ur_mock</depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

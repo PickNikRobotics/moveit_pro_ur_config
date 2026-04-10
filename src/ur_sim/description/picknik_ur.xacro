@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="$(arg name)">
+  <!-- robot name parameter -->
+  <xacro:arg name="name" default="ur"/>
+  <!-- import main macro -->
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+
+  <!-- possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30 -->
+  <!-- the default value should raise an error in case this was called without defining the type -->
+  <xacro:arg name="ur_type" default="ur5x"/>
+
+  <!-- parameters -->
+  <xacro:arg name="tf_prefix" default="" />
+  <xacro:arg name="joint_limit_parameters_file" default="$(find ur_description)/config/$(arg ur_type)/joint_limits.yaml"/>
+  <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg ur_type)/default_kinematics.yaml"/>
+  <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg ur_type)/physical_parameters.yaml"/>
+  <xacro:arg name="visual_params" default="$(find ur_description)/config/$(arg ur_type)/visual_parameters.yaml"/>
+  <!-- <xacro:arg name="transmission_hw_interface" default=""/> -->
+  <xacro:arg name="safety_limits" default="false"/>
+  <xacro:arg name="safety_pos_margin" default="0.15"/>
+  <xacro:arg name="safety_k_position" default="20"/>
+  <!-- ros2_control related parameters -->
+  <xacro:arg name="headless_mode" default="true" />
+  <xacro:arg name="robot_ip" default="0.0.0.0" />
+  <xacro:arg name="script_filename" default="$(find ur_robot_driver)/resources/ros_control.urscript"/>
+  <xacro:arg name="output_recipe_filename" default="$(find ur_robot_driver)/resources/rtde_output_recipe.txt"/>
+  <xacro:arg name="input_recipe_filename" default="$(find ur_robot_driver)/resources/rtde_input_recipe.txt"/>
+  <xacro:arg name="reverse_ip" default="0.0.0.0"/>
+  <xacro:arg name="script_command_port" default="50004"/>
+  <xacro:arg name="reverse_port" default="50001"/>
+  <xacro:arg name="script_sender_port" default="50002"/>
+  <xacro:arg name="trajectory_port" default="50003"/>
+  <!--   tool communication related parameters-->
+  <xacro:arg name="use_tool_communication" default="true" />
+  <xacro:arg name="tool_voltage" default="24" />
+  <xacro:arg name="tool_parity" default="0" />
+  <xacro:arg name="tool_baud_rate" default="115200" />
+  <xacro:arg name="tool_stop_bits" default="1" />
+  <xacro:arg name="tool_rx_idle_chars" default="1.5" />
+  <xacro:arg name="tool_tx_idle_chars" default="3.5" />
+  <xacro:arg name="tool_device_name" default="/tmp/ttyUR" />
+  <xacro:arg name="tool_tcp_port" default="54321" />
+
+  <!-- Simulation parameters -->
+  <xacro:arg name="use_fake_hardware" default="false" />
+  <xacro:arg name="mock_sensor_commands" default="false" />
+  <xacro:arg name="simulation_controllers" default="" />
+  <xacro:arg name="mujoco_model" default="description/scene.xml" />
+  <xacro:arg name="mujoco_model_package" default="ur_sim" />
+  <xacro:arg name="mujoco_viewer" default="true" />
+
+  <!-- initial position for simulations (Fake Hardware, Gazebo, Ignition) -->
+  <xacro:arg name="initial_positions_file" default="$(find ur_description)/config/initial_positions.yaml"/>
+
+  <!-- convert to property to use substitution in function -->
+  <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)"/>
+
+  <!-- create link fixed to the "world" -->
+  <link name="world" />
+
+  <!-- arm -->
+  <xacro:ur_robot
+          name="$(arg name)"
+          tf_prefix="$(arg tf_prefix)"
+          parent="world"
+          joint_limits_parameters_file="$(arg joint_limit_parameters_file)"
+          kinematics_parameters_file="$(arg kinematics_params)"
+          physical_parameters_file="$(arg physical_params)"
+          visual_parameters_file="$(arg visual_params)"
+          safety_limits="$(arg safety_limits)"
+          safety_pos_margin="$(arg safety_pos_margin)"
+          safety_k_position="$(arg safety_k_position)"
+  >
+    <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+  </xacro:ur_robot>
+
+  <!-- ros2_control mock hardware -->
+  <!-- <xacro:include filename="$(find ur_description)/urdf/ros2_control_mock_hardware.xacro"/>
+  <xacro:ur_ros2_control
+    name="$(arg name)"
+    tf_prefix="$(arg tf_prefix)"
+    mock_sensor_commands="$(arg mock_sensor_commands)"
+  /> -->
+
+  <!-- wrist camera adapter and camera-->
+  <xacro:include
+    filename="$(find picknik_accessories)/descriptions/brackets/ur_realsense_camera_adapter/picknik_ur_camera_adapter.urdf.xacro"
+  />
+  <xacro:include
+    filename="$(find picknik_accessories)/descriptions/sensors/realsense_d415.urdf.xacro"
+  />
+
+  <xacro:ur_realsense_camera_adapter
+    prefix="$(arg tf_prefix)"
+    parent="tool0"
+    child_tool="realsense_camera_adapter_tool0"
+    child_camera="d415_mount_link"
+    rotation="0"
+  />
+  <xacro:realsense_d415
+    parent="d415_mount_link"
+    name="wrist_mounted_camera"
+    use_mesh="true"
+  >
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:realsense_d415>
+
+
+
+  <!-- gripper and UR adapter-->
+  <xacro:include
+    filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro"
+  />
+  <xacro:include
+    filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"
+  />
+  
+  <xacro:ur_to_robotiq
+    prefix="$(arg tf_prefix)"
+    parent="realsense_camera_adapter_tool0"
+    child="gripper_mount_link"
+    rotation="0"
+  />
+  <xacro:robotiq_gripper
+    name="RobotiqGripperHardwareInterface"
+    prefix="$(arg tf_prefix)"
+    parent="gripper_mount_link"
+    use_fake_hardware="$(arg use_fake_hardware)"
+    sim_ignition="false"
+    com_port="$(arg tool_device_name)"
+  >
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:robotiq_gripper>
+  <!-- This link aligns the axes of the grasp frame to our required convention for motion planning tasks. -->
+  <link name="grasp_link" />
+  <joint name="$grasp_link_joint" type="fixed">
+    <parent link="robotiq_85_base_link" />
+    <child link="grasp_link" />
+    <origin xyz="0.0 0.0 0.134" rpy="0.0 0.0 ${pi}" />
+  </joint>
+
+
+  <ros2_control name="ur_sim" type="system">
+    <hardware>
+      <plugin>picknik_mujoco_ros/MujocoSystem</plugin>
+      <param name="mujoco_model">$(arg mujoco_model)</param>
+      <param name="mujoco_model_package">$(arg mujoco_model_package)</param>
+      <!-- The rate <camera> data is published at -->
+      <param name="render_publish_rate">10</param>
+      <!-- The rate transforms to <site> poses are published at -->
+      <param name="tf_publish_rate">60</param>
+      <!-- The rate <rangefinder> data is published at -->
+      <param name="lidar_publish_rate">10</param>
+      <!-- Whether to launch the MuJoCo interactive viewer -->
+      <param name="mujoco_viewer">$(arg mujoco_viewer)</param>
+    </hardware>
+  </ros2_control>
+</robot>

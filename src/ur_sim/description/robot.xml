@@ -1,0 +1,19 @@
+<!-- This is a simplified model used for MPC optimization -->
+<mujoco model="ur5e scene">
+  <include file="ur5e/ur5e_globals.xml" />
+  <include file="robotiq_2f85/robotiq2f85_globals.xml" />
+  <compiler angle="radian" autolimits="true" />
+  <option integrator="implicitfast" />
+  <worldbody>
+    <body name="base_platform" pos="0 0 0" euler="0 0 0">
+      <geom
+        rgba="0 0 0 0"
+        type="box"
+        size="0.1 0.1 0.1"
+        contype="0" 
+        conaffinity="0"
+      />
+    </body>
+    <include file="ur7e.xml" />
+  </worldbody>
+</mujoco>
