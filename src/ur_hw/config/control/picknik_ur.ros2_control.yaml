@@ -30,10 +30,10 @@ joint_state_broadcaster:
       - wrist_1_joint
       - wrist_2_joint
       - wrist_3_joint
-      - robotiq_85_left_knuckle_joint
     interfaces:
       - position
       - velocity
+      - effort
 
 io_and_status_controller:
   ros__parameters:
@@ -80,16 +80,22 @@ joint_trajectory_controller:
       goal_time: 0.0
       shoulder_pan_joint:
         goal: 0.05
+        trajectory: 0.2
       shoulder_lift_joint:
         goal: 0.05
+        trajectory: 0.2
       elbow_joint:
         goal: 0.05
+        trajectory: 0.2
       wrist_1_joint:
         goal: 0.05
+        trajectory: 0.2
       wrist_2_joint:
         goal: 0.05
+        trajectory: 0.2
       wrist_3_joint:
         goal: 0.05
+        trajectory: 0.2
 
 joint_velocity_controller:
   ros__parameters:
@@ -112,19 +118,6 @@ joint_velocity_controller:
     joint_limit_position_tolerance: 0.02
     command_timeout: 0.2
     state_publish_rate: 20
-
-robotiq_gripper_controller:
-  ros__parameters:
-    default: true
-    joint: robotiq_85_left_knuckle_joint
-    allow_stalling: true
-    stall_timeout: 0.05
-    stall_velocity_threshold: 0.004
-    goal_tolerance: 0.02
-
-robotiq_activation_controller:
-  ros__parameters:
-    default: true
 
 joint_trajectory_admittance_controller:
   ros__parameters:

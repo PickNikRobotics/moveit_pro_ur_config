@@ -11,6 +11,7 @@ add_subdirectory(behaviors)
 install(
   DIRECTORY
     config
+    description
     launch
   DESTINATION
     share/${PROJECT_NAME}

@@ -17,13 +17,19 @@ hardware:
   # A URDF and SRDF are both required.
   # [Required]
   robot_description:
+    urdf:
+      package: "ur_hw"
+      path: "description/picknik_ur.xacro"
+    srdf:
+      package: "ur_hw"
+      path: "config/moveit/picknik_ur.srdf"
     urdf_params:
-      - name: "ur10e"
+      - name: "ur7e"
       # NOTE: If using a different UR model, update type here and joint limits in the config/moveit/joint_limits.yaml file.
-      # possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30
-      - ur_type: "ur10e"
-      - use_fake_hardware: "false"
-      - robot_ip: "0.0.0.0"
+      # possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur7, ur7e, ur10, ur10e, ur16e, ur20, ur30
+      - ur_type: "ur7e"
+      - use_fake_hardware: "true"
+      - robot_ip: "172.17.0.2" # Set to the IP address of your robot if using real hardware.
       - headless_mode: "true"
       - use_tool_communication: "true"
       - tool_voltage: "24"
@@ -38,3 +44,14 @@ moveit_params:
   joint_limits:
     package: "ur_hw"
     path: "config/moveit/joint_limits.yaml"
+
+# Override inherited ros2_control settings to activate io_and_status_controller,
+# which is required by ur_robot_driver for GPIO/program management.
+ros2_control:
+  config:
+    package: "ur_hw"
+    path: "config/control/picknik_ur.ros2_control.yaml"
+  controllers_active_at_startup:
+    - "io_and_status_controller"
+    - "force_torque_sensor_broadcaster"
+    - "joint_state_broadcaster"

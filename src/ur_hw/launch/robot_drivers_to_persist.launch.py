@@ -49,7 +49,7 @@ def generate_launch_description():
 
     declare_robot_ip = DeclareLaunchArgument(
         "robot_ip",
-        default_value=EnvironmentVariable("ROBOT_IP", default_value="0.0.0.0"),
+        default_value=EnvironmentVariable("ROBOT_IP", default_value="172.17.0.2"), # Set to the IP address of your robot if using real hardware.
         description="IP address of the robot",
     )
     robot_ip = LaunchConfiguration("robot_ip")
